@@ -1,6 +1,6 @@
 # U.S. Robotaxi Companies and Operating Markets
 
-![U.S. Robotaxi Markets by Company](./미국_로봇택시_시장_현황.png)
+![U.S. Robotaxi Markets by Company](./robotaxi_market.png)
 
 ## 1. Waymo
 
