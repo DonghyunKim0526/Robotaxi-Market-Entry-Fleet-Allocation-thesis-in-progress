@@ -1,5 +1,7 @@
 # U.S. Robotaxi Companies and Operating Markets
 
+![U.S. Robotaxi Markets by Company](./robotaxi_market.png)
+
 ## 1. Waymo
 
 - **Current operating areas:** Atlanta(Georgia), Austin(Texas), Dallas(Texas), Houston(Texas), Los Angeles(California), Miami(Florida), Nashville(Tennessee), Orlando(Florida), Phoenix(Arizona), San Antonio(Texas), San Francisco Bay Area(California)
