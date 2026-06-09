@@ -11,6 +11,10 @@ Automated driving systems, still in development, encompass SAE Levels 3 through 
 수요 측면 : 인구·고용 밀도, 토지이용 혼합·walkability, 무차량 가구 비중, 소득, 공항 승객 규모, 대중교통 접근성
 운영 측면 : 법·허가 상태, 도로유형/고속도로 비중, 교차로 밀도, 날씨·침수·극한기상 노출이 핵심**
 
+-> Loa, P., Lee, Y. & Circella, G. Just another ride-hailing? examining the determinants of robotaxi demand in San Francisco. Transportation (2026). https://doi.org/10.1007/s11116-026-10751-9
+
+
+
 고용밀도, 일자리 접근성, income, 무차량 가구 비
 ->https://arxiv.org/pdf/2406.11590 abstract 부분
 Demographic factors, including population size and crime rate, emerge as the primary determinants positively influencing ride-sharing demand. Higher income levels, increased numbers of economically active citizens, and higher proportions of car-free households are associated with increased demand. Public transit availability and walkability also play significant roles in ride-sharing patterns in Chicago.  (ridesharing 연구임. 조심)
@@ -19,6 +23,11 @@ Demographic factors, including population size and crime rate, emerge as the pri
 -> https://arxiv.org/pdf/2209.07980
 the importance of built environment varies across spatial contexts, and it collectively contributes the largest importance in predicting ridesourcing demand for airport trips.”
 “Ridesourcing demand is usually most responsive to the built environment changes for downtown trips, followed by neighborhood trips and airport trips. airport trips를 별도 spatial context로 다루며 built environment의 설명력이 특히 크다고 보고한다. (ridesharing 연구임. 조심)
+
+대중교통 접근성. ridehailing과의 경쟁관계
+->https://arxiv.org/abs/2104.04208
+여섯 도시 Uber 데이터 분석은 public transport가 경쟁적일수록 ride-hailing demand share가 낮다고 보고했고, Chicago rail disruption 연구는 disruption 시 ridesourcing가 gap-filling capacity를 제공한다고 보고했다. Detroit/Ypsilanti MOD 선호 연구는 inferior transit services 지역에서 MOD 선호가 더 높다고 보고했다. 공개 학술 버전 기준
+
 
 무엇이 ridesharing이랑 robotaxi의 수요를 가르는거지?
 
