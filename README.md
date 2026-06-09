@@ -6,8 +6,9 @@ The main purpose of this repository is to organize the papers I reviewed, summar
 
 ## Structure
 
-- `first-meeting-literature-review/`: Literature review based on the references shared after my first meeting with Professor Siqian Shen.
-
+- `meeting notes/`: notes in meetings.
+- `papers/`: Literature review based on the references shared after my first meeting with Professor Siqian Shen.
+  
 ## Main Topics
 
 - Optimization under uncertainty
