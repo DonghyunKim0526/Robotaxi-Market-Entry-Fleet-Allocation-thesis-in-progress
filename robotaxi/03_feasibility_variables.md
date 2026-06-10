@@ -63,9 +63,9 @@ $R_i^{test},\quad R_i^{deploy},\quad R_i^{paid}$
 
 where:
 
-- \(R_i^{test}\): driverless testing is permitted;
-- \(R_i^{deploy}\): driverless deployment is permitted;
-- \(R_i^{paid}\): paid passenger service is permitted.
+- $R_i^{test}$: driverless testing is permitted;
+- $R_i^{deploy}$: driverless deployment is permitted;
+- $R_i^{paid}$: paid passenger service is permitted.
 
 ## Source conclusion
 
