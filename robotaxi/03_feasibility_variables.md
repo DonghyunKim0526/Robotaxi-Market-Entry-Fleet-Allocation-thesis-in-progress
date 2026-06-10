@@ -89,15 +89,9 @@ where:
 | Weather-related operating restriction | Operating scope was narrowed during severe weather. | Reduces effective fleet availability. | Service interruption or restricted-operating hours | Operator incident and service logs |
 | Map and route updates | Hazard areas were restricted while a permanent remedy was developed. | Changes dynamic route feasibility and geofence. | Proprietary map data; public substitute is road-closure data | Local DOT and 511 feeds |
 
-\[
-a_{i,t}^{\omega}\in[0,1]
-\]
+$a_{i,t}^{\omega}\in[0,1]$
 
-\[
-x_{i,t}^{effective,\omega}
-=
-a_{i,t}^{\omega}x_{i,t}
-\]
+$x_{i,t}^{effective,\omega} = a_{i,t}^{\omega}x_{i,t}$
 
 ## Source conclusion
 
@@ -120,22 +114,22 @@ a_{i,t}^{\omega}x_{i,t}
 | Lane closure | Location and duration | Reduces road capacity and routing options | WZDx |
 | Work-zone duration | Start and end time | Determines time-varying service feasibility | WZDx |
 
-\[
+$$
 	ext{Freeway feasibility}
 =
 	ext{city freeway dependence}
 	imes
 	ext{ADS freeway capability}
-\]
+$$
 
-\[
+$$
 C_{r,t}
 =
 egin{cases}
 1,&	ext{road segment }r	ext{ is affected by construction at }t\
 0,&	ext{otherwise}
 \end{cases}
-\]
+$$
 
 ## Source conclusion
 
@@ -225,15 +219,15 @@ C_{r,t}
 
 ## Suggested feasibility constraints
 
-\[
+$$
 y_i\le R_i^{legal}
-\]
+$$
 
-\[
+$$
 	ext{service}_{r,t}
 \le
 R_{r}^{road}
 R_{r}^{speed}
 R_{r,t}^{weather}
 R_{r,t}^{construction}
-\]
+$$
