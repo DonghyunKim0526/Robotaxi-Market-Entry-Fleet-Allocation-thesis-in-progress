@@ -1,7 +1,5 @@
 # Demand-Side Variables for Robotaxi Deployment Research
 
-This document organizes the evidence paper by paper.
-
 ## Key Principles
 
 - Only Paper 1 directly analyzes **observed robotaxi demand**.
@@ -217,7 +215,7 @@ In a candidate city without existing robotaxi service, actual robotaxi travel ti
 
 ---
 
-# Final Classification for the Robotaxi Research Project
+# Final Variables that may be considered for Research
 
 ## A. Variables with Direct Empirical Evidence from Observed Robotaxi Demand
 
