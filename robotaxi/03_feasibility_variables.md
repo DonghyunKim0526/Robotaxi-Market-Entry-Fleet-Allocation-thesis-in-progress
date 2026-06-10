@@ -59,8 +59,7 @@ This document does not estimate the probability that a robotaxi company will ent
 
 ## Other relevant findings
 
-```math
-R_i^{test},\quad R_i^{deploy},\quad R_i^{paid}
+$R_i^{test},\quad R_i^{deploy},\quad R_i^{paid}$
 
 where:
 
