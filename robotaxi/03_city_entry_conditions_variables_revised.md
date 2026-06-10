@@ -129,68 +129,6 @@ This means that a robotaxi operator may be technically able to deploy vehicles b
 
 ---
 
-## 4. Waymo — Where Waymo Operates
-
-**Institution:** Waymo  
-**Source link:** [Waymo — Where Waymo Operates](https://waymo.com/rides/)  
-**Evidence type:** Official company operating-market information
-
-### 2. Summary and main findings
-
-Waymo publicly identifies current service markets and upcoming markets.
-
-The page also shows that Waymo uses different operating structures across cities. In Austin and Atlanta, riders access Waymo vehicles through Uber.
-
-This provides public evidence that local platform or operating partnerships can enable market entry.
-
-The page also confirms that deployment is organized by specific service markets rather than by unrestricted nationwide operation.
-
-### 3. Variables identified from the source
-
-| Variable | Meaning | Expected role in city entry | Recommended variable form |
-|---|---|---|---|
-| Existing service market | Whether the company already provides rider service in the city | Confirmed deployment status | Binary indicator |
-| Announced future market | Whether the company has publicly announced the city as an upcoming market | Confirmed expansion status | Binary indicator |
-| Local platform partnership | Whether service is provided through a local platform partner such as Uber | Confirmed enabling factor | Binary indicator |
-| Company-operated versus partner-operated service | Operating model used in the city | Confirmed deployment structure | Categorical variable |
-| Existing service-area presence | Whether a defined local service area already exists | Confirmed operating footprint | Binary indicator or service-area size |
-
-### Source conclusion
-
-> Company-announced service status and local operating partnerships are publicly confirmed enabling factors. However, the source does not disclose the complete internal city-selection criteria used by Waymo.
-
----
-
-## 5. Zoox — Where to Ride
-
-**Institution:** Zoox  
-**Source link:** [Zoox — Where to Ride](https://zoox.com/where-to-ride)  
-**Evidence type:** Official company operating-market information
-
-### 2. Summary and main findings
-
-Zoox lists the cities in which its rider service, pilot, or rollout activity is publicly associated.
-
-The listed cities demonstrate that deployment occurs through specific, limited markets rather than unrestricted nationwide operation.
-
-The page supports the use of service-area availability and prior pilot or rollout activity as enabling factors.
-
-### 3. Variables identified from the source
-
-| Variable | Meaning | Expected role in city entry | Recommended variable form |
-|---|---|---|---|
-| Existing rider-service market | Whether riders can access Zoox service in the city | Confirmed deployment status | Binary indicator |
-| Pilot or early-rollout market | Whether the city is in an earlier deployment stage | Confirmed readiness factor | Binary or categorical indicator |
-| Prior public-rider activity | Whether public riders have participated in local service | Confirmed validation factor | Binary indicator |
-| Feasible initial geofence | Whether service can begin in a limited operating area | Confirmed rollout structure | Initial service-area size |
-| Gradual geographic expansion | Whether the service area expands over time | Confirmed scaling pattern | Change in service-area size over time |
-
-### Source conclusion
-
-> Prior local pilot activity and the ability to define a limited initial service area are publicly observable enabling factors. The source does not establish a universal city-selection rule.
-
----
-
 ## 6. DOE Alternative Fuels Data Center
 
 **Institution:** U.S. Department of Energy  
@@ -553,7 +491,7 @@ Prior testing, pilot activity, and service announcements can be used to measure 
 
 ---
 
-# Final Variables Recommended for the Research
+# Final Variables for Research
 
 ## A. Publicly confirmed prerequisites or enabling factors
 
@@ -597,100 +535,4 @@ Prior testing, pilot activity, and service announcements can be used to measure 
 14. Number of active AV permit holders  
 15. Historical AV testing duration  
 
----
 
-# Suggested Use in the Model
-
-The recommended approach is to use confirmed prerequisites as eligibility constraints and operational risks as scenario-dependent reductions in effective capacity.
-
-## 1. Legal feasibility
-
-$$
-y_i \leq R_i^{legal}
-$$
-
-where:
-
-- \(y_i=1\) if the model enters city \(i\);
-- \(R_i^{legal}=1\) if driverless deployment and paid passenger service are legally permitted.
-
-## 2. ODD feasibility
-
-$$
-y_i \leq R_i^{ODD}
-$$
-
-where \(R_i^{ODD}=1\) only if the proposed service area satisfies the minimum roadway, speed, geographic, weather, and lighting requirements.
-
-## 3. Infrastructure feasibility
-
-$$
-y_i \leq R_i^{infrastructure}
-$$
-
-where \(R_i^{infrastructure}=1\) only if the minimum charging, depot, maintenance, and operating requirements can be established.
-
-## 4. Risk-adjusted effective capacity
-
-$$
-Q_{i,t}^{effective,\omega}
-=
-a_{i,t}^{\omega}Q_i
-$$
-
-where:
-
-- \(Q_i\) is the nominal fleet capacity assigned to city \(i\);
-- \(a_{i,t}^{\omega}\in[0,1]\) is the fraction of capacity available under weather, flooding, construction, freeway, or road-closure scenario \(\omega\).
-
-## 5. Simplified city-entry model
-
-$$
-\min
-\sum_i
-\left(
-f_i+c_i^{entry}
-\right)y_i
-+
-\mathbb E_{\omega}
-\left[
-\sum_{i,t}
-c_{i,t}^{risk}
-\left(
-1-a_{i,t}^{\omega}
-\right)Q_i
-\right]
-$$
-
-subject to:
-
-$$
-y_i \leq R_i^{legal}
-$$
-
-$$
-y_i \leq R_i^{ODD}
-$$
-
-$$
-y_i \leq R_i^{infrastructure}
-$$
-
-where:
-
-- \(f_i\) is the fixed market-entry cost;
-- \(c_i^{entry}\) includes mapping, testing, permitting, depot, and charging preparation costs;
-- \(a_{i,t}^{\omega}\) represents scenario-dependent operational availability;
-- \(c_{i,t}^{risk}\) is the cost associated with unavailable fleet capacity.
-
----
-
-# Final Interpretation
-
-The evidence supports the following statement:
-
-> Public documents identify legal authorization, ODD compatibility, prior validation, service-area feasibility, and operating partnerships as prerequisites or enabling factors. Actual events demonstrate that flooding, severe weather, construction, unsupported freeway operations, and route closures can reduce service availability. Official datasets can then be used to construct city-level proxies for these publicly documented conditions and risks.
-
-The evidence does not support the stronger statement:
-
-> Robotaxi companies publicly select cities using a fixed threshold for rainfall, floodplain share, intersection density, freeway share, or charger count.
