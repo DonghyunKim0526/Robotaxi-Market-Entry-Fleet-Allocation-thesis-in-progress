@@ -4,7 +4,7 @@ This document summarizes variables that determine whether a robotaxi service can
 
 ## Scope
 
-\[
+$$
 	ext{Demand prediction}
 
 ightarrow
@@ -12,7 +12,7 @@ ightarrow
 
 ightarrow
 	ext{Fleet allocation}
-\]
+$$
 
 The question addressed here is:
 
