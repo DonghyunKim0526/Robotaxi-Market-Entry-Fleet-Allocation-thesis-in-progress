@@ -2,23 +2,6 @@
 
 This document summarizes variables that determine whether a robotaxi service can legally, technically, and operationally enter and operate in a city.
 
-## Scope
-
-$$
-	ext{Demand prediction}
-
-ightarrow
-	ext{City feasibility filtering}
-
-ightarrow
-	ext{Fleet allocation}
-$$
-
-The question addressed here is:
-
-> Even if a city has sufficient potential demand, can a robotaxi service legally and technically operate there?
-
----
 
 # 1. *A Framework for Automated Driving System Testable Cases and Scenarios*
 
@@ -76,9 +59,8 @@ This document does not estimate the probability that a robotaxi company will ent
 
 ## Other relevant findings
 
-\[
+```math
 R_i^{test},\quad R_i^{deploy},\quad R_i^{paid}
-\]
 
 where:
 
