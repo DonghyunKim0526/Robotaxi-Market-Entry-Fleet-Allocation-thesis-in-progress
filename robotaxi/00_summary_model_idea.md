@@ -162,16 +162,20 @@ constraints:
 
 $$
 \sum_i q_i \leq Q
-$$ -> sum of number of robotaxis allocated to city i should be less than total number of additional robotaxi fleet available
+$$ 
+-> sum of number of robotaxis allocated to city i should be less than total number of additional robotaxi fleet available
 
 $$
 q_i \leq \bar q_i y_i
-$$ -> If you don’t enter(y_i=0) the city, you must allocate zero vehicles. If you do enter(y_i=1), you can allocate up to q_i vehicles.
+$$ 
+-> If you don’t enter(y_i=0) the city, you must allocate zero vehicles. If you do enter(y_i=1), you can allocate up to q_i vehicles.
 
 $$
 y_i \leq F_i
-$$  -> The decision to enter city i cannot be 1 unless the city is feasible
+$$  
+-> The decision to enter city i cannot be 1 unless the city is feasible
 
 $$
 q_i \in \mathbb{Z}_+,\quad y_i\in\{0,1\}
-$$ -> q_i must be a non-negative integer, and y_i is a binary variable that can only be 0 or 1
+$$ 
+-> q_i must be a non-negative integer, and y_i is a binary variable that can only be 0 or 1
