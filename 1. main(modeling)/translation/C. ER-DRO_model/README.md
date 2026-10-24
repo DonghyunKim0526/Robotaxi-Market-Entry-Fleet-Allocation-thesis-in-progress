@@ -2,20 +2,20 @@
 
 ## 로짓 잔차 → 시나리오 → 강건 배치
 
-$$
+```math
 p_c^s=\sigma(\hat\beta_0+\hat\beta_1x_c+\hat\varepsilon_s),\quad
 D_c^s=M_cp_c^s,\quad \sigma(z)=(1+e^{-z})^{-1}
-$$
+```
 
-$$
+```math
 \min_{y,q,\tau,w,O,U}\sum_c F_cy_c+\tau+
 \frac{1}{N(1-\zeta)}\sum_{s=1}^Nw_s
-$$
+```
 
-$$
+```math
 w_s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau,\quad w_s\ge0,
 \qquad\kappa_cq_c-D_c^s=O_c^s-U_c^s.
-$$
+```
 
 $x_c$는 도시의 무차량 가구 비율, $\hat\varepsilon_s$는 학습 관측의 로짓 잔차입니다. 잔차 하나가 공동 시나리오 하나이므로 $|S|=N$입니다. 기존 도시별·총 차량 상한을 유지하며 $y,q$는 1단계, $O,U$는 시나리오별 2단계 변수입니다.
 

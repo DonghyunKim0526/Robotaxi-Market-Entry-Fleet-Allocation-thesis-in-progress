@@ -11,14 +11,14 @@
 
 ## 수식으로 보는 차이
 
-$$
+```math
 \text{Baseline: }\min_{y,q}\sum_c(F_cy_c+K_cq_c)+\frac1N\sum_s H(q,D^s)
-$$
+```
 
-$$
+```math
 \text{Contextual DRO: }\min_{y,q}\text{first-stage cost}
 +\sup_{P\in\mathcal U(x)}\mathbb E_P[H(q,D(x,\varepsilon))].
-$$
+```
 
 Contextual은 도시 특성 $x$에 따라 시나리오가 달라지는 것이며, 결정의존은 수요 자체가 $D(x,q,\varepsilon)$처럼 차량 배치 등에 반응하는 것입니다. 현재 ER-DRO 코드는 전자만 포함합니다. Revised 모형은 별도 $Kq$를 생략해 baseline과 비용 정의가 다릅니다.
 

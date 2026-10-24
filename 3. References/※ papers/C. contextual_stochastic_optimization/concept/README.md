@@ -4,8 +4,10 @@
 
 An unconditional model applies the same demand distribution to different cities. A contextual model first observes city features $X=x$ and chooses a decision appropriate for that conditional demand.
 
-$$\min_q\mathbb E[c(q,D)]\quad\longrightarrow\quad
-q^*(x)\in\arg\min_q\mathbb E[c(q,D)\mid X=x].$$
+```math
+\min_q\mathbb E[c(q,D)]\quad\longrightarrow\quad
+q^*(x)\in\arg\min_q\mathbb E[c(q,D)\mid X=x].
+```
 
 ## Three building blocks in the illustrated notes
 

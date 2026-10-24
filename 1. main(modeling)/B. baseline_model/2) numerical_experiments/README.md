@@ -4,11 +4,11 @@
 
 Both cases solve the baseline MILP, independently recompute service and costs, test boundary conditions, and reoptimize one parameter at a time. They use the same decisions $y,q$ in all scenarios and do not allow city-to-city capacity pooling.
 
-$$
+```math
 T_c^s=\min(M_cp_c^s,\kappa_cq_c),\quad
 \mathrm{ServiceRate}=\frac{\mathbb E[\sum_cT_c^s]}{\mathbb E[\sum_cD_c^s]},\quad
 \Delta Z=Z_{\mathrm{no\ entry}}-Z^*.
-$$
+```
 
 ## Results at a glance
 

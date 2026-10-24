@@ -4,11 +4,11 @@
 
 3개 도시의 $M=(80,100,120)$, 차량당 용량 10, 도시 상한 2, 전체 차량 4를 사용합니다. 10개 공동 시나리오를 동일 확률로 평가하며 $F=20,K=5,c^+=0,c^-=10$입니다.
 
-$$
+```math
 \min \sum_cF_cy_c+\sum_cK_cq_c+
 \frac1{10}\sum_{s,c}(c_c^+O_c^s+c_c^-U_c^s),\qquad
 \kappa_cq_c-M_cp_c^s=O_c^s-U_c^s.
-$$
+```
 
 | 결과 | Small case | Large case 한글 코드 |
 |---|---|---|

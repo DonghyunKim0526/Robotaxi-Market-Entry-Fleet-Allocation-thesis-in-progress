@@ -8,10 +8,10 @@
 | Baseline | 고정 $M$과 외생적 $p$로 $D=Mp$ 생성, 진입·차량 배치 후 유휴·부족 비용 계산 | small case $(0,2,2)$, 목적값 858; 한글 large-case 코드도 수치실험 폴더에 있음 |
 | ER-DRO | 도시 특성에 로짓 회귀 잔차를 붙여 시나리오 생성, 평균 대신 CVaR로 평가 | 평균비용 증가와 꼬리비용 감소의 교환관계 |
 
-$$
+```math
 D_c^s=M_cp_c^s,\quad T_c^s=\min(D_c^s,\kappa_cq_c),\quad
 O_c^s=(\kappa_cq_c-D_c^s)_+,\quad U_c^s=(D_c^s-\kappa_cq_c)_+.
-$$
+```
 
 $y,q$는 시나리오 공통 결정이고 $O,U$는 시나리오별 결과입니다. Baseline은 진입비·차량비·기대 페널티를 합산하지만 revised ER-DRO는 별도 차량비 항을 두지 않으므로 목적값을 직접 비교하지 않습니다.
 

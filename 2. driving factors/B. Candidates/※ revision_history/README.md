@@ -4,7 +4,9 @@
 
 The 2026-10-01 document groups potential drivers of $M$ (market size) and $p$ (robotaxi choice). It maps population, economic activity, income, car-free households, land use, public transport, and airport activity to literature and measurement sources; service fare/waiting time, attitudes, and demographics appear as choice candidates.
 
-$$D_c=M_cp_c.$$
+```math
+D_c=M_cp_c.
+```
 
 An association with observed trips alone cannot identify whether $M$ or $p$ changes. Realized ride-hailing records also omit unfulfilled or unmade trips. These are the main interpretation limits of the candidate pool.
 

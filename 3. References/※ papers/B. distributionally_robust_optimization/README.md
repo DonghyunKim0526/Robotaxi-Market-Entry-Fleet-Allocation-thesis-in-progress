@@ -2,7 +2,9 @@
 
 ## Ambiguity-set choices
 
-$$\min_a\sup_{P\in\mathcal U}\mathbb E_P[c(a,D)].$$
+```math
+\min_a\sup_{P\in\mathcal U}\mathbb E_P[c(a,D)].
+```
 
 | Paper | Key idea | What to take from it |
 |---|---|---|
@@ -14,7 +16,9 @@ $$\min_a\sup_{P\in\mathcal U}\mathbb E_P[c(a,D)].$$
 
 The robotaxi experiment keeps residual-generated scenario locations fixed and changes admissible probability weights:
 
-$$\mathcal U_\zeta=\{\pi\ge0:\sum_s\pi_s=1,\ \pi_s\le1/[N(1-\zeta)]\}.$$
+```math
+\mathcal U_\zeta=\{\pi\ge0:\sum_s\pi_s=1,\ \pi_s\le1/[N(1-\zeta)]\}.
+```
 
 This produces the CVaR threshold formulation. It is not a Wasserstein ball that moves demand outcomes. Larger $\zeta$ permits more weight on costly existing scenarios; it cannot invent a missing demand scenario. The cited theory and applications do not themselves establish calibrated radii or OOS guarantees for this toy model.
 

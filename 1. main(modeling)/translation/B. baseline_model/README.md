@@ -2,20 +2,20 @@
 
 ## Baseline의 구조
 
-$$
+```math
 \min_{y,q,O,U}\;\sum_c F_cy_c+\sum_c K_cq_c+
 \frac{1}{|S|}\sum_{s,c}(c_c^+O_c^s+c_c^-U_c^s)
-$$
+```
 
-$$
+```math
 D_c^s=M_cp_c^s,\qquad
 \kappa_cq_c-D_c^s=O_c^s-U_c^s
-$$
+```
 
-$$
+```math
 0\le q_c\le\bar q_cy_c,\quad \sum_cq_c\le Q,\quad
 y_c\in\{0,1\},\ q_c\in\mathbb Z_{\ge0},\ O_c^s,U_c^s\ge0.
-$$
+```
 
 $y_c$는 진입 여부, $q_c$는 차량 대수입니다. 초기 진입비 $F$, 연간 차량비 $K$, 유휴 페널티 $c^+$와 미충족 공헌이익 손실 $c^-$를 최소화합니다. 진입하지 않은 도시에는 차량을 배치할 수 없고, 도시별 상한과 전체 차량 한도가 적용됩니다.
 

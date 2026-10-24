@@ -4,20 +4,20 @@
 
 City characteristics generate demand scenarios through a learned logit model. The optimizer chooses entry and fleet before observing demand and minimizes entry cost plus a CVaR penalty. Context is exogenous: demand does **not** change with the chosen fleet in this version.
 
-$$
+```math
 p_c^s=\sigma(\hat\beta_0+\hat\beta_1x_c+\hat\varepsilon_s),\quad
 D_c^s=M_cp_c^s,\quad \sigma(z)=(1+e^{-z})^{-1}
-$$
+```
 
-$$
+```math
 \min_{y,q,\tau,w,O,U}\sum_c F_cy_c+\tau+
 \frac{1}{N(1-\zeta)}\sum_{s=1}^Nw_s
-$$
+```
 
-$$
+```math
 w_s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau,\quad w_s\ge0,
 \qquad\kappa_cq_c-D_c^s=O_c^s-U_c^s.
-$$
+```
 
 The baseline city/fleet constraints still apply: $0\le q_c\le\bar q_cy_c$, $\sum_cq_c\le Q$, binary $y$, integer $q$, and nonnegative $O,U$. Residuals are $\hat\varepsilon_k=\operatorname{logit}(p^k)-\hat\beta_0-\hat\beta_1x^k$; one residual generates one joint scenario, so $|S|=N$.
 

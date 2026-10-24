@@ -13,11 +13,11 @@
 
 Start with C1/C2 for method families, C3 for residual-based SAA, and C4 for robustification with limited data. Then read the EV-location paper for decision-dependent demand. Consult the DRO survey for ambiguity-set definitions and the multi-source papers when source reliability becomes part of the model.
 
-$$
+```math
 \min_a\mathbb E[c(a,D)\mid X=x]
 \quad\longrightarrow\quad
 \min_a\sup_{P\in\mathcal U(x)}\mathbb E_P[c(a,D)].
-$$
+```
 
 Conditioning on $x$ and protecting against ambiguity are distinct steps. None of these papers alone validates the robotaxi cost coefficients or city demand inputs. This folder holds supporting literature, not additional project experiments.
 

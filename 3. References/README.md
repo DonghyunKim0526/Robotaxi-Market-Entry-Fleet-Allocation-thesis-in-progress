@@ -24,10 +24,10 @@ The parameter PDF and implemented annual notebook use different exploratory $p$ 
 
 ## The methodological bridge
 
-$$
+```math
 \text{city context }x\ \longrightarrow\ \hat f(x)+\text{residual scenarios}
 \ \longrightarrow\ \min_a\sup_{P\in\mathcal U(x)}\mathbb E_P[c(a,D)].
-$$
+```
 
 C3 supplies residual SAA, C4 extends residual learning to DRO, and the EV-location paper shows what changes when demand also depends on decisions. The present robotaxi notebook implements exogenous-context CVaR ER-DRO, not all mechanisms covered in the reference collection.
 

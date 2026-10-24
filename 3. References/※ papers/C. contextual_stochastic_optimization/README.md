@@ -2,8 +2,10 @@
 
 ## From city features to decisions
 
-$$\min_a\mathbb E[c(a,D)\mid X=x],\qquad
-\hat D^s(x)=\hat f(x)+\hat\varepsilon_s.$$
+```math
+\min_a\mathbb E[c(a,D)\mid X=x],\qquad
+\hat D^s(x)=\hat f(x)+\hat\varepsilon_s.
+```
 
 The displayed scenario equation is the additive residual idea; the robotaxi implementation applies residuals on the **logit scale** and then maps back through a sigmoid.
 

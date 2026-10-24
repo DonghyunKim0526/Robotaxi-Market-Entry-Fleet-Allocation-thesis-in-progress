@@ -10,7 +10,9 @@
 
 ## Shared decision principle
 
-$$\min_a\sup_{P\in\mathcal U(P_1,\ldots,P_K;\,\text{trust})}\mathbb E_P[c(a,D)].$$
+```math
+\min_a\sup_{P\in\mathcal U(P_1,\ldots,P_K;\,\text{trust})}\mathbb E_P[c(a,D)].
+```
 
 This is a schematic summary: the papers use different constructions of $\mathcal U$. Source trust, transport radii, and dynamic updating are not interchangeable parameters. If introduced to robotaxi planning, source scope, bias, and reliability must first be defined on comparable demand units.
 

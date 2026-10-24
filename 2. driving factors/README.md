@@ -2,9 +2,9 @@
 
 ## Demand is scale × choice
 
-$$
+```math
 D_c=M_cp_c,\qquad M_c=\sum_gN_{c,g}r_g.
-$$
+```
 
 $M$ counts potential trip opportunities; $p$ is the share choosing robotaxi before fleet shortages. A variable associated with observed trip counts need not identify which of these two components it changes.
 

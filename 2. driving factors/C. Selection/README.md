@@ -2,10 +2,10 @@
 
 ## Fixed market scale: $M$
 
-$$
+```math
 M_c=\sum_{g\in G}N_{c,g}r_g
 =\mathrm{Population}_c\sum_g\pi_{c,g}r_g.
-$$
+```
 
 Group $g$ describes population composition, for example vehicle availability × income. $r_g$ is a weighted annual trips-per-person rate from NHTS; $N_{c,g}$ is the city population in that group from ACS. This fixes a comparable $M$ for each city without using the same city covariates to separately regress both $M$ and $p$.
 
@@ -13,7 +13,9 @@ National group rates are transferred to cities. Sparse cells, PUMA-to-city aggre
 
 ## Choice probability: $p$
 
-$$p_c^{\mathrm{obs}}=\frac{\text{robotaxi trips in city }c}{M_c}.$$
+```math
+p_c^{\mathrm{obs}}=\frac{\text{robotaxi trips in city }c}{M_c}.
+```
 
 | Selected role | Initial variables | Required data |
 |---|---|---|

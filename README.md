@@ -4,20 +4,20 @@
 
 Which candidate cities should a robotaxi operator enter, and how many vehicles should it allocate before demand is known? Entry is binary, fleet allocation is integer, and each demand scenario produces unused capacity or unmet demand.
 
-$$
+```math
 \min_{y,q,O,U}\;\sum_c F_cy_c+\sum_c K_cq_c+
 \frac{1}{|S|}\sum_{s,c}(c_c^+O_c^s+c_c^-U_c^s)
-$$
+```
 
-$$
+```math
 D_c^s=M_cp_c^s,\qquad
 \kappa_cq_c-D_c^s=O_c^s-U_c^s
-$$
+```
 
-$$
+```math
 0\le q_c\le\bar q_cy_c,\quad \sum_cq_c\le Q,\quad
 y_c\in\{0,1\},\ q_c\in\mathbb Z_{\ge0},\ O_c^s,U_c^s\ge0.
-$$
+```
 
 Here $y_c$ selects a city, $q_c$ allocates vehicles, $M_c$ is potential annual trip opportunities, and $p_c^s$ is robotaxi choice probability. $F_c$ is entry cost, $K_c$ is annual vehicle cost, and $c_c^+,c_c^-$ price surplus capacity and unmet demand. All scenarios share the same entry and fleet decisions.
 
