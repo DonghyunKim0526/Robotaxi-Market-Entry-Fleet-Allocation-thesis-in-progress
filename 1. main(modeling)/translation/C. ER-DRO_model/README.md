@@ -1,22 +1,70 @@
 # ER-DRO 모형 한글 자료
 
-잔차 기반 시나리오·CVaR형 강건 목적함수·실험 코드를 설명합니다.
+## 로짓 잔차 → 시나리오 → 강건 배치
 
-- ER-DRO(revised).pdf가 우선 읽을 문서이며, draft는 이전 검토 기록입니다.
+$$
+p_c^s=\sigma(\hat\beta_0+\hat\beta_1x_c+\hat\varepsilon_s),\quad
+D_c^s=M_cp_c^s,\quad \sigma(z)=(1+e^{-z})^{-1}
+$$
 
-## 주요 문서
+$$
+\min_{y,q,\tau,w,O,U}\sum_c F_cy_c+\tau+
+\frac{1}{N(1-\zeta)}\sum_{s=1}^Nw_s
+$$
 
-- [이전 ER-DRO 초안](ER-DRO%28draft%29.pdf)
-- [최신 ER-DRO 정식화](ER-DRO%28revised%29.pdf)
+$$
+w_s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau,\quad w_s\ge0,
+\qquad\kappa_cq_c-D_c^s=O_c^s-U_c^s.
+$$
 
-## 실행 코드
+$x_c$는 도시의 무차량 가구 비율, $\hat\varepsilon_s$는 학습 관측의 로짓 잔차입니다. 잔차 하나가 공동 시나리오 하나이므로 $|S|=N$입니다. 기존 도시별·총 차량 상한을 유지하며 $y,q$는 1단계, $O,U$는 시나리오별 2단계 변수입니다.
 
-| 코드 | 실행 |
-|---|---|
-| [ER-DRO(non decision-dependent 한글).ipynb](ER-DRO%28non%20decision-dependent%20%ED%95%9C%EA%B8%80%29.ipynb) | [Colab에서 열기](https://colab.research.google.com/drive/17iILpKgogewmOCaTxgyWJqE7_LOHQ_7o) |
+$\zeta=0$은 ER-SAA의 평균비용, 큰 $\zeta$는 비싼 시나리오에 집중하는 CVaR입니다. 현재 $x$는 외생적이므로 차량 배치가 $p$를 바꾸는 **결정의존 수요는 포함하지 않습니다.**
 
-Colab은 Drive 원본을 열며, GitHub 파일은 저장된 사본입니다. 원본 접근 권한이 있는 계정으로 로그인하세요.
+## 합성 실험과 핵심 결과
+
+ACS의 실제 county 단위 무차량 가구 비율을 18개 후보 도시의 대리값으로 사용합니다. $M=\text{가구 수}\times10$, 선택확률 생성식과 오차는 toy 가정입니다. $N=15,200$으로 회귀·최적화한 뒤 별도로 생성한 1,000개 시나리오에서 평가합니다.
+
+| $N=200,c^+=1,c^-=5$ | $\zeta=0$ | $\zeta=0.5$ | $\zeta=0.9$ |
+|---|---:|---:|---:|
+| OOS 평균비용 (백만 정규화 비용단위) | 12.46 | 12.67 | 14.22 |
+| OOS 상위 10% 꼬리비용 | 22.79 | 22.29 | 21.62 |
+| 진입 도시 수 | 6 | 5 | 3 |
+
+![c+=1, c-=5의 위험계수별 OOS 평균·상위 10% 비용: 위험 회피가 평균비용과 꼬리비용을 어떻게 바꾸는지 보여줍니다.](../../C.%20ER-DRO_model/figures/toy_oos_vs_zeta.png)
+
+c+=1, c-=5의 위험계수별 OOS 평균·상위 10% 비용: 위험 회피가 평균비용과 꼬리비용을 어떻게 바꾸는지 보여줍니다.
+
+위험을 중시할수록 이 설정의 평균비용은 증가하고 꼬리비용은 감소합니다. Context 없는 소표본 모형에서는 꼬리비용이 오히려 악화되는 설정도 있으므로 모든 OOS 지표 개선을 보장하지 않습니다.
+
+![N=15·200의 로짓 회귀와 잔차 진단: 설명력과 잔차 재사용 가정을 확인하는 그림입니다.](../../C.%20ER-DRO_model/figures/fig1_f_diagnostics.png)
+
+N=15·200의 로짓 회귀와 잔차 진단: 설명력과 잔차 재사용 가정을 확인하는 그림입니다.
+
+$N=200$의 추정 기울기 0.665와 잔차 표준편차 0.298은 toy 참값 0.8·0.3과 가깝습니다. 낮은 test $R^2\approx0.143$은 약한 설명력을 반영하며, 잔차 그림은 실제 자료에서의 독립성을 증명하는 것이 아닙니다.
+
+## 문서·코드에서 확인할 것
+
+- **Revised:** 로짓 잔차, 2단계 구조, 확장형 MILP, OOS 결과, 진입 도시 수 제약 변형을 설명합니다. 별도 $Kq$를 생략합니다. 문서의 비용 흡수는 기대값에서의 항등식이며 일반 CVaR에서는 근사라는 단서가 있습니다.
+- **Draft:** 별도 차량비와 이전 잔차 표현을 사용한 초안입니다. 현재 결과의 식은 revised를 기준으로 읽으세요.
+- **코드:** Colab 모두 실행 → 회귀·잔차 진단 → ER-SAA/ER-DRO/no-context 비교 → OOS 표 → 민감도 순서입니다. NumPy·SciPy/HiGHS·Matplotlib·pandas를 사용합니다.
+- **선택 비교:** `RUN_COMPARE=True`이면 L-shaped와 확장형을 비교합니다. 1% 종료 오차를 허용하므로 정확히 같은 해를 확인하는 검사가 아닙니다.
+- **출력:** `table2_main_results.csv`, `table3_budget.csv`, `table4_sensitivity.csv`와 회귀·위험계수·민감도 그림. 후반 민감도 셀은 약 130개 모형을 풀어 기본 루프보다 오래 걸립니다.
+
+그림은 동일 프로젝트의 영문 결과 자산을 연결합니다. 비용 단위가 정규화된 toy 결과이며 baseline 목적값과 직접 비교하지 않습니다.
+
+## 문서와 핵심 내용
+
+- **[ER-DRO(draft).pdf](ER-DRO%28draft%29.pdf)** — 별도 차량비와 이전 잔차 표기를 사용한 CVaR 초안입니다. 현재 실험은 revised의 2단계·로짓 잔차 구조로 읽습니다.
+- **[ER-DRO(revised).pdf](ER-DRO%28revised%29.pdf)** — 로짓 잔차·2단계 CVaR·확장형 MILP, 학습/OOS 설계, 비용·위험·민감도 결과와 진입 도시 수 변형을 설명합니다.
+
+
+## 코드와 Colab 실행
+
+- **[ER-DRO(non decision-dependent 한글).ipynb](ER-DRO%28non%20decision-dependent%20%ED%95%9C%EA%B8%80%29.ipynb)** · [Colab](https://colab.research.google.com/drive/17iILpKgogewmOCaTxgyWJqE7_LOHQ_7o) — 로짓 학습→잔차 시나리오→ER-SAA/ER-DRO/no-context→독립 OOS 평가; 회귀 진단·선택 분해 비교·CSV·민감도 출력.
+
+Colab은 접근 권한이 있는 Drive 원본을 엽니다. GitHub 파일은 저장된 사본이며 자동 동기화되지 않습니다.
 
 ---
 
-[상위 폴더](../README.md) · [전체 안내](../../../README.md)
+[상위 안내](../README.md) · [전체 연구 안내](../../../README.md)

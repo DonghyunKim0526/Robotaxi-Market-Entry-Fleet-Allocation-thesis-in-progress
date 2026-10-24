@@ -1,10 +1,15 @@
 # Report figures
 
-Figure assets used by the report in the parent folder.
+## What the market image represents
 
-- 1 PNG assets; filenames identify the experiment or figure.
-- [Related report](../%28%E2%98%85%29%2002_demand_variables.pdf)
+![Operator-market illustration from the project background review; operating status is a source-dated snapshot.](robotaxi_market.png)
+
+Operator-market illustration from the project background review; operating status is a source-dated snapshot.
+
+The image accompanies the operator/market review and helps visualize the operating-market inventory. Its purpose is to organize candidate locations; it does not report demand, an optimal deployment, or a model estimate.
+
+Service stages differ: current public-rider operations, testing, and announced future rollout should not be treated as equivalent. Check the parent document's company-specific notes and source dates before using a location as an operationally feasible candidate. The parent folder also reviews demand variables and city-entry conditions.
 
 ---
 
-[Parent folder](../README.md) · [Project overview](../../../../README.md)
+[Parent guide](../README.md) · [Project overview](../../../../README.md)
