@@ -1,0 +1,163 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=20mm]{geometry}
+\usepackage{amsmath,amssymb,array,longtable,booktabs,calc,enumitem}
+\usepackage{xurl,xcolor}
+\usepackage[unicode,hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcommand{\yes}{\ensuremath{\circ}}
+\newcommand{\maybe}{\ensuremath{\triangle}}
+\newcommand{\yin}{\href{https://doi.org/10.1007/s11116-022-10319-3}{Yin and Cherchi (2024)}}
+\newcommand{\loa}{\href{https://doi.org/10.1007/s11116-026-10751-9}{Loa, Lee, and Circella (2026)}}
+\newcommand{\elk}{\href{https://arxiv.org/abs/2406.11590}{Elkhouly and Alhadidi}}
+\newcommand{\zhang}{\href{https://arxiv.org/abs/2209.07980}{Zhang et al.}}
+\newcommand{\wei}{\href{https://www.nature.com/articles/s41599-024-03271-3}{Wei et al. (2024)}}
+\newcommand{\experience}{\href{https://doi.org/10.1177/03611981231155181}{Yin, Cherchi, and Nettle (2023)}}
+\newcommand{\cats}{\href{https://doi.org/10.1371/journal.pone.0262496}{Cats et al.}}
+\newcommand{\rapid}{\href{https://doi.org/10.1177/03611981221093632}{Etminani-Ghasrodashti et al. (2022)}}
+\newlength{\fourwidth}\setlength{\fourwidth}{\textwidth-6\tabcolsep}
+\newlength{\applywidth}\setlength{\applywidth}{\textwidth-14\tabcolsep}
+\begin{document}
+\begin{center}{\Large\bfseries Summary of the Driving-Factor Selection Process for $p$}\end{center}
+\section{Summary}
+This document selects variables for estimating the uncertain robotaxi choice share $p$ in an ER-DRO model. The sequence is candidates $\rightarrow$ criteria $\rightarrow$ application of criteria $\rightarrow$ selection results.
+\[
+\text{Observed value of }p_c=y_c=\frac{\text{Robotaxi trips in city }c}{M_c}.
+\]
+The denominator $M_c$ and the numerator must use the same geographic boundary, period, and trip unit. If usage data include only completed trips, $y_c$ is a realized usage share that reflects supply conditions.
+
+The final variable-selection table distinguishes exogenous variables from endogenous variables (dependent on operating decisions). When decision-dependent effects are incorporated into optimization, they must be connected to a decision-dependent model.
+
+Future extensions to $p=f(x)+Q(x)\epsilon$ and decision dependence are also considered. This document incorporates only the conditions required for those extensions into the selection criteria.
+
+\textcolor{blue}{\textbf{Conclusion.} Preliminary selection: ``share of zero-vehicle households'' and ``age composition'' as exogenous variables; ``relative fare,'' ``relative waiting time,'' and ``in-vehicle support features'' as endogenous variables.}
+
+\section{Previously Established Candidates}
+\subsection{Driving factors of $p$}
+The following table contains 23 candidate driving factors taken from the driving factors summarized in \texttt{A.Background Research}. This does not mean that all effects on city-level $p$ have been established.
+{\footnotesize
+\begin{longtable}{@{}L{\fourwidth*\real{0.16}}L{\fourwidth*\real{0.30}}L{\fourwidth*\real{0.34}}L{\fourwidth*\real{0.20}}@{}}
+\toprule Variable & Supporting paper & Scope and results established in the paper & Measurement data\\
+\midrule\endfirsthead
+\toprule Variable & Supporting paper & Scope and results established in the paper & Measurement data\\
+\midrule\endhead\bottomrule\endlastfoot
+\textbf{Relative fare} & \yin, \emph{Willingness to pay for automated taxis} & Choice experiment between conventional and automated taxis. Analyzes choice differences by fare. Own-service fare is an operator decision. & Offered fares of both services + choice outcomes\\
+\textbf{Relative waiting time} & \yin & Analyzes choice differences by waiting time. Own-service waiting time depends on fleet size and allocation. & Waiting times of both services + choice outcomes\\
+\textbf{In-vehicle travel time} & \yin & Analyzes choice trade-offs between fare and travel time. & Offered travel times of both services\\
+\textbf{Trust, price value, and usage habits} & \wei, \emph{Using the Extended UTAUT}; \experience & Survey evidence on acceptance intentions and usage behavior. Wei does not include a trust variable. Attitude scores themselves are not choice probabilities. & Individual attitude and habit surveys\\
+\textbf{Age and robotaxi-related knowledge} & \yin; \wei & A simple age effect is difficult to establish. Distinguish general AV knowledge from awareness of actual service operation. & Link individual characteristics to choice data\\
+\textbf{User reviews and in-vehicle support features} & \yin & Analyzes choice effects of service attributes such as good reviews, destination changes, and communication with an operator. & Service attributes in the choice experiment\\
+\textbf{Robotaxi usage experience} & \experience, \emph{Living in a City Where Automated Taxis are Operating} & Relationship of residence in an operating city and individual usage experience with preferences. A simple positive experience effect is not established. & Individual usage experience; city operation and launch records\\
+\textbf{Competitiveness of alternatives such as public transport} & \cats, \emph{Beyond the dichotomy} & Evidence from conventional ride-hailing. Substitution and complementarity coexist depending on travel-time competitiveness. & Alternative availability, fares, and times; GTFS, NTD\\
+\textbf{Share of zero-vehicle households} & \elk; \loa & Positive (+) association with conventional ride-hailing usage in Chicago districts. The attached document also reports a positive (+) association with robotaxi trip productions in SF. & ACS B08201\\
+\textbf{Income} & \elk; \loa; \yin; \wei & Positive (+) in aggregate Chicago and SF data. The same effect is not consistently established in choice experiments and surveys. & ACS B19013\\
+\textbf{Employment and economic activity} & \elk; \loa & Economic activity share is positively (+) associated with conventional ride-hailing usage in Chicago; employment density with robotaxi trip attractions in SF. & LEHD/LODES; ACS B23025\\
+\textbf{Population density} & \elk; \zhang; \loa & Spatial differences for conventional ride-hailing; a negative (-) association with robotaxi usage in SF. & ACS population + area\\
+\textbf{Land-use mix, accessibility, and commercial activity} & \zhang; \loa & Nonlinear and spatially heterogeneous relationships in Chicago. A positive (+) association with land-use mix in SF. & EPA SLD\\
+\textbf{Public transport and walking environment} & \zhang; \cats; \loa & Substitution and complementarity coexist for conventional ride-hailing. The attached document reports positive (+) associations with frequency and walkability in SF. & EPA SLD; GTFS; NTD\\
+\textbf{Restaurant and leisure-facility density} & \loa & The attached document reports a positive (+) association with robotaxi trips in SF. The result does not separate the effects of $M$ and $p$. & Census CBP; OpenStreetMap\\
+\textbf{Age composition} & \loa; \rapid & Evidence on younger users in the attached document and conversation. Individual choice experiments do not readily establish a simple sign for age. & ACS B01001\\
+\textbf{Student share} & \rapid & Usage evidence from the Arlington campus pilot. Free-ride support for students must be considered. & ACS enrollment data; local student population\\
+\textbf{Education and technology affinity} & SAV choice-experiment and review literature from the previous conversation & Additional candidate. Educational attainment and technology affinity are different concepts; specific effects require confirmation. & ACS education data; technology-affinity surveys\\
+\textbf{Existing ride-hailing habits} & \wei; previous conventional ride-hailing studies & Habits and past use may be connected to adoption. Past usage is a proxy for habits. & Common surveys; past conventional ride-hailing usage data\\
+\textbf{Safety perceptions and exposure} & SAV studies from the previous conversation; Khan (2022) requires bibliographic and result verification & Candidate concerning perceived safety. Distinguish perceived safety from crash and crime exposure. & Safety surveys; crash and exposure data\\
+\textbf{Regulatory permission} & Feasibility information rather than a paper on demand effects & Operation is not possible unless permission requirements are met. Treat separately from preference effects. & Permits and operating conditions from the relevant authorities; NCSL\\
+\textbf{Climate and ODD} & Operating-feasibility conditions from the previous conversation & Compatibility between weather and the operating domain. Distinguish preference from service availability. & NOAA weather; operator ODD\\
+\textbf{Time since service launch} & \experience; launch and operation records & Candidate representing accumulated awareness and experience. The effect of elapsed time itself requires separate validation. & Company announcements; permit and launch records\\
+\end{longtable}}
+
+\section{Selection Criteria for the Driving Factors of $p$}
+{\small
+\begin{longtable}{@{}L{0.07\textwidth}L{0.72\textwidth}L{0.15\textwidth}@{}}
+\toprule No. & Criterion & Type\\\midrule\endfirsthead
+\toprule No. & Criterion & Type\\\midrule\endhead\bottomrule\endlastfoot
+0 & The dependent variable uses matching denominators, geographic boundaries, periods, and trip units & Before\\
+1 & Literature evidence relevant to $p$ and an interpretable rationale exist & Before + after\\
+2 & Measurable at the decision time for all candidate cities using the same definition and source & Before\\
+3 & Interpretable; minimize redundant variables; limit variable count according to sample size & Before\\
+4 & Measure shares, densities, or relative service conditions rather than city size & Before\\
+5 & Distinguish dependence on operating decisions and define the role in the model & Before\\
+6 & Candidate-city values match the range and service conditions of the training data & Before + after\\
+7 & No unexplained covariate-dependent patterns remain in the residuals after fitting & After\\
+8 & Data exist to estimate the response of $p$ to decision changes in a decision-dependent extension & When extending\\
+\end{longtable}}
+\subsection{Discussion of Each Criterion}
+\begin{enumerate}[start=0]
+\item \textbf{Consistent dependent variable.} Match the numerator and denominator of robotaxi trips/$M$. Choice probability between two taxi types differs from $p$ over all travel opportunities.
+\item \textbf{Literature evidence.} Distinguish actual robotaxi, SAV pilot, and conventional ride-hailing evidence. If signs differ, examine service and regional differences and defer selection.
+\item \textbf{Common measurement.} Use the same city boundaries, years, and variable definitions. Defer trust, safety perceptions, and similar variables without a common survey until data are available.
+\item \textbf{Parsimony.} Start with one representative variable for similar concepts. Consider the number of independent cities; use $n/10$ only as a conservative reference rule of thumb.
+\item \textbf{Variable form.} Population is the scale factor in $M$. For $p$, use zero-vehicle household share, facility density, relative fare, relative time, and similar measures.
+\item \textbf{Exogenous/endogenous distinction.} Label city characteristics as exogenous candidates and service conditions set by the operator or affected by decisions as endogenous candidates. Do not exclude a candidate solely because it is endogenous.
+\item \textbf{Transfer across cities.} Check whether district-level or other-country findings apply to candidate cities. Label values outside the training range as extrapolation.
+\item \textbf{Residual checks.} For $f(x)+\epsilon$, examine residuals; for $f(x)+Q(x)\epsilon$, examine standardized residuals divided by $Q(x)$. Check distributional patterns as well as the mean and spread.
+\item \textbf{Decision-dependent extension.} Changes in fare, fleet size, and other decisions must be accompanied by choice and service outcomes. If waiting time also responds to demand, account for that relationship jointly.
+\end{enumerate}
+
+\section{Applying the Criteria to the Candidates: $p$}
+The format matches the $M$ application table in the attached document: \textbf{variable / 1 / 2 / 3 / 4 / 5 / decision / reason and form of use}. Criterion 0 is a common prerequisite; 6, 7, and 8 require data and fitted results and will be checked later.
+
+\yes: applicable by design; \maybe: further confirmation; --: not applicable. The + and - signs under criterion 1 indicate the associations reported in the literature. Under criterion 5, Ex., En., Mix., and Sep. mean exogenous, endogenous, depends on the component, and separate condition, respectively. \textbf{Selection is preliminary and does not mean data validation is complete.}
+{\footnotesize
+\begin{longtable}{@{}L{\applywidth*\real{0.22}}*{4}{C{\applywidth*\real{0.04}}}C{\applywidth*\real{0.07}}C{\applywidth*\real{0.10}}L{\applywidth*\real{0.45}}@{}}
+\toprule Variable & 1 & 2 & 3 & 4 & 5 & Decision & Reason / form of use\\\midrule\endfirsthead
+\toprule Variable & 1 & 2 & 3 & 4 & 5 & Decision & Reason / form of use\\\midrule\endhead\bottomrule\endlastfoot
+Relative fare & - & \maybe & \yes & \yes & Mix. & Select & Own fare is endogenous; competing fare is an exogenous candidate. Use the fare difference for the same trip and incorporate it into the decision-dependent extension.\\
+Relative waiting time & - & \maybe & \yes & \yes & Mix. & Select & Own waiting time depends on fleet size and allocation. Compare with competing services and incorporate it into the decision-dependent extension.\\
+In-vehicle travel time & - & \maybe & \yes & \yes & Mix. & Defer & Traffic conditions are exogenous; the component affected by routes and operating policies is endogenous. Relative travel-time data require confirmation.\\
+Trust, price value, and usage habits & \maybe & \maybe & \maybe & \yes & Mix. & Defer & Common surveys are needed. Do not combine different concepts into one variable.\\
+Age and related knowledge & \maybe & \maybe & \maybe & \yes & Ex. & Partial & Merge age into age composition in C. Defer operating awareness and knowledge until survey data are checked.\\
+Reviews and in-vehicle support features & + & \maybe & \maybe & \yes & Mix. & Partial & Select support features as endogenous candidates. Defer reviews separately because they are an outcome of past usage.\\
+Robotaxi usage experience & \maybe & \maybe & \yes & \yes & Mix. & Defer & Check that experience predates the current decision. Do not directly replace individual experience with city service duration.\\
+Competitiveness of alternatives & \maybe & \maybe & \maybe & \yes & Ex. & Defer & Compare alternative fares, times, and availability. Check overlap with public transport and the walking environment.\\
+Share of zero-vehicle households & + & \yes & \yes & \yes & Ex. & Select & Share of households without vehicles. Directly explains constraints on the private-car alternative and is commonly measurable through ACS.\\
+Income & \maybe & \yes & \maybe & \yes & Ex. & Defer & Aggregate usage and choice experiments do not yield consistent effects. Add income or economic activity share one at a time and compare.\\
+Employment and economic activity & + & \yes & \maybe & \yes & Ex. & Defer & Specify either economic activity share or employment density. Check overlap with income.\\
+Population density & \maybe & \yes & \maybe & \yes & Ex. & Defer & Regional differences in effects. Check overlap with zero-vehicle households and public transport.\\
+Land-use mix and accessibility & \maybe & \maybe & \maybe & \yes & Ex. & Defer & Select one representative indicator and check how district measures are aggregated to cities.\\
+Public transport and walking environment & \maybe & \maybe & \maybe & \yes & Ex. & Defer & Substitution and complementarity coexist. Check overlap with alternative competitiveness and zero-vehicle households.\\
+Restaurant and leisure-facility density & + & \maybe & \yes & \yes & Ex. & Defer & Usage evidence from one city, SF. Examine after checking facility definitions and transfer across cities.\\
+Age composition & \maybe & \yes & \yes & \yes & Ex. & Select & Initially consider the share aged 18--34. Evidence exists on younger users, but the city-level sign must be checked later.\\
+Student share & \maybe & \maybe & \maybe & \yes & Ex. & Defer & Overlaps with age. Campus and student fare-support effects are mixed in.\\
+Education and technology affinity & \maybe & \maybe & \maybe & \yes & Mix. & Defer & Distinguish educational attainment from technology affinity. Direct surveys and supporting evidence require confirmation.\\
+Existing ride-hailing habits & \maybe & \maybe & \maybe & \yes & Mix. & Defer & Conventional ride-hailing data before the decision are needed. Distinguish past usage from attitudinal habits.\\
+Safety perceptions and exposure & \maybe & \maybe & \maybe & \yes & Mix. & Defer & Common safety surveys are needed. Distinguish post-choice satisfaction from crash and crime exposure.\\
+Regulatory permission & -- & \maybe & -- & -- & Sep. & Separate & Treat as an operating-feasibility condition rather than a choice-probability variable.\\
+Climate and ODD & \maybe & \maybe & \maybe & \yes & Mix. & Separate & Climate is exogenous. Assess ODD and service availability according to technical and operating conditions.\\
+Time since service launch & \maybe & \maybe & \yes & \yes & En. & Defer & Launch timing depends on operating decisions. Consider in an extension addressing the post-entry time path.\\
+\end{longtable}}
+
+\section{Preliminary Selection Results: Exogenous/Endogenous Labels}
+Two city characteristics and three decision-dependent service variables are identified as initial priorities. Endogenous service variables will be incorporated into the decision-dependent ER-DRO extension after criterion 8 is checked. The following distinction is based on dependence on operating decisions.
+{\footnotesize
+\begin{longtable}{@{}L{\fourwidth*\real{0.16}}L{\fourwidth*\real{0.30}}L{\fourwidth*\real{0.34}}L{\fourwidth*\real{0.20}}@{}}
+\toprule Variable & Supporting paper & Scope and results established in the paper & Measurement data\\\midrule\endfirsthead
+\toprule Variable & Supporting paper & Scope and results established in the paper & Measurement data\\\midrule\endhead\bottomrule\endlastfoot
+\textbf{Share of zero-vehicle households}\newline (exogenous) & \elk; \loa & Represents constraints on the private-car alternative. Use zero-vehicle households / all households. & ACS B08201\\
+\textbf{Age composition}\newline (exogenous) & \loa; \rapid & Represents age composition. Use population aged 18--34 / total population. Do not uniformly fix the sign for individual choice. & ACS B01001\\
+\textbf{Relative fare}\newline (own fare: endogenous) & \yin & Choice response to fare differences. Selected for a decision-dependent extension that changes own fare. & Fares of both services + choice outcomes\\
+\textbf{Relative waiting time}\newline (own waiting time: endogenous) & \yin & Choice response to waiting-time differences. Connect fleet size and allocation to waiting time. & Fleet, allocation, and waiting-time records + choice outcomes\\
+\textbf{In-vehicle support features}\newline (endogenous candidate) & \yin & Choice effects of destination changes, operator contact, and similar features. Retained for an operating extension that selects features. & Feature-specific choice data\\
+\end{longtable}}
+\textbf{Further consideration.} Income or economic activity share is the next additional candidate. Determine the number of variables based on observed city count and overlap. Treat competing-service fares and waiting times as exogenous candidates, but check the observation range. If fares and features are not decision variables in the current model, the endogenous labels indicate their roles in an extension.
+
+\textbf{Separate treatment.} Treat regulation as operating feasibility and climate/ODD as service availability. Defer trust, knowledge, experience, safety, and similar variables until common data are available. Consider elapsed service time in a post-entry extension.
+
+\textbf{Post-selection checks.} After gathering data, validate transfer across cities (6), residual patterns (7), and decision responses (8) to finalize selection. For $f(x)+Q(x)\epsilon$, do not automatically reject a variable because the original residuals are heteroscedastic; examine standardized residuals.
+
+\section{Remaining Tasks / Limitations}
+\begin{itemize}
+\item Estimating $p$ requires observed values ($y$), namely robotaxi trip-count data for city $c$.
+\item \textbf{Observed $p$ and demand $D$:} $p$ calculated from completed trips includes the effects of supply shortages. Using it directly as demand may underestimate unrealized demand. Adjustment using request/rejection data or an explicit assumption that supply constraints are small is needed.
+\item Further data checks are needed for the exogenous/endogenous variables of $p$.
+\end{itemize}
+\end{document}

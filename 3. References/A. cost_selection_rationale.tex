@@ -1,0 +1,144 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=19mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,multirow}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,xcolor}
+\usepackage{comment}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\newcommand{\evtitle}{Contextual Stochastic Optimization for Determining Electric Vehicle Charging Station Locations with Decision-Dependent Demand Learning}
+\newcommand{\boschtitle}{Cost-based analysis of autonomous mobility services}
+\newcommand{\fantitle}{Optimising fleet sizing and management of shared automated vehicle (SAV) services: A mixed-integer programming approach integrating endogenous demand, congestion effects, and accept/reject mechanism impacts}
+\newcommand{\zhangtitle}{Joint Fleet Sizing and Charging System Planning for Autonomous Electric Vehicles}
+\newcommand{\backtolist}{\par\smallskip\hyperlink{paper:list}{Back to the reference list}\par}
+\begin{document}
+\hypertarget{paper:list}{}
+\section*{References Used to Select Cost Components}
+Click a blue title in the Reference column to jump to the corresponding discussion below. The Link column opens the external source. Each paper is discussed only once.
+
+{\small\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{@{}p{0.11\linewidth}Yp{0.13\linewidth}@{}}
+\toprule
+Term & Reference & Link \\
+\midrule
+\multirow[t]{2}{*}{$F_cy_c$}
+& \hyperlink{paper:ev}{\evtitle\ (Sun, Yu, and Bayraksan)} & \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{SSRN} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:zhang}{\zhangtitle\ (Zhang et al., 2018 preprint)} & \href{https://arxiv.org/abs/1811.00234}{Source} \\
+\midrule
+\multirow[t]{4}{*}{$K_cq_c$}
+& \hyperlink{paper:ev}{\evtitle\ (Sun, Yu, and Bayraksan)} & \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{SSRN} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:bosch}{\boschtitle\ (B\"osch et al., 2018)} & \href{https://doi.org/10.1016/j.tranpol.2017.09.005}{DOI} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:fan}{\fantitle\ (Fan et al., 2023)} & \href{https://pure.tudelft.nl/ws/portalfiles/portal/166828610/1_s2.0_S0968090X23003881_main.pdf}{Source} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:zhang}{\zhangtitle\ (Zhang et al., 2018 preprint)} & \href{https://arxiv.org/abs/1811.00234}{Source} \\
+\midrule
+$c_c^+O_c^s$ & \hyperlink{assumption:idle}{No direct supporting reference confirmed: an additional assumption of this study} & --- \\
+\midrule
+\multirow[t]{3}{*}{$c_c^-U_c^s$}
+& \hyperlink{paper:ev}{\evtitle\ (Sun, Yu, and Bayraksan)} & \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{SSRN} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:fan}{\fantitle\ (Fan et al., 2023)} & \href{https://pure.tudelft.nl/ws/portalfiles/portal/166828610/1_s2.0_S0968090X23003881_main.pdf}{Source} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:bosch}{\boschtitle\ (B\"osch et al., 2018)} & \href{https://doi.org/10.1016/j.tranpol.2017.09.005}{DOI} \\
+\bottomrule
+\end{tabularx}}
+
+\textbf{How to read this document.} The labels [Structural adaptation], [Cost classification reference], and [Additional assumption of this study] distinguish the literature from this study's modeling choices. Inclusion in this list does not mean that the current numerical coefficients were taken from the cited papers.
+
+\textbf{Location of the EV paper.} In the project folder: \texttt{3. papers/3.contextual\_stochastic\_optimization/EV\_charging\_station.pdf}. Public version: \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{SSRN}. Published version: \href{https://doi.org/10.1016/j.trb.2026.103524}{DOI}.
+
+\newpage
+\hypertarget{paper:ev}{}
+\section*{1. \textcolor{blue}{\evtitle}}
+{\color{blue}Sun, H., Yu, X., and Bayraksan, G.\quad \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{SSRN}}
+
+\textbf{Brief summary.} This two-stage model determines whether to open EV charging stations and how many chargers to install under uncertain charging demand. Opening and installation costs are incurred in the first stage, while demand allocation and unmet demand are evaluated after demand is realized. Demand in the original paper depends on context and installation decisions; the current robotaxi baseline uses exogenous demand.
+
+\textbf{Components used in my model}
+\begin{itemize}
+\item \textbf{$F_cy_c$ --- [Structural adaptation].} The fixed opening cost $f_i y_i$ in \textcolor{blue}{Sec.~2.1, Eq.~(1a), PDF p.~7} provides the structural reference. It is adapted to represent city entry and basic infrastructure costs. Detailed monetary estimates for permits and launch preparation are not taken from this paper.
+\item \textbf{$K_cq_c$ --- [Structural adaptation].} The installation cost $b_i z_i$, proportional to the number of chargers in the same equation, provides the structural reference. It is adapted to represent preparation, deployment, and fixed upkeep costs proportional to fleet size. Specific vehicle costs are determined separately.
+\item \textbf{$c_c^-U_c^s$ --- [Structural adaptation / Additional assumption of this study].} The unmet-demand penalty $p_j s_j$ in \textcolor{blue}{Eq.~(2a), PDF p.~8} provides the structural reference. Interpreting this term as forgone contribution margin is a modeling choice of this study.
+\item \textbf{$c_c^+O_c^s$ --- [Additional assumption of this study].} There is no corresponding unused-capacity cost in \textcolor{blue}{Eqs.~(1)--(2)} of the original paper. The paper is not cited as direct support for this term.
+\end{itemize}
+\textbf{Scope of application.} The revenue term in the original paper is linked to demand. This is distinct from this study's interpretation in terms of contribution margin from completed trips. The paper's numerical costs are not used directly as robotaxi unit costs.
+\backtolist
+
+\hypertarget{paper:bosch}{}
+\section*{2. \textcolor{blue}{\boschtitle}}
+{\color{blue}B\"osch, P.~M., Becker, F., Becker, H., and Axhausen, K.~W. (2018). Transport Policy, 64, 76--91.}\quad \href{https://doi.org/10.1016/j.tranpol.2017.09.005}{DOI}
+
+\textbf{Brief summary.} This paper analyzes the individual cost components of autonomous mobility services. It distinguishes vehicle-related fixed costs from usage-dependent costs and compares cost structures across operating arrangements.
+
+\textbf{Components used in my model}
+\begin{itemize}
+\item \textbf{$K_cq_c$ --- [Cost classification reference].} The categories in \textcolor{blue}{Sec.~2 and Appendix B}, including acquisition, depreciation, insurance, and parking, inform the classification. Costs that are fixed per vehicle over the evaluation period are included in $K_c$. Depreciation is not automatically treated as entirely fixed.
+\item \textbf{Variable costs used to calculate $c_c^-$ --- [Cost classification reference].} Categories such as energy, mileage-dependent maintenance, and wear can inform the calculation. Subtracting these costs from fares to obtain contribution margin is this study's application of those categories.
+\end{itemize}
+\textbf{Scope of application.} Historical Swiss cost estimates are not transferred directly to the current target cities. The paper supports the cost classification; it is not the direct source of the entire objective function.
+\backtolist
+
+\newpage
+\hypertarget{paper:fan}{}
+\section*{3. \textcolor{blue}{\fantitle}}
+{\color{blue}Fan, Q., van Essen, J.~T., and Correia, G.~H.~de A. (2023). Transportation Research Part C, 157, 104398.}\quad \href{https://pure.tudelft.nl/ws/portalfiles/portal/166828610/1_s2.0_S0968090X23003881_main.pdf}{Source}
+
+\textbf{Brief summary.} This paper optimizes fleet size and operations from the perspective of an SAV operator's profit. It considers endogenous demand, congestion, and demand acceptance or rejection, and includes revenue, vehicle depreciation, operating costs, and delay penalties.
+
+\textbf{Components used in my model}
+\begin{itemize}
+\item \textbf{$K_cq_c$ --- [Structural adaptation / Cost classification reference].} The depreciation cost proportional to fleet size in \textcolor{blue}{Sec.~3.6, Eq.~(27), PDF pp.~12--13} provides a reference. The current $K_c$ also includes separately defined deployment and fixed upkeep costs per vehicle.
+\item \textbf{$c_c^-U_c^s$ --- [Additional assumption of this study].} The paper informs the operator perspective that evaluates revenue together with operating costs. The forgone contribution-margin coefficient is not a direct adoption of the paper's delay penalty. It is a separate interpretation that converts revenue and variable costs into an unmet-demand loss under exogenous demand.
+\end{itemize}
+\textbf{Scope of application.} The paper's distance-based operating costs are not included directly in $K_c$. Delayed service and entirely unmet demand are also distinct outcomes.
+\backtolist
+
+\hypertarget{paper:zhang}{}
+\section*{4. \textcolor{blue}{\zhangtitle}}
+{\color{blue}Zhang, H., Sheppard, C.~J.~R., Lipman, T.~E., and Moura, S.~J. (2018 preprint).}\quad \href{https://arxiv.org/abs/1811.00234}{arXiv:1811.00234}
+
+\textbf{Brief summary.} This paper jointly plans the fleet size and charging facilities for autonomous electric vehicles. It annualizes investment costs and accounts for electricity and maintenance costs associated with passenger transportation and vehicle relocation.
+
+\textbf{Components used in my model}
+\begin{itemize}
+\item \textbf{$F_cy_c$ --- [Cost classification reference / Additional assumption of this study].} Charging infrastructure investment costs in \textcolor{blue}{Sec.~III-A, Eq.~(11)} inform the selection of basic infrastructure costs. While the original paper determines facility capacity, the current model treats a predefined package of basic facilities as a fixed cost for each city. This is a separate simplifying assumption.
+\item \textbf{Time-period alignment of $F_c$ and $K_c$ --- [Structural adaptation].} The approach to expressing investment and operating costs over a consistent period provides a reference. Full investment costs and short-term operating costs should not be combined without justification.
+\end{itemize}
+\textbf{Scope of application.} Passenger time costs are not included in the current baseline, which adopts the company's perspective. Cost expressions should be reconsidered if facility expansion or vehicle relocation is introduced.
+\backtolist
+
+\newpage
+\hypertarget{assumption:idle}{}
+
+\begin{comment}
+\section*{5. Model Assumptions to Keep Separate from the Literature}
+\textbf{$c_c^+O_c^s$ --- [Additional assumption of this study / Under review]}
+
+No direct support for this term has been confirmed in the relevant formulations reviewed so far. Possible interpretations include an additional burden from unused reserved operating resources or the loss of alternative uses outside the model. These interpretations require both an assumption that such operating conditions exist and a justification for expressing the resulting loss in proportion to unused trip capacity.
+
+Lease payments, insurance, and fixed parking costs should not be included again if they are already covered by $K_c$. Forgone contribution margin in another candidate city should not be charged again if it is already captured by that city's $c_c^-U_c^s$. The economic interpretation remains unresolved. Experiments with $c_c^+=0$ can be compared with experiments using positive coefficients.
+
+\textbf{$c_c^-U_c^s$ --- [Additional assumption of this study: Contribution-margin interpretation]}
+
+Let completed trips be $T_c^s=D_c^s-U_c^s$, and let the contribution margin per trip be $m_c=r_c-v_c$, where $r_c$ is the fare and $v_c$ is the variable cost per trip.
+\[
+-m_cT_c^s=-m_cD_c^s+m_cU_c^s.
+\]
+When $D_c^s$ and $m_c$ are independent of the decisions, as in the current model, the first term is constant. Replacing the corresponding contribution-margin objective with an unmet-demand cost where $c_c^-=m_c$ preserves the optimal decisions, while shifting objective values by a constant. This relationship must be reconsidered if demand becomes decision-dependent.
+
+\textbf{Setting coefficient values}
+
+The justification for selecting a cost component and the source of its numerical value should be documented separately. This study does not claim that the current numbers were copied directly from the literature. Use empirical estimates or explicitly identified synthetic experimental values, and examine their sensitivity. Sunk costs already incurred independently of the deployment decision should not be charged again through $K_cq_c$.
+
+\textbf{Starting point of this record}\par
+This record builds on the cost-component selection material in the project folder (pp.~9--11), with the relevant sections and equations checked in the EV paper and the linked papers. It documents the rationale for cost selection; it does not imply that all coefficients have been empirically established.
+\backtolist
+
+\end{comment}
+
+\end{document}

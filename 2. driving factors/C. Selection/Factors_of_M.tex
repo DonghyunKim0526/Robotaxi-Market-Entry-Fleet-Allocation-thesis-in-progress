@@ -1,0 +1,234 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=20mm]{geometry}
+\usepackage{amsmath,amssymb,array,longtable,booktabs,calc,enumitem,tabularx}
+\usepackage{xurl,xcolor,mdframed}
+\usepackage[unicode,hidelinks]{hyperref}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\paper}[1]{\href{#1}{paper}}
+\newcommand{\yes}{\ensuremath{\bigcirc}}
+\newcommand{\maybe}{\ensuremath{\triangle}}
+\newcommand{\no}{\ensuremath{\times}}
+\newcommand{\note}{\textbf{Note.}\ }
+\newlength{\fw}\setlength{\fw}{\textwidth-6\tabcolsep}
+\newlength{\aw}\setlength{\aw}{\textwidth-14\tabcolsep}
+\begin{document}
+\begin{center}{\Large\bfseries Summary of the Process for Determining $M$}\end{center}
+\section{Summary}
+This document summarizes the process for determining a fixed $M$.
+
+Because the covariates originally considered for regression estimation of $M$ are also likely to affect $p$, $M$ is defined as the ``total potential market.'' Accordingly, $M_c$ is set as a fixed value (a city-specific constant) and calculated as city population $\times$ per-person trip generation. \textcolor{red}{The data will be examined before the detailed calculation method is designed; only guidelines are presented below.}
+
+\section{Previously Established Candidates}
+The following candidate driving factors have already been selected through data research in \texttt{B. Candidates/candidates\_(M,p)}.
+\subsection{Driving factors of $M$}
+The papers below mainly explain \textbf{observed ride-hailing usage}, so they do not include the `unrealized demand' included in the definition of $M$, making direct estimation impossible. However, I suppose the demand patterns provided by these papers lead to constructing `potential travel opportunities $M$' through modeling.
+{\footnotesize
+\begin{longtable}{@{}L{\fw*\real{0.16}}L{\fw*\real{0.32}}L{\fw*\real{0.30}}L{\fw*\real{0.22}}@{}}
+\toprule Variable & Supporting paper & Scope established in the paper & Measurement data\\\midrule\endfirsthead
+\toprule Variable & Supporting paper & Scope established in the paper & Measurement data\\\midrule\endhead\bottomrule\endlastfoot
+\textbf{Population and population density} & Elkhouly and Alhadidi, \textit{Ride-sharing Determinants} (\paper{https://arxiv.org/abs/2406.11590}); Zhang et al., \textit{Examining spatial heterogeneity\ldots} (\paper{https://arxiv.org/abs/2209.07980}) & Relationship of population and local density with conventional ride-hailing usage. Density effects may vary by area & \href{https://www.census.gov/programs-surveys/acs}{ACS}\\
+\textbf{Employment and economic activity} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Uses the economically active population and employment environment to explain usage & \href{https://lehd.ces.census.gov/data/}{LEHD/LODES}, ACS\\
+\textbf{Income} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Analyzes the relationship between income and usage in Chicago & \href{https://data.census.gov/table/ACSDT5Y2024.B19013}{ACS B19013}\\
+\textbf{Share of car-free households} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Analyzes the relationship between households without cars and usage & \href{https://data.census.gov/table/ACSDT1Y2022.B08201}{ACS B08201}\\
+\textbf{Land-use mix, accessibility, and commercial activity} & Zhang et al., \textit{Examining spatial heterogeneity\ldots} (\paper{https://arxiv.org/abs/2209.07980}) & Nonlinear and spatial differences in the urban environment and ridesourcing usage & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD}\\
+\textbf{Restaurant and leisure-facility density} & Loa, Lee, and Circella, \textit{Just another ride-hailing?} (\paper{https://link.springer.com/article/10.1007/s11116-026-10751-9}) & Relationship with \textbf{robotaxi trip counts in SF}. Does not separate the effects of $M$ and $p$ & \href{https://www.census.gov/programs-surveys/cbp.html}{Census CBP}, OpenStreetMap\\
+\textbf{Public transport and walking environment} & Zhang et al. (\paper{https://arxiv.org/abs/2209.07980}); Cats et al., \textit{Beyond the dichotomy\ldots} (\paper{https://doi.org/10.1371/journal.pone.0262496}) & Analyzes the local environment and travel-time competitiveness and substitutability with public transport. Not a uniform increase/decrease effect & EPA SLD, \href{https://gtfs.org/documentation/overview/}{GTFS}\\
+\textbf{Airport-related market size} & Zhang et al. (\paper{https://arxiv.org/abs/2209.07980}) & Analyzes airport travel as a separate spatial category. \textbf{Does not estimate the direct effect of airport passenger counts} & \href{https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger}{FAA passenger data}. Used as a proxy for market size\\
+\textbf{Time, day of week, and season} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Analyzes differences in usage over time. Specific variables such as holidays are selected through separate design & Dates and times in trip data\\
+\textbf{Weather} & Additional: Liu, Jiang, and Chen, \textit{Quantifying the impact of weather on ride-hailing ridership: Evidence from Haikou, China} (2021, \paper{https://doi.org/10.1016/j.tbs.2021.04.002}) & Analyzes the relationship between weather and ride-hailing usage. Effects in U.S. cities require revalidation & \href{https://www.ncei.noaa.gov/cdo-web/}{NOAA CDO}\\
+\end{longtable}}
+\note All variables investigated using data such as those in Elkhouly \& Alhadidi and Loa, Lee, \& Circella concern districts within particular cities; an assumption of transfer across cities is therefore required.
+
+%-------------------------------
+\newpage
+\section{Methods for Setting $M_c$ as a Constant}
+{\footnotesize
+\begin{longtable}{@{}L{0.17\textwidth}L{0.27\textwidth}L{0.21\textwidth}L{0.22\textwidth}C{0.06\textwidth}@{}}
+\toprule Method & Calculation of $M_c$ & Required data & Features & Selected?\\\midrule\endfirsthead
+\toprule Method & Calculation of $M_c$ & Required data & Features & Selected?\\\midrule\endhead\bottomrule\endlastfoot
+(a) Reference city + assumed $\beta$ & $\text{population}_c\times m_{\rm ref}$\newline $\displaystyle\times\prod_k\left(\frac{x_{c,k}}{x_{{\rm ref},k}}\right)^{\beta_k}$ & $M$ for one reference city & $\beta$ is assumed, so sensitivity analysis is essential & X\\
+(b) Estimate $\beta$ using district regression & Same as (a) & District-level data for the reference city & District-to-city transfer assumption required + $\beta$ is assumed, so sensitivity analysis is essential & X\\
+\textcolor{blue}{(c) Cross-classification of trip rates by population group} & \textcolor{blue}{$\displaystyle\sum_g\text{population}_{c,g}$\newline $\times$ (per-person trip rate of group $g$)} & \textcolor{blue}{Group-specific trip rates from NHTS (U.S. National Household Travel Survey) + city population composition from ACS} & \textcolor{blue}{Standard trip-generation method in transport planning. Applicable to all cities using the same definition, without regression} & \textcolor{blue}{O}\\
+\end{longtable}}
+
+\begin{mdframed}[linecolor=red,linewidth=0.6pt,innerleftmargin=8pt,innerrightmargin=8pt]
+\color{gray}
+\section{If (a) or (b) Is Selected}
+For (a) and (b), estimate $\beta$, then calculate $M_c$ once by substituting each candidate city's $x_c$ and population into the equation.
+
+\textcolor{red}{\textbf{However, $M_c$ calculated in this way defines overall ride-hailing. Applying it to the previously defined potential market $M_c$ requires a transfer assumption.}}
+\[
+M_c=\text{population}_c\times m_{\rm ref}\times\prod_k\left(\frac{x_{c,k}}{x_{{\rm ref},k}}\right)^{\beta_k}
+\]
+\begin{itemize}
+\item $m_{\rm ref}$: ride-hailing trips per person in the reference city (e.g., Chicago).
+\item $\beta_k$: percentage increase in per-person trips when variable $k$ increases by 1\% (elasticity).
+\item Methods for determining $\beta$:
+\end{itemize}
+{\footnotesize
+\begin{longtable}{@{}L{0.21\linewidth}L{0.39\linewidth}L{0.34\linewidth}@{}}
+\toprule Method & Description & Features\\\midrule\endhead\bottomrule\endlastfoot
+(a) Assume $\beta=1$ & Equal weights for all variables & Simple, but sensitivity experiments on $\beta$ are essential\\
+(b) Estimate from districts within the reference city & District trips in Chicago TNP data + district variables in ACS; regress $\log(\text{trips}/\text{population})=a+\sum_k\beta_k\log x_k$ & Many observations satisfy the $n/10$ rule of thumb. A district-to-city transfer assumption is required\\
+\end{longtable}}
+\subsection{Selection Criteria for the Driving Factors of $M$}
+{\footnotesize
+\begin{longtable}{@{}L{0.06\linewidth}L{0.73\linewidth}L{0.15\linewidth}@{}}
+\toprule No. & Criterion & Type\\\midrule\endhead\bottomrule\endlastfoot
+1 & Literature reports an association with ride-hailing usage with a consistent sign; exclude or explain if the estimated sign differs & Before + after\\
+2 & Available at the decision time for all candidate cities from the same source, with the same definition and geographic unit & Before\\
+3 & Interpretable; number of variables $\le n/10$; one per concept & Before\\
+4 & Scale-independent ratios (per person, area, or household); separate population as the scale factor & Before\\
+5 & Independent of decision $q$ (exogenous) & Before\\
+6 & Candidate-city values lie within the training-data range & Before\\
+7 & After fitting, residuals exhibit no pattern with respect to $x$ (zero mean, constant spread) & After\\
+\end{longtable}}
+\subsection{Discussion of Each Criterion}
+\begin{enumerate}
+\item \textbf{Variables with a consistently signed association in the literature}
+\begin{itemize}
+\item Meaning: exclude variables whose interpretation is ambiguously positive or negative, because interpretation becomes difficult. [Post-estimation validation] Even if the interpretation has a consistent direction, exclude or explain a fitted sign that differs from the literature.
+\item Caution: the factors in the reviewed literature concern ``observed ride-hailing usage,'' not the total potential market $M$. They cannot be declared to ``definitely affect $M$.'' Describe selected variables as associated with ride-hailing usage and explicitly state transfer to $M$ as an assumption.
+\end{itemize}
+\item \textbf{Variables with data available for all candidate cities}
+\begin{itemize}
+\item (1) Same source and definition (e.g., ACS five-year estimates); (2) same geographic unit (city boundary vs. metropolitan area vs. service area must not be mixed); (3) values already available at the decision time (no future data).
+\end{itemize}
+\item \textbf{Interpretable variables}
+\begin{itemize}
+\item Select variables that reveal ``which context determines entry.'' Avoid selecting many correlated variables where possible (e.g., density, zero-vehicle households, public transport).
+\end{itemize}
+\item \textbf{Scale-independent ratios}
+\begin{itemize}
+\item Density is per area, income is per household, and airport passengers are per person, so not all measures are ``per person.'' Population itself is not a covariate but the scale factor in $M=\text{population}\times(\text{per-person rate})$. The precise rule is that if the dependent variable is trips per person, the covariates should also be ratios.
+\end{itemize}
+\item \textbf{Exogenous variables}
+\begin{itemize}
+\item Variables that do not change with decision $q$. For example, ``past ride-hailing usage'' generally passes on the $M$ side, but using it as a covariate maximizes predictive power without explaining ``why.''
+\end{itemize}
+\item \textbf{Candidate-city values within the training range}
+\begin{itemize}
+\item Outside the range, $\hat f(x_c)$ becomes extrapolation and the prediction error in Kannan's Assumption 2 increases.
+\end{itemize}
+\item \textbf{Covariates unrelated to residuals}
+\begin{itemize}
+\item This is a post-fitting check. In OLS, correlation between included covariates and residuals is automatically zero, so that criterion cannot filter anything. The intended condition is Kannan's assumption that the residual distribution does not vary with $x$: zero mean and homoscedasticity. Check using residual plots or heteroscedasticity tests. If violated, transform the dependent variable into a ratio or log (the role of criterion 4) or add an omitted variable. Read this criterion as ``check after selection: residuals must show no pattern with $x$; otherwise transform or add variables.''
+\end{itemize}
+\end{enumerate}
+\subsection{Applying the Criteria to the Candidates: $M$}
+\subsection{Application Table}
+The following applies criteria 1--5 to each variable in the driving-factor table. Criteria 6 and 7 require data and regression and are therefore left for later. Decisions have three levels: select / defer (decide after checking data and signs) / exclude. A + under criterion 1 is the sign established in the paper; ``check'' indicates that no sign was recorded in the table and the original paper must be consulted again.
+{\scriptsize
+\setlength{\aw}{\linewidth-14\tabcolsep}
+\begin{longtable}{@{}L{\aw*\real{0.22}}*{5}{C{\aw*\real{0.045}}}C{\aw*\real{0.10}}L{\aw*\real{0.455}}@{}}
+\toprule Variable & 1 & 2 & 3 & 4 & 5 & Decision & Reason / form of use\\\midrule\endfirsthead
+\toprule Variable & 1 & 2 & 3 & 4 & 5 & Decision & Reason / form of use\\\midrule\endhead\bottomrule\endlastfoot
+Population & -- & \yes & \yes & \no & \yes & Separate & A scale factor rather than a covariate. Place it as the multiplier in $M=\text{population}\times\hat f(x)$ (criterion 4).\\
+Population density & \maybe & \yes & \yes & \yes & \yes & Defer & The table says ``Density effects may vary by area.'' Check Zhang et al. to determine whether magnitude differs or the sign reverses. If both remain, examine correlation with zero-vehicle household share and reconsider under criterion 3 (one per concept).\\
+\textcolor{blue}{Employment / economic activity} & + & \yes & \yes & \yes & \yes & Select & Elkhouly \& Alhadidi: economic activity share is significant and positive. LEHD/LODES and ACS cover all cities. Use jobs per person or economic activity share. Check correlation with income (3.3).\\
+\textcolor{blue}{Income} & + & \yes & \yes & \yes & \yes & Select & Elkhouly \& Alhadidi: median income is significant and positive. ACS B19013 covers all cities. Household median income (a per-household value). Evidence is from one city (Chicago districts), so post-estimation city-level sign checks are essential.\\
+\textcolor{blue}{Share of car-free households} & + & \yes & \yes & \yes & \yes & Select & Elkhouly \& Alhadidi: zero-vehicle household share is significant and positive. ACS B08201 covers all cities. Already a household share, naturally satisfying criterion 4. Most direct interpretation: no car implies ride-hailing demand.\\
+Land-use mix / accessibility & \textcolor{red}{Check} & \yes & \maybe & \yes & \yes & Defer & The table says ``Nonlinear and spatial differences.'' Nonlinearity may still be monotonic (constant sign), so check Zhang et al. As an index, interpretation is indirect (criterion 3: \maybe).\\
+Restaurant / leisure density & \maybe & \yes & \yes & \yes & \yes & Defer & Evidence concerns robotaxi trips in one city, SF, without separating $M$ and $p$. CBP data are available. Reconsider as a $p$ candidate.\\
+Public transport / walking & \no & \yes & \yes & \yes & \yes & Exclude & The table says ``Not a uniform increase/decrease effect'' (both substitution and complementarity). Fails criterion 1.\\
+Airport-related market size & \no & \yes & \yes & \yes & \yes & Defer & ``Does not estimate the direct effect''; a proxy. Airport passengers per person could be used, but criterion 1 is not met. If included, label as a proxy and use only in sensitivity analysis.\\
+Time / day of week / season & -- & \yes & \no & -- & \yes & Exclude & Temporal rather than city characteristics. Averaged out in annual entry decisions. Consider only one year trend.\\
+Weather & \maybe & \yes & \no & -- & \yes & Exclude & Evidence is from Haikou, China, and needs U.S. validation (criterion 1 uncertain). As a temporal variable, averaged out in annual decisions.\\
+\end{longtable}}
+\subsection{Further Consideration: (1) Correlation between Variables (2) Unit of Analysis}
+\textbf{(i) Correlation between economic activity share and income.} The two are usually positively correlated but not identical: a university city may have high economic activity and low income, while a city with many retirees may show the reverse. The paper included both in the same spatial regression and reported both significant, suggesting distinct information at the Chicago district level. This must be checked again in our city-level data: inspect correlation coefficients and VIF; if correlation is high (e.g., $|r|>0.7$ or VIF $>5$), retain only one under criterion 3 (one per concept). Priority: zero-vehicle household share (most direct interpretation) $>$ either income or economic activity share.
+
+\textbf{(ii) Transfer of the unit of analysis.} The paper uses spatial regression of districts within one city, Chicago (community areas or census tracts: check the original paper). We intend to use city-level observations. Relationships between districts within a city are not guaranteed to hold between cities; aggregation may change the relationship. Label the criterion-1 evidence as ``district-level evidence,'' assume city-level transfer explicitly, and supplement it with criterion-1 post-estimation validation (recheck signs using city-level data). Between-city income comparisons also incorporate cost-of-living differences, so consider regional price adjustment or relative values.
+\subsection{Preliminary Selection Results}
+\begin{itemize}
+\item \textbf{Select (3, signs established):} \textcolor{blue}{economic activity share (or jobs per person), median household income, zero-vehicle household share.} The dependent variable is ride-hailing trips per person, with population separated as the scale factor. Reduce a highly correlated pair to one variable (3.3).
+\item \textbf{Defer (4):} density; land-use mix (check sign reversal); restaurant/leisure-facility density (consider moving to $p$ candidates); airport passengers (proxy, sensitivity analysis only).
+\item \textbf{Exclude (3):} public transport/walking environment; time/day of week/season; weather.
+\end{itemize}
+\subsection{Conclusion on Methods (a) and (b)}
+\begin{itemize}
+\item The selected covariates (economic activity share or jobs per person, median household income, and zero-vehicle household share) may be more likely to affect whether ride-hailing is chosen ($p$) than $M$.
+\item As discussed in 4.5, correlations between variables and the district-to-city transfer assumption require separate consideration.
+\end{itemize}
+\end{mdframed}
+
+\section{If (c) Is Selected}
+\textcolor{blue}{$M_c$ is constructed from NHTS group-specific per-person trip rates $\times$ city populations. This method produces a fixed value for every candidate city using the same definition, without regression.}
+
+\textcolor{red}{The detailed calculation procedure will be revisited after examining the actual data. Only methodological guidelines are described below.}
+\subsection{Required Data}
+{\footnotesize
+\begin{longtable}{@{}L{0.21\textwidth}L{0.37\textwidth}L{0.36\textwidth}@{}}
+\toprule Required item & Source (link) & Notes\\\midrule\endhead\bottomrule\endlastfoot
+Group-specific per-person trip rate $r_g$ & NHTS (FHWA National Household Travel Survey) public microdata (household, person, trip files): \href{https://nhts.ornl.gov/downloads}{nhts.ornl.gov/downloads} & Respondents record a one-day travel diary. Includes household vehicle count, income bracket, household size, age, city-size categories, and travel modes. The 2017 survey is large, about 130,000 households including state add-ons; 2022 has a much smaller sample, requiring care when setting cell counts.\\
+City population by group $N_{c,g}$ & ACS five-year estimates (available for all geographic units): \href{https://www.census.gov/programs-surveys/acs}{census.gov/programs-surveys/acs} & For combinations of two or more variables absent from standard tables, aggregate ACS PUMS microdata directly (PUMA units with population $\ge100{,}000$).\\
+City population (scale factor) & ACS B01003 or Census & \\
+Local household travel survey for validation & MPO data, e.g., Chicago CMAP \href{https://www.cmap.illinois.gov/}{cmap.illinois.gov}, New York NYMTC \href{https://www.nymtc.org/}{nymtc.org} & Compare total trips to assess error size.\\
+\end{longtable}}
+\note Links are current as of writing. Change the year suffix of table identifiers (e.g., ACSDT5Y2022 for B08201) to match the ACS year used.
+
+\note ACS table search: \href{https://data.census.gov/}{data.census.gov}.
+
+\note ACS table examples: \href{https://data.census.gov/table/ACSDT5Y2022.B08201}{B08201} (household size $\times$ vehicles available), \href{https://data.census.gov/table/ACSDT5Y2022.B19001}{B19001} (household income brackets), \href{https://data.census.gov/table/ACSDT5Y2022.B01001}{B01001} (age).
+
+\note Cross-tabulation through ACS PUMS: \href{https://www.census.gov/programs-surveys/acs/microdata.html}{census.gov/programs-surveys/acs/microdata}.
+
+\note Aggregation tool: \href{https://data.census.gov/mdat/}{data.census.gov/mdat}.
+
+\note Both are public datasets applicable to all candidate cities using the same definition, satisfying criterion 2 (same source, definition, and geographic unit). However, public NHTS files do not directly identify cities (only states, city-size categories, and some metropolitan-area codes). Thus the method multiplies ``national group-specific trip rates,'' rather than ``city-specific trip rates,'' by each city's population composition. This is the core of cross-classification.
+
+\subsection{Procedure}
+\begin{enumerate}
+\item \textbf{Define groups $g$.} Household vehicle count and income best distinguish trip generation in transport planning and overlap with the initial covariate selection for $M_c$.
+\item \textbf{Calculate $r_g$ from NHTS.} Divide the trip file by group and use weights to calculate annual trips per person for group $g$.
+\item \textbf{Obtain $N_{c,g}$ from ACS.} Obtain group populations for each candidate city. Vehicle count $\times$ income is absent from standard tables, so aggregate by PUMA from PUMS and combine into cities. If records are household-level, multiply by household size to obtain person counts.
+\item \textbf{Multiply and sum.} All candidate cities use the same $r_g$, so differences between cities arise only from population size and composition.
+\[
+M_c=\sum_{g\in G}N_{c,g}r_g.
+\]
+Separating population as the scale factor gives
+\[
+M_c=\text{population}_c\times\sum_{g\in G}\pi_{c,g}r_g,
+\qquad \pi_{c,g}=\frac{N_{c,g}}{\text{population}_c}
+\quad\text{(group share in city }c\text{)}.
+\]
+Thus $\bar r_c=\sum_g\pi_{c,g}r_g$ is city $c$'s ``composition-weighted per-person trip rate.''
+\item \textbf{Validate.} Compare total trips with local MPO household travel surveys where available (e.g., Chicago CMAP, New York NYMTC) to assess error size, then use that size as the sensitivity range for $M$.
+\[
+e_c=\frac{M_c-M_c^{\rm MPO}}{M_c^{\rm MPO}},
+\qquad \text{sensitivity range: }M_c\times\left(1\pm\max_{c'}|e_{c'}|\right).
+\]
+\end{enumerate}
+\subsection{Example}
+{\small
+\begin{longtable}{@{}L{0.31\textwidth}L{0.24\textwidth}L{0.23\textwidth}L{0.16\textwidth}@{}}
+\toprule Group $g$ (vehicles $\times$ income) & $r_g$ (annual trips per person) & City A population $N_{A,g}$ & $N_{A,g}\times r_g$\\\midrule\endhead\bottomrule\endlastfoot
+0 vehicles $\times$ low income & 900 & 60,000 & 54.0M\\
+0 vehicles $\times$ middle/high income & 1,000 & 40,000 & 40.0M\\
+1 vehicle $\times$ low income & 1,100 & 150,000 & 165.0M\\
+1 vehicle $\times$ middle/high income & 1,250 & 250,000 & 312.5M\\
+2+ vehicles $\times$ all & 1,350 & 500,000 & 675.0M\\\midrule
+Total & & 1,000,000 & $M_A=$\newline $1{,}246.5\mathrm{M}$\\
+\end{longtable}}
+\subsection{Definitions to Establish in Advance}
+\begin{itemize}
+\item \textbf{Which trips count as ``usage opportunities''?} Including all person trips makes $M$ very large and $p$ very small. A trip such as a 300 m walk is not an opportunity to substitute a robotaxi, so one option is to restrict the definition to, for example, ``non-walking trips beyond a certain distance.'' NHTS includes trip distance and mode, allowing this filter.
+\item \textbf{Geographic unit.} A robotaxi service area is part of a metropolitan area rather than an entire city. Fix one unit among city (place) boundaries, counties, and CBSAs, and extract ACS at the same unit (criterion 2).
+\item \textbf{Year.} The unit period is set to one year. Examine data from the same year and ensure an adequate sample size.
+\end{itemize}
+\subsection{Limitations}
+\begin{itemize}
+\item Group-specific trip rates are assumed nationally common, so city characteristics such as density and public transport are reflected only through population composition. To add further city effects, combine with (c) district regression.
+\item Small NHTS samples per cell make $r_g$ unstable. Options include reducing the number of cells or using the larger 2017 sample.
+\item The observed $p$ must be measured as ``robotaxi trips/$M_c$'' within the same geographic unit to align denominators. City-specific robotaxi trip-count data require separate verification.
+\end{itemize}
+\end{document}

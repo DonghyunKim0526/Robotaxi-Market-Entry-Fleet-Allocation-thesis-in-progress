@@ -1,0 +1,451 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage{kotex}
+\usepackage{comment}
+\usepackage{framed}
+\usepackage{textcomp}\usepackage{lmodern,amsmath,amssymb,array,tabularx,booktabs,xcolor,enumitem}
+\usepackage{algorithm} \usepackage{algpseudocode}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\newcommand{\hd}[1]{\par\vspace{8pt}\textbf{#1}\par\vspace{3pt}}
+\newcommand{\circnum}[1]{\textcircled{\scriptsize #1}}
+\newcommand{\note}{\textreferencemark\ }
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\under}[2]{\underbrace{#1}_{\text{#2}}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{ER-DRO model (with CVaR-type ambiguity set)}
+%(\circnum{3}의 구현식)}
+
+데이터: $(y^s,x^s)$, $s\in S$ --- 예를 들어 도시$\cdot$연도별 관측 선택확률 $y^s$와 도시 특성 $x^s$. 관측 하나가 시나리오 하나이므로 $S$는 관측 번호의 집합이다.
+회귀로 $\hat f$와 잔차 $\hat\varepsilon^{\,s}=y^s-\hat f(x^s)$를 얻고(4.A), 후보 도시 $c$의 특성 $x_c$로 시나리오 $D_c^{\,s}$를 만든다(4.B).
+
+\[
+\boxed{\begin{aligned}
+\min_{y,\,q,\,O,\,U,\,\tau,\,w}\quad
+&\under{\sum_{c} F_c y_c}{Entry costs}
++\under{\sum_{c} K_c q_c}{Vehicle costs}
++\under{\tau+\frac{1}{|S|(1-\zeta)}\sum_{s\in S} w^{s}}{CVaR of scenario penalties}
+\end{aligned}}
+\]
+
+\note baseline의 $\frac{1}{|S|}\sum_s H(q,D^s)$ 자리가 $\tau+\frac{1}{|S|(1-\zeta)}\sum_s w^s$로 바뀐 것, where $H(q,D^s) = c^+_cO_c^{\,s}+c^-_cU_c^{\,s}$. 컨텍스트 $x_c$는 시나리오 값 $D_c^{\,s} = M_c\,p_c^{\,s}$에만 들어가고 최적화 구조는 그대로.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Constraints}
+
+\[
+\boxed{\begin{aligned}
+w^{s}\ \ge\ \sum_{c}\big(c^+_cO_c^{\,s}+c^-_cU_c^{\,s}\big)-\tau &\qquad\forall s\in S,\\
+\kappa_cq_c-D_c^{\,s}=O_c^{\,s}-U_c^{\,s} &\qquad\forall c\in C,\ s\in S,\\
+0\le q_c\le\bar q_c\,y_c &\qquad\forall c\in C,\\
+\textstyle\sum_{c\in C} q_c\le Q, &\\
+y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0} &\qquad\forall c\in C,\\
+O_c^{\,s},\ U_c^{\,s}\ge0 &\qquad\forall c\in C,\ s\in S,\\
+w^{s}\ge0 \quad\forall s\in S,\qquad \tau\in\mathbb R. &
+\end{aligned}}
+\]
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.36\linewidth}Y@{}}
+\toprule
+Constraint & Meaning \\ \midrule
+$0\le q_c\le\bar q_c y_c$ & Zero vehicles if the city is not entered; up to the city-specific limit if it is entered \\
+$\sum_c q_c\le Q$ & Total vehicle limit \\
+$\kappa_c q_c-D_c^{\,s}=O_c^{\,s}-U_c^{\,s}$ & The difference between service capacity and robotaxi demand equals unused capacity minus unmet demand. \\
+\textcolor{blue}{$w^{s}\ge\sum_c(c^+_cO_c^{\,s}+c^-_cU_c^{\,s})-\tau$, $w^{s}\ge0$} & 시나리오 $s$의 벌금이 문턱 $\tau$를 넘은 양. 최적화가 $w^{s}$를 가장 작게 잡으므로 \textcolor{blue}{$w^{s}=(\text{벌금}^{s}-\tau)^+$}가 된다. \\
+\bottomrule
+\end{tabularx}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Notation}
+
+\subsection{textbf{Contextual + DRO에서 추가되는 기호}}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.13\linewidth}>{\raggedright\arraybackslash}p{0.40\linewidth}Y@{}}
+\toprule
+Symbol & Meaning & Type and unit \\ \midrule
+$(y^s,x^s)$ & 관측 $s$의 종속변수(선택확률)와 공변량 & Data; $s\in S$ \\
+$x_c$ & 후보 도시 $c$의 특성(공변량) 벡터 & Input; Kannan의 새 관측 $x$에 해당 \\
+$\hat f$ & 회귀함수 추정치 $\hat f(x)\approx\mathbb E[y\mid x]$ & Estimated function \\
+$\hat\varepsilon^{\,s}$ & 잔차 $y^s-\hat f(x^s)$ & Derived; $p$ 척도 \\
+$\zeta$ & CVaR형 모호집합의 반경(꼬리 비율). $1-\zeta$ = 최악 그룹으로 남기는 시나리오 비율 & Input; $[0,1)$ \\
+$\tau$ & 벌금 문턱. 결정변수이며 최적해에서 ``$|S|(1-\zeta)$번째로 큰 벌금'' & Decision variable; currency \\
+$w^{s}$ & 시나리오 $s$의 벌금이 $\tau$를 넘은 양 & Decision variable; currency \\
+\bottomrule
+\end{tabularx}
+}
+
+%---------------------------------------------------
+\newpage
+\subsection{\textbf{Baseline 기호}}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.1\linewidth}>{\raggedright\arraybackslash}p{0.37\linewidth}Y@{}}
+\toprule
+Symbol & Meaning & Type and unit \\ \midrule
+$C$ & Set of potential candidate cities & Input set; cities \\
+$S$ & Set of demand scenarios & Input set; scenarios. 여기서는 회귀 데이터 관측 번호의 집합, $|S|$ = 관측치 수 \\
+$y_c$ & 1 if city $c$ is entered, else 0 & Decision variable; binary (0 or 1) \\
+$q_c$ & Number of vehicles deployed in city $c$ & Decision variable; vehicles (integer) \\
+$\kappa_c$ & Number of trips one vehicle can serve during the period & Scale parameter; trips/vehicle over the evaluation period \\
+$Q$ & Total number of vehicles available for deployment & Input parameter; vehicles \\
+$\bar q_c$ & Upper bound on vehicle deployment in each city & Input parameter; vehicles \\
+$F_c$ & Fixed cost of city entry and basic infrastructure & Input parameter; currency over the evaluation period \\
+$K_c$ & Per-vehicle preparation, deployment, and holding cost over the evaluation period & Input parameter; currency/vehicle over the evaluation period \\
+$c_c^{+}$ & Additional loss per unit of unused service capacity & Input parameter; currency/trip of unused capacity \\
+$c_c^{-}$ & Foregone contribution margin per unit of unserved potential demand & Input parameter; currency/unserved trip \\
+$M_c$ & Total number of \textbf{potential travel opportunities across all modes}
+in city $c$ during one year & Input parameter; usage opportunities over the evaluation period. data or assumption \\
+
+\textcolor{blue}{$p_c^s$} & \textcolor{blue}{Probability of choosing robotaxi service for a travel opportunity
+in city $c$} & \textcolor{blue}{Derived input (회귀에서 생성); dimensionless probability in $[0,1]$. $p_c^s=\operatorname{proj}_{[0,1]}(\hat f(x_c)+\hat\varepsilon^{\,s})$} \\
+
+$D_c^s$ & Robotaxi choice demand & Derived input; trips over the evaluation period. $D_c^s=M_cp_c^s$ \\
+$O_c^s$ & Unused service capacity & Outcome variable; trips over the evaluation period. $O_c^s=(\kappa_cq_c-D_c^s)^+$ \\
+$U_c^s$ & Unserved robotaxi demand & Outcome variable; trips over the evaluation period. $U_c^s=(D_c^s-\kappa_cq_c)^+$ \\
+\bottomrule
+\end{tabularx}
+}
+
+%------------------------------------------------
+\section{Explanations}
+
+\subsection{contextual demand를 반영한 CVaR 방식의 식 전개}
+
+\textbf{A. 정의.}
+\begin{itemize}[leftmargin=1.5em]
+\item $H(q,D^s)$: 시나리오 $s$의 2단계 비용(문서 맨 위 Common second stage).
+\[
+H(q,D^s)=\min_{O^s,\,U^s\ge0}\ \sum_{c}\big(c_c^{+}O_c^{\,s}+c_c^{-}U_c^{\,s}\big)
+\quad\text{s.t.}\quad \kappa_cq_c-D_c^{\,s}=O_c^{\,s}-U_c^{\,s}\ \ \forall c,
+\]
+최적해에서 $O_c^{\,s}=(\kappa_cq_c-D_c^{\,s})^+$, $U_c^{\,s}=(D_c^{\,s}-\kappa_cq_c)^+$이므로
+$H(q,D^s)=\sum_c\big[c_c^{+}(\kappa_cq_c-D_c^{\,s})^+ + c_c^{-}(D_c^{\,s}-\kappa_cq_c)^+\big]$.
+\item $w^{s}$: 시나리오 $s$의 벌금이 문턱 $\tau$를 넘은 양. 최적해에서 $w^{s}=\big(H(q,D^s)-\tau\big)^+$.
+
+\item $D_c^{\,s}(x_c) = D_c^{\,s}=M_c\,p_c^{\,s} = M_c\,\operatorname{proj}_{[0,1]}\big(\hat f(x_c)+\hat\varepsilon^{\,s}\big), \qquad D^s=\big(D_1^{\,s},\,D_2^{\,s},\,\dots,\,D_{|C|}^{\,s}\big)$
+\item $\hat P^{\mathrm{ER}}_n(x)=\frac{1}{|S|}\sum_{s\in S}\delta_{D^s(x)},\qquad
+\hat{\mathcal P}_n(x)=\Big\{\textstyle\sum_s p_s\delta_{D^s(x)}:\ p\in\mathfrak P_n(x;\zeta)\Big\}$
+
+\end{itemize}
+
+
+\textbf{B. 사슬.} Kannan의 논문으로부터 정의된 Residuals-based DRO formulation $\min_{z\in\mathbb Z}\Big[\sup_{Q\in\hat{\mathcal P}_n(x)}\mathbb E_{Y\sim Q}[c(z,Y)]\Big]$에서 결정 $z=(y,q)$를 고정하고 내부 $\sup$부터 전개한다. 
+
+\begin{align*}
+\sup_{Q\in\hat{\mathcal P}_n(x)}\mathbb E_{Y\sim Q}[c(z,Y)]
+&\overset{(a)}{=}\sup_{p\in\mathfrak P_n(x;\zeta)}\sum_{s\in S}p_s\,c(z,D^s(x))\\
+&\overset{(b)}{=}\sum_cF_cy_c+\sum_cK_cq_c+\sup_{p\in\mathfrak P_n}\sum_{s\in S}p_s\,H(q,D^s)\\
+&\overset{(c)}{=}\sum_cF_cy_c+\sum_cK_cq_c+\min_{\tau\in\mathbb R}\Big[\tau+\frac{1}{|S|(1-\zeta)}\sum_{s\in S}\big(H(q,D^s)-\tau\big)^+\Big]\\
+&\overset{(d)}{=}\sum_cF_cy_c+\sum_cK_cq_c+\min_{\tau,\,w}\Big\{\tau+\frac{1}{|S|(1-\zeta)}\sum_{s\in S}w^{s}
+\ :\ w^{s}\ge H(q,D^s)-\tau,\ w^{s}\ge0\ \ \forall s\Big\}\\
+&\overset{(e)}{=}\sum_cF_cy_c+\sum_cK_cq_c+\min_{\tau,\,w,\,O,\,U}\Big\{\tau+\frac{1}{|S|(1-\zeta)}\sum_{s\in S}w^{s}
+\ :\ w^{s}\ge\sum_c\big(c_c^{+}O_c^{\,s}+c_c^{-}U_c^{\,s}\big)-\tau,\\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\ \ \kappa_cq_c-D_c^{\,s}=O_c^{\,s}-U_c^{\,s},\ \ w^{s},O_c^{\,s},U_c^{\,s}\ge0\ \ \forall c,s\Big\}.
+\end{align*}
+
+마지막으로 바깥의 $\min_{y,q}$를 씌우면 $\min_{y,q}\min_{\tau,w,O,U}=\min_{y,q,O,U,\tau,w}$로 합쳐져
+\begin{align*}
+\text{(f)}\quad \min_{y,\,q,\,O,\,U,\,\tau,\,w}\ &\sum_cF_cy_c+\sum_cK_cq_c+\tau+\frac{1}{|S|(1-\zeta)}\sum_{s\in S}w^{s}\\
+\text{s.t.}\ &w^{s}\ge\sum_c\big(c_c^{+}O_c^{\,s}+c_c^{-}U_c^{\,s}\big)-\tau,\quad w^{s}\ge0\qquad\forall s\in S,\\
+&\kappa_cq_c-D_c^{\,s}=O_c^{\,s}-U_c^{\,s},\quad O_c^{\,s},U_c^{\,s}\ge0\qquad\forall c\in C,\ s\in S,\\
+&0\le q_c\le\bar q_cy_c,\quad \textstyle\sum_cq_c\le Q,\quad y_c\in\{0,1\},\ q_c\in\mathbb Z_{\ge0},\ \tau\in\mathbb R,
+\end{align*}
+
+
+\textbf{C. 각 등호가 성립하는 이유.}
+\begin{itemize}[leftmargin=1.5em]
+\item (a) 같은 지지집합형이므로 $Q=\sum_sp_s\delta_{D^s}$이고 기대값은 가중합.
+\item (b) $c(z,D^s)=\sum_cF_cy_c+\sum_cK_cq_c+H(q,D^s)$에서 앞의 두 항은 $s$와 무관하고 $\sum_sp_s=1$이므로 $\sup$ 밖으로 나온다.
+\item (c) $\mathfrak P_n$이 Example 1의 상자($p_s\le\frac1{|S|(1-\zeta)}$)이면 $\sup$은 벌금이 큰 $|S|(1-\zeta)$개의 평균, 즉 $\mathrm{CVaR}_\zeta$이고, 이것은 Rockafellar--Uryasev의 문턱 표현과 같다.
+\item (d) $(\cdot)^+$의 선형화. $w^{s}\ge H-\tau$, $w^{s}\ge0$ 아래에서 $w^{s}$를 최소화하면 $w^{s}=(H-\tau)^+$가 되므로 값이 같다.
+\item (e) $H(q,D^s)$ 자체가 $O^s,U^s$에 대한 $\min$이다. ``$w^{s}\ge\min_{O,U}(\cdots)-\tau$''는 ``어떤 실행가능한 $O^s,U^s$에 대해 $w^{s}\ge(\cdots)-\tau$''와 같으므로, 내부 $\min$을 바깥 $\min$에 합치고 균형식을 제약으로 올릴 수 있다.
+\item (f) 바깥 $\min_{y,q}$와 내부 $\min_{\tau,w,O,U}$는 모두 최소화라 하나로 합쳐진다. $\sup$은 (c)에서 이미 $\min$으로 바뀌었으므로 min--max 구조가 남지 않는다.
+\end{itemize}
+%--------------------------------------------------------
+\subsection{시나리오 생성}
+
+\hd{A. 회귀}
+후보 도시 $c$의 특성 $x_c$에 대해
+\textcolor{blue}{\[
+p_c^{\,s}=\operatorname{proj}_{[0,1]}\big(\hat f(x_c)+\hat\varepsilon^{\,s}\big),\qquad
+D_c^{\,s}=M_c\,p_c^{\,s},\qquad s\in S
+\]}
+
+$\hat f$를 적합하고 잔차 $\hat\varepsilon^{\,s}=y^s-\hat f(x^s)$, $s\in S$. $x^s$는 training points고 \red{x와 $\epsilon$은 N(0,1)을 따르고 공변량 $x$와 독립이라 가정한다 (회귀 후 등분산성 확인 필요).}, 또 baseline model처럼 $M_c$는 고정으로 둔다.
+
+%------------------------------------------------------
+\hd{\textcolor{blue}{B. 공변량 X는 무엇인가?}}
+
+\item \textbf{B-1. 어떻게 $M$을 정하는가: }
+세부 내용은 \textit{2.driving factors/C.Selection/Factors\_of\_M}를 참고한다.
+
+$M_c$를 \textbf{\textcolor{blue}{NHTS의 인구집단별 1인당 통행률 × 도시별 인구}}로 구성한다. 이 방법으로 하면 회귀 없이 모든 후보 도시에 같은 정의로 계산하는 고정값이 산출된다.
+
+\item \textbf{B-2. 어떻게 $p$를 정하는가: }
+
+세부 내용은 \textit{2.driving factors/C.Selection/Factors\_of\_p}를 참고한다.
+
+\textbf{1차 선택 결과, 도시 특성 2개와 결정의존 서비스 변수 3개}를 우선 대상으로 정리한다. 왜생 변수 2개를 먼저 현 모델에서 테스트해보고, 내생 서비스 변수의 사용은 decision-dependent ER-DRO 확장에서 반영한다. 외생ㆍ내생 구분은 \emph{운영 결정에 의존하는지}에 따른 구분이다.
+
+\begin{itemize}
+\item 외생 : \textcolor{blue}{\textbf{무차량 가구 비율 (외생)} \quad \textbf{연령 구조 (외생)}}
+\item 내생 : \textcolor{blue}{\textbf{상대 요금 (내생)} \quad \textbf{상대 대기시간 (내생)} \quad
+\textbf{차내 지원기능 (내생)}}
+\end{itemize}
+
+
+%-----------------------------------------------------
+\hd{\textbf{\red{C. 회귀는 어떠한 방식으로 할 것인가, 그리고 왜? : 아직 결정해야 함}}}
+\begin{framed}
+\textbf{※ Kannan et al. (Residuals-based Distributionally Robust Optimization)}
+
+회귀는 아무 방식이나 되나 --- 논문 틀은 방법을 가리지 않습니다(OLS, Lasso, Ridge, kNN, 랜덤포레스트 모두 가능). 다만 세 가지를 고려해야 합니다.
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{이론 조건.} 가정 2·8·15는 회귀오차가 $|S|$에 따라 얼마나 빨리 줄어드는지에 대한 것입니다. OLS·Lasso 같은 모수적 방법은 $r=1$(오차 $\sim |S|^{-1/2}$)을 만족하고, 비모수적 방법은 $r=O(1)/d_x$로 느립니다. 도시 수가 적고 특성 수가 많으면 모수적 방법이어야 이론이 붙습니다.
+\item \textbf{소표본이면 정규화.} 논문 실험에서 $|S|$가 $d_x$에 비해 작을 때 Lasso·Ridge가 OLS보다 좋았고, DRO와 상보적이었습니다. 또 $|S|$가 작으면 학습 잔차가 낙관적으로 작아지므로 이전 논문 [34]의 leave-one-out(jackknife) 잔차를 쓰는 것이 낫습니다.
+\item \textbf{모델 구조 가정.} $Y=f^*(X)+\varepsilon$에서 오차가 $X$와 독립(동분산)이어야 잔차를 도시 간에 공유할 수 있습니다. 회귀 대상을 통행 수 $D$로 하면 큰 도시의 오차가 더 크기 마련이라 이 가정이 깨집니다. 선택확률 $p$(또는 logit $p$)를 도시 특성에 회귀하고 $D_c=M_cp_c$로 만들면 동분산에 훨씬 가깝고, 사영 $[0,1]$도 자연스럽습니다. 그래도 이분산이 남으면 저자들의 후속 논문 [35]의 확장을 씁니다.
+\end{itemize}
+
+\end{framed}
+
+%--------------------------------------------------------
+\hd{D. Ambiguity set 정하기}
+We use the CVaR-based ambiguity sets with the same support as $\hat P^{ER}_n$, the empirical distribution of the residuals.
+
+\begin{framed}
+\textbf{※ Kannan et al. (Residuals-based Distributionally Robust Optimization)}
+
+% ---- (3) Ambiguity sets with the same support as \hat P^{ER}_n(x) ----
+Ambiguity sets with the same support as $\hat{P}^{\mathrm{ER}}_n(x)$ (cf.\ [4, 6], for instance):
+given radius $\zeta_n(x)\ge 0$, set
+\[
+\hat{\mathcal{P}}_n(x)=\Big\{\,Q=\sum_{i=1}^{n}p_i\,\delta_{\operatorname{proj}_{\mathcal{Y}}(\hat f_n(x)+\hat\varepsilon^{\,i}_n)}
+\ :\ p\in\mathfrak{P}_n\big(x;\zeta_n(x)\big)\Big\},
+\]
+where $\mathfrak{P}_n(x;\zeta_n(x))$ is a generic ambiguity set for the $n$-dimensional vector of
+probabilities $p$. We focus on sets $\mathfrak{P}_n(x;\zeta_n(x))$ that satisfy for each $x\in\mathcal{X}$
+\begin{equation}
+\begin{aligned}
+p\in\mathbb{R}^{n}_{+}\ \text{ and }\ \sum_{i=1}^{n}p_i=1,\quad &\forall p\in\mathfrak{P}_n\big(x;\zeta_n(x)\big),\\[2pt]
+\lim_{\zeta\downarrow 0}\mathfrak{P}_n(x;\zeta)=\mathfrak{P}_n(x;0)
+&=\Big\{\Big(\tfrac{1}{n},\tfrac{1}{n},\dots,\tfrac{1}{n}\Big)\Big\}.
+\end{aligned}
+\tag{8}
+\end{equation}
+
+% ---- Example 1: CVaR-based ambiguity set ----
+\textbf{Example 1.} CVaR-based ambiguity set [45, 48]: given radius $\zeta_n(x)\in[0,1)$, set
+\[
+\mathfrak{P}_n\big(x;\zeta_n(x)\big):=\Big\{\,p\in\mathbb{R}^{n}_{+}\ :\ \sum_{i=1}^{n}p_i=1,\ \
+p_i\le\frac{1}{n\big(1-\zeta_n(x)\big)},\ \forall i\in[n]\Big\}.
+\]
+Observe that $\zeta_n(x)$ enters the ambiguity set $\mathfrak{P}_n(x;\zeta_n(x))$ through the CVaR risk parameter.
+\end{framed}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{D-1. 왜 CVaR을 택했는가?}
+
+시나리오 $|S|$개에 확률 $1/|S|$씩 준 것을 그대로 믿지 않는다면 두 가지를 의심할 수 있다.
+시나리오 \textbf{값}을 의심하면 점을 움직이는 집합(Wasserstein, SRO)이고, 시나리오 \textbf{확률}을 의심하면
+가중치만 바꾸는 집합(CVaR형)이다. 우리는 후자를 택한다.
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{구조가 그대로 유지된다.} ``벌금이 큰 $(1-\zeta)$ 비율의 시나리오 평균''은 문턱 $\tau$와 초과분 $w^s$만 더하면 기존 MILP에 그대로 얹힌다. 점을 움직이는 집합은 정수 결정 안에 min--max--min이 생겨 논문도 일반적으로 어렵다고 본다.
+\item \textbf{점을 움직이는 집합은 $c^+/c^-$ 비율에 따라 뜻이 달라진다.} $c^+\ll c^-$이면 최악 분포는
+수요를 위로만 밀어 수요 배율 민감도와 사실상 같은 실험이 되고, $c^+$가 $c^-$에 가까워지면 유휴 쪽으로도
+밀어 해석이 복잡해진다. CVaR형은 비율과 무관하게 ``나쁜 시나리오가 더 자주 온다면''이라는 같은 질문을
+던지므로, 비율 조합을 바꿔 가며 비교하기에 더 깔끔하다.
+\item \textbf{가장 근거 없는 것은 값이 아니라 빈도다.} ER-DRO의 시나리오 값은 회귀 예측 $+$ 실제 잔차라 데이터에 근거하지만, 관측이 적을수록 ``각 시나리오가 똑같이 $1/|S|$''라는 가정이 가장 취약하다. 확률만 흔드는 집합이 그 약점을 겨냥한다.
+\item \textbf{설명이 쉽다.} $\zeta=0.5$는 ``최악 절반의 평균을 최소화''이고, 결과는 ``한 대의 가치'' 논리에서 시나리오 비율을 최악 가중치로 바꾼 것으로 읽힌다.
+\end{itemize}
+단서: 논문 실험에서는 같은 부류인 Hellinger형이 Wasserstein보다 개선 폭이 작았다. 연속분포의 소표본 상황이라 우리와 다르지만 검증은 필요하므로, 두 집합을 모두 돌려 비교표를 둔다.
+
+
+%------------------------------------%
+
+\hd{D-2. ''$\tau$ 요령''의 이해}
+
+\textbf{※ Example}
+(아래 숫자는 공변량 없는 v3 인스턴스, 즉 손으로 설계한 시나리오 10개에서의 예시)
+
+기준 배치 $(132,368,500)$을 고정하고 $\zeta=0.5$(최악 5개)로 놓으면, 시나리오별 벌금
+$C^{s}=\sum_c c^-_cU^s_c$와 풀이기가 찾는 $\tau$, $w^{s}$는 다음과 같습니다(M USD).
+
+\begin{center}
+\begin{tabular}{lcccccccccc}
+\toprule
+$s$ & 8 & 4 & 5 & 6 & 10 & 9 & 1 & 3 & 2 & 7 \\ \midrule
+$C^{s}$ & 297.7 & 288.0 & 220.6 & 174.4 & 156.5 & 114.7 & 104.0 & 58.8 & 56.9 & 6.3 \\
+$w^{s}=(C^{s}-\tau)^+$ & 141.2 & 131.5 & 64.1 & 17.9 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$\tau=156.5$(5번째로 큰 벌금)이고, 목적함수는
+$18.47+156.5+\frac15(141.2+131.5+64.1+17.9)=245.9$.
+이것이 정확히 고정비 $+$ 최악 5개 평균 $227.4$입니다. 즉 $w^{s}$는 ``시나리오 $s$의 벌금이 문턱을
+넘은 양''이고, 최악 그룹에 안 드는 시나리오는 0입니다. 배치가 바뀌면 $C^{s}$가 바뀌고 $\tau$, $w^{s}$도
+따라 바뀝니다.
+
+\textbf{$\tau$는 내가 정하는 게 아닙니다.}
+$\tau$는 $y,q$와 같은 결정변수라 풀이기가 찾습니다. 최적해에서는 항상 ``$|S|(1-\zeta)$번째로 큰 벌금''이 됩니다. 내가 정하는 것은 $\zeta$ 하나뿐입니다(4.D의 세 가지 방법 중 하나로).
+
+\textbf{※ 참조논문}
+\begin{itemize}[leftmargin=1.5em]
+\item Rockafellar \& Uryasev (2000), ``Optimization of conditional value-at-risk'', \textit{Journal of Risk}. $\tau$ 요령의 원조입니다. 거기서는 문턱을 $\alpha$, 꼬리 수준을 $\beta$로 씁니다(우리 $\tau$, $\zeta$).
+\item Shapiro, Dentcheva, Ruszczyński, \textit{Lectures on Stochastic Programming}, 위험회피 최적화 장. CVaR의 두 표현, 즉 ``$\min_\tau$ 문턱 표현''과 ``확률을 $\frac1{|S|(1-\zeta)}$까지만 키울 수 있는 최악 가중치 표현''이 같다는 것이 여기 있습니다. 논문 Example 1의 집합은 후자를 그대로 쓴 것입니다.
+\item Kannan 논문 자체 7절: 포트폴리오 목적함수를 $\min_\tau\mathbb E[\tau+\frac1{1-\beta}\max\{0,\cdot-\tau\}]$로 쓰고 LP로 풀었습니다. 우리와 같은 방식입니다.
+\end{itemize}
+
+%--------------------------------------------------------
+\newpage
+\hd{E. $\zeta$ (반경)를 정하는 방법}
+
+CVaR형에서 $\zeta$는 거리 반경이 아니라 ``최악 시나리오를 몇 개까지 볼 것인가''를 정하는 꼬리 비율입니다($1-\zeta$ = 남기는 비율).
+
+\hd{\textbf{E-1. Cross validation}}
+\hd{\textbf{E-2. 의사결정자(연구자)가 원하는 위험 회피 성향(Risk Preference) 수준에 따라 $\zeta$ 값을 직관적으로 사전 설정하는 방식}}
+
+
+%----$\zeta$ 반경 정하기 개념 이해-------
+\begin{comment}
+\textbf{D-1. 교차검증 (논문 알고리즘 2의 우리 버전)}
+
+후보 $\Delta=\{0,0.1,\dots,0.5\}$를 두고, 시나리오 10개를 5묶음(2개씩)으로 나눈 뒤 각 후보마다:
+\begin{itemize}[leftmargin=1.5em]
+\item 8개 시나리오로 CVaR-DRO를 풀어 배치 $q(\zeta)$를 얻고
+\item 빼 둔 2개 시나리오에서 그 배치의 비용(등확률)을 재고
+\item 5묶음 평균이 가장 낮은 $\zeta$를 고릅니다.
+\end{itemize}
+
+v3 인스턴스에 실제로 돌린 결과(묶음 나누기를 4번 바꿔서):
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$\zeta$ & 검증 비용 평균 (M USD) & 4번의 범위 \\ \midrule
+0   & 169.49 & 167.4 $\sim$ 170.8 \\
+0.1 & 170.88 & 168.9 $\sim$ 172.8 \\
+0.2 & 172.12 & 170.6 $\sim$ 172.9 \\
+0.3 & 172.59 & 172.3 $\sim$ 172.9 \\
+0.4 & 169.77 & 168.6 $\sim$ 171.0 \\
+0.5 & 168.94 & 166.7 $\sim$ 170.3 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$\zeta=0.5$가 가장 낮지만 차이(3M)가 묶음 나누기에 따른 흔들림(4M)보다 작습니다. 시나리오 10개로는 교차검증이 $\zeta$를 확실히 고르지 못한다는 뜻이고, 이건 논문이 표본 안정성 실험에서 본 것과 같은 현상입니다. 절차 자체는 이렇게 하면 되고, 시나리오가 수십 개 이상일 때 의미가 생깁니다.
+
+\textbf{D-2. 이론적 축소 규칙}
+
+일치성(정리 16)을 원하면 $|S|$가 커질 때 $\zeta_{|S|}\to0$이어야 하고, 수렴률(정리 17)까지 원하면 모호집합이 충분히 빨리 균등분포로 수축해야 합니다(가정 12). 논문은 상수를 주지 않으므로 이건 ``왜 $\zeta$가 $|S|$에 따라 줄어야 하는가''의 근거로만 쓰고, 값은 1이나 3으로 정합니다.
+
+\textbf{D-3. 위험선호로 고정}
+
+$\zeta=0.2$면 ``비용이 큰 80\% 시나리오의 평균을 최소화'', $\zeta=0.5$면 ``최악 50\%의 평균''. 이 경우 DRO는 소표본 보정이 아니라 위험회피 목적함수이고, 논문에 그렇게 써야 합니다. 지금처럼 시나리오를 설계해서 넣는 단계에서는 이 방식이 가장 방어하기 쉽고, $\zeta$ 민감도 표를 같이 보고하면 됩니다. 실제 데이터와 공변량이 생기면 1번(알고리즘 2·3)으로 넘어갑니다.
+
+\textbf{4단계 ($\zeta$):} 논문 알고리즘 2 --- 데이터를 $K$묶음으로 나눠 각 후보 $\zeta$마다 $K-1$묶음으로
+1$\sim$3단계를 돌리고 남은 묶음의 시나리오에서 비용을 재서 고릅니다. 도시마다 다른 $\zeta$(알고리즘 3)는
+우리처럼 세 도시를 한 번에 결정하는 문제에서는 $\zeta$가 하나여야 하므로 쓰기 어렵습니다.
+\end{comment}
+
+
+\begin{framed}
+\textbf{※ Kannan et al. (Residuals-based Distributionally Robust Optimization)}
+
+\setcounter{algorithm}{1}
+\begin{algorithm}[H]
+\caption{Specifying a covariate-independent radius $\zeta_n$ using the ER-DRO problem}
+\begin{algorithmic}[1]
+\State \textbf{Input:} data $\mathcal{D}_n$, set of candidate radii $\Delta$, number of folds $K$, and number of covariate realizations sampled during each fold $T\le\lfloor \tfrac{n}{K}\rfloor$.
+\State Partition $[n]$ into subsets $S_1,\dots,S_K$ of (roughly) equal size at random. Let $\mathcal{D}_{-k}:=\mathcal{D}_n\setminus\{(y^i,x^i)\}_{i\in S_k}$.
+\For{$k=1,\dots,K$}
+  \State Pick without replacement a random subset $\bar{\mathcal{X}}$ of $\{x^i\}_{i\in S_k}$ of size $T$.
+  \For{$\bar x\in\bar{\mathcal{X}}$}
+    \For{$\zeta\in\Delta$}
+      \State Fit a regression model $\hat f_{-k}$ using the data $\mathcal{D}_{-k}$ and compute its in-sample residuals $\{\hat\varepsilon^{\,i}_{-k}\}_{i\notin S_k}:=\{y^i-\hat f_{-k}(x^i)\}_{i\notin S_k}$.
+      \State Solve the ER-DRO problem below at covariate $\bar x$ to get solution $\hat z^{DRO}_{-k}(\bar x,\zeta)$
+      \Statex \hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}
+        $\displaystyle \min_{z\in Z}\ \sup_{Q\in\hat{\mathcal{P}}_{-k}(\bar x)}\ \mathbb{E}_{Y\sim Q}\big[c(z,Y)\big],$
+      \Statex \hspace{\algorithmicindent}\hspace{\algorithmicindent}\hspace{\algorithmicindent}
+        where the ambiguity set $\hat{\mathcal{P}}_{-k}(\bar x)$ with radius $\zeta$ is centered at the estimated empirical distribution
+        $\hat P^{ER}_{-k}(\bar x):=\dfrac{1}{n-|S_k|}\displaystyle\sum_{i\notin S_k}\delta_{\hat f_{-k}(\bar x)+\hat\varepsilon^{\,i}_{-k}}$.
+    \EndFor
+  \EndFor
+\EndFor
+\State \textbf{Output:} Radius $\zeta_n\in\displaystyle\argmin_{\zeta\in\Delta}\ \frac{1}{T}\sum_{\bar x\in\bar{\mathcal{X}}}\frac{1}{K}\sum_{k\in[K]}\frac{1}{|S_k|}\sum_{i\in S_k} c\big(\hat z^{DRO}_{-k}(\bar x,\zeta),\,y^i\big)$ for the ambiguity set $\hat{\mathcal{P}}_n(x)$ for the ER-DRO problem (7).
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H] 
+\caption{Specifying a covariate-dependent radius $\zeta_n(x)$ using the ER-DRO problem}
+\begin{algorithmic}[1]
+\State \textbf{Input:} data $\mathcal{D}_n$, set of candidate radii $\Delta$, number of folds $K$, and new covariate realization $x\in\mathcal{X}$.
+\State Partition $[n]$ into subsets $S_1,\dots,S_K$ of (roughly) equal size at random. Let $\mathcal{D}_{-k}:=\mathcal{D}_n\setminus\{(y^i,x^i)\}_{i\in S_k}$.
+\For{$k=1,\dots,K$}
+  \For{$\zeta\in\Delta$}
+    \State Fit a regression model $\hat f_{-k}$ using the data $\mathcal{D}_{-k}$ and compute its in-sample residuals $\{\hat\varepsilon^{\,i}_{-k}\}_{i\notin S_k}:=\{y^i-\hat f_{-k}(x^i)\}_{i\notin S_k}$.
+    \State Solve the ER-DRO problem below at covariate $x$ to obtain solution $\hat z^{DRO}_{-k}(x,\zeta)$
+    \Statex \hspace{\algorithmicindent}\hspace{\algorithmicindent}
+      $\displaystyle \min_{z\in Z}\ \sup_{Q\in\hat{\mathcal{P}}_{-k}(x)}\ \mathbb{E}_{Y\sim Q}\big[c(z,Y)\big],$
+    \Statex \hspace{\algorithmicindent}\hspace{\algorithmicindent}
+      where the ambiguity set $\hat{\mathcal{P}}_{-k}(x)$ with radius $\zeta$ is centered at the estimated empirical distribution
+      $\hat P^{ER}_{-k}(x):=\dfrac{1}{n-|S_k|}\displaystyle\sum_{i\notin S_k}\delta_{\hat f_{-k}(x)+\hat\varepsilon^{\,i}_{-k}}$.
+    \State Fit a regression model $\hat f_k$ using the data $\{(y^i,x^i)\}_{i\in S_k}$ and compute its in-sample residuals $\{\hat\varepsilon^{\,i}_{k}\}_{i\in S_k}:=\{y^i-\hat f_k(x^i)\}_{i\in S_k}$.
+  \EndFor
+\EndFor
+\State \textbf{Output:} Radius $\zeta_n(x)\in\displaystyle\argmin_{\zeta\in\Delta}\ \frac{1}{K}\sum_{k\in[K]}\frac{1}{|S_k|}\sum_{i\in S_k} c\big(\hat z^{DRO}_{-k}(x,\zeta),\,\hat f_k(x)+\hat\varepsilon^{\,i}_k\big)$ for the ambiguity set $\hat{\mathcal{P}}_n(x)$ for the ER-DRO problem (7).
+\end{algorithmic}
+\end{algorithm}
+\end{framed}
+
+
+
+%--------------------------------------------------------
+\begin{comment}
+
+\hd{F. Kannan 논문 식 (7)과의 대응}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.44\linewidth}Y@{}}
+\toprule
+논문 (7) & 우리 식 \\ \midrule
+새 관측 $x$
+  & 후보 도시 특성 $(x_A,x_B,x_C)$ \\
+확률변수 $Y$
+  & 수요 벡터 $D=(D_A,D_B,D_C)$ \\
+ER 시나리오 $\operatorname{proj}_{\mathcal Y}\!\big(\hat f_n(x)+\hat\varepsilon^{\,i}_n\big)$
+  & $D_c^{\,s}=M_c\operatorname{proj}_{[0,1]}\!\big(\hat f(x_c)+\hat\varepsilon^{\,s}\big)$ (4.B) \\
+중심 $\hat P^{\mathrm{ER}}_n(x)=\frac1n\sum_i\delta_{(\cdot)}$
+  & 시나리오 $|S|$개, 확률 $1/|S|$ \\
+모호집합 $\big\{Q=\sum_ip_i\delta_{(\cdot)}:\ p_i\le\frac{1}{n(1-\zeta)}\big\}$ (Example 1)
+  & 같은 것 \\
+$\sup_{Q}\mathbb E_Q[c(z,Y)]$
+  & $\tau+\frac{1}{|S|(1-\zeta)}\sum_sw^{s}$ (문턱 요령으로 푼 것) \\
+$c(z,Y)$
+  & $\sum_cF_cy_c+\sum_cK_cq_c+\sum_c\big(c^+_cO_c+c^-_cU_c\big)$, 단 $O,U$는 $\kappa_cq_c-D_c=O_c-U_c$로 결정 \\
+결정 $z\in Z$
+  & $(y,q)$, 제약 $0\le q_c\le\bar q_cy_c$, $\sum_cq_c\le Q$ \\
+\bottomrule
+\end{tabularx}
+}
+
+\end{comment}
+
+\end{document}

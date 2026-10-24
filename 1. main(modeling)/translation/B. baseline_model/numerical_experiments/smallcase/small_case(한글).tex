@@ -1,0 +1,545 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb,array,booktabs,longtable,tabularx,graphicx,float,placeins}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\AtBeginDocument{\renewcommand{\tablename}{표}\renewcommand{\figurename}{그림}}
+\title{Numerical Experiments}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\begingroup\sloppy
+\section{요약}
+
+모델과 구현의 일관성, 변수의 민감도 분석을 위해 실험 설계, 실행, 결과를 명시한다. 모델은 \texttt{1. main(modeling)/baseline model/baseline(main).tex}에 명시되어 있다.
+
+작은 사례를 통한 모델의 구현을 검증하고, 이후 관측값으로부터 자체 산출한 값들을 변수에 대입하여 추가로 실험한다. 민감도 분석은 각 parameter에 대해서 실시한다.
+
+이 실험을 위해 How the parameters are set is explained in the companion file
+\texttt{4. References/model2\_parameter\_rationale.tex}.
+\par\endgroup
+
+\section{작은 합성 사례: 모델 검증과 민감도 분석}
+\label{sec:smallcase}
+\textbf{목적.} 직접 확인할 수 있는 작은 합성 사례로 수식과 코드의 일치 여부를 검증한다.
+입력을 바꾸어 최적 배치가 유지되는 범위와 전환점, 처리량과 비용의 변화를 확인한다.
+
+\subsection{기본값으로 실험}
+\subsubsection{입력값과 공통 설정}
+표~\ref{tab:sc-input}의 값은 구현 검증을 위해 직접 정한 합성값이다.
+실제 도시의 추정값이나 문헌에서 관측된 수치는 아니다.
+시장규모 $M_c$만 도시별로 다르게 두고 비용, 차량 생산성, 차량 상한은 동일하게 설정하였다.
+\begin{table}[H]
+\centering\small
+\caption{도시별 기본 입력값}\label{tab:sc-input}
+\begin{tabular}{llrrr}
+\toprule
+입력 & 의미·단위 & A & B & C\\\midrule
+$M_c$ & 잠재 이용 기회 (건/년) & 80 & 100 & 120\\
+$\kappa_c$ & 차량당 처리 용량 (건/대·년) & 10 & 10 & 10\\
+$\bar q_c$ & 도시별 차량 상한 (대) & 2 & 2 & 2\\
+$F_c$ & 초기 진입비 (USD/도시) & 20 & 20 & 20\\
+$K_c$ & 차량 고정비 (USD/대·년) & 5 & 5 & 5\\
+$c_c^+$ & 유휴 용량 페널티 (USD/건) & 0 & 0 & 0\\
+$c_c^-$ & 미충족 수요의 공헌이익 손실 (USD/건) & 10 & 10 & 10\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[H]
+\centering\small
+\caption{공통 설정}\label{tab:sc-common}
+\begin{tabular}{P{.19\linewidth}P{.72\linewidth}}
+\toprule
+항목 & 설정\\\midrule
+후보 도시와 자원 & $C=\{A,B,C\}$, 총 차량 한도 $Q=4$대\\
+시나리오 & $|S|=10$, 각 시나리오의 발생확률 $1/|S|=0.1$\\
+수요 생성 & $D_c^s=M_cp_c^s$; $p_c^s$는 직접 지정한 선택확률\\
+평가기간 & 진입 후 1년: 초기 진입비 1회와 해당 연도 비용·손실 합산\\
+공통 결정 & $y_c,q_c$는 수요 관측 전에 결정하고 모든 시나리오에 적용\\
+운영 가정 & 도시 간 차량 이동·용량 공유 없음; 미진입 도시 수요도 미충족에 포함\\
+풀이와 검증 & SciPy MILP(HiGHS)와 독립 전수계산 비교; 난수 사용 없음\\
+\bottomrule
+\end{tabular}
+\end{table}
+선택확률 $p_c^s$와 시나리오의 발생확률 $1/|S|$는 서로 다르다.
+각 행은 시간 순서가 아닌 하나의 공동 수요 상황이다.
+도시별 $p$의 평균은 모두 $0.38$이며, 동일한 주변분포를 가진다.
+\begin{table}[H]
+\centering\small
+\caption{직접 설계한 선택확률과 수요 시나리오}\label{tab:sc-scenarios}
+\begin{tabular}{lrrrrrr}
+\toprule
+$s$ & $p_A^s$ & $p_B^s$ & $p_C^s$ & $D_A^s$ & $D_B^s$ & $D_C^s$\\\midrule
+1 & 0.05 & 0.05 & 0.05 & 4 & 5 & 6\\
+2 & 0.2 & 0.2 & 0.2 & 16 & 20 & 24\\
+3 & 0.5 & 0.5 & 0.5 & 40 & 50 & 60\\
+4 & 0.8 & 0.8 & 0.8 & 64 & 80 & 96\\
+5 & 0.05 & 0.2 & 0.5 & 4 & 20 & 60\\
+6 & 0.2 & 0.5 & 0.05 & 16 & 50 & 6\\
+7 & 0.5 & 0.05 & 0.2 & 40 & 5 & 24\\
+8 & 0.2 & 0.5 & 0.8 & 16 & 50 & 96\\
+9 & 0.5 & 0.8 & 0.2 & 40 & 80 & 24\\
+10 & 0.8 & 0.2 & 0.5 & 64 & 20 & 60\\
+평균 & 0.38 & 0.38 & 0.38 & 30.4 & 38 & 45.6\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{결과 지표의 계산}
+도시·시나리오별 처리량과 부족·유휴 용량은 다음과 같다.
+\[
+T_c^s=\min(D_c^s,\kappa_cq_c),\quad
+U_c^s=\max(D_c^s-\kappa_cq_c,0),\quad
+O_c^s=\max(\kappa_cq_c-D_c^s,0).
+\]
+평균은 시나리오 10개의 산술평균이다. 처리율은 전체 후보 도시를 대상으로 계산한다.
+\[
+\text{처리율}(\%)=
+\frac{\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}T_c^s}
+{\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}D_c^s}\times100,
+\qquad
+\text{활용률}(\%)=
+\frac{\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}T_c^s}{\sum_{c\in C}\kappa_cq_c}\times100.
+\]
+각 분모가 0이면 해당 비율은 정의하지 않는다. 활용률은 처리 용량의 사용 비율이며 시간 가동률은 아니다.
+목적함수와 미진입 대비 개선액은 다음과 같다.
+\begin{align*}
+Z(y,q)&=\sum_{c\in C}F_cy_c+\sum_{c\in C}K_cq_c
++\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}(c_c^+O_c^s+c_c^-U_c^s),\\
+Z_0&=\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}c_c^-D_c^s,\\
+\text{개선액}&=Z_0-Z(y,q).
+\end{align*}
+개선액은 동일한 입력에서 미진입보다 얼마나 유리한지를 뜻한다.
+목적함수에는 놓친 공헌이익이 포함되므로 실제 현금지출과 같지 않다.
+
+\subsubsection{최적 배치와 비용}
+최적해는 $y=(0,1,1)$, $q=(0,2,2)$이다.
+가능한 60개 $(y,q)$를 독립적으로 전수계산한 결과도 동일하며, 기본 사례의 최적해는 유일하다.
+정수·비음 조건, 도시별·전체 차량 상한, 수요와 용량의 균형식, 목적함수 재계산을 모두 통과하였다.
+\begin{table}[H]
+\centering\small
+\caption{기본 최적해의 도시별 결과 (처리량·수요·용량: 건/년)}\label{tab:sc-base-city}
+\begin{tabular}{lrrrrrrr}
+\toprule
+도시 & $y_c$ & $q_c$ & 용량 & 평균 수요 & 평균 처리량 & 평균 미충족 & 평균 유휴\\\midrule
+A & 0 & 0 & 0 & 30.4 & 0 & 30.4 & 0\\
+B & 1 & 2 & 20 & 38 & 17 & 21 & 3\\
+C & 1 & 2 & 20 & 45.6 & 17.2 & 28.4 & 2.8\\
+합계 & 2 & 4 & 40 & 114 & 34.2 & 79.8 & 5.8\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[H]
+\centering\small
+\caption{기본 최적해의 비용과 성과 (USD)}\label{tab:sc-base-cost}
+\begin{tabular}{rrrrrrr}
+\toprule
+진입비 & 차량비 & 유휴 페널티 & 미충족 손실 & $Z$ & $Z_0$ & 개선액\\\midrule
+40 & 20 & 0 & 798 & 858 & 1,140 & 282\\
+\bottomrule
+\end{tabular}
+\end{table}
+처리율은 $34.2/114=30.0\%$, 활용률은 $34.2/40=85.5\%$이다.
+차량 용량 40건을 항상 모두 쓰지는 못한다. 수요가 낮은 도시의 남는 용량을 다른 도시로 옮길 수 없어 평균 5.8건이 남는다.
+서비스 공헌이익 $34.2\times10=342$에서 진입비 40과 차량비 20을 빼면 개선액 282가 된다.
+\begin{table}[H]
+\centering\small
+\caption{배치 $(0,2,2)$의 시나리오별 합계 (건/년)}\label{tab:sc-scenario-result}
+\begin{tabular}{lrrrr}
+\toprule
+$s$ & 전체 수요 & 처리량 & 미충족 & 유휴 용량\\\midrule
+1 & 15 & 11 & 4 & 29\\
+2 & 60 & 40 & 20 & 0\\
+3 & 150 & 40 & 110 & 0\\
+4 & 240 & 40 & 200 & 0\\
+5 & 84 & 40 & 44 & 0\\
+6 & 72 & 26 & 46 & 14\\
+7 & 69 & 25 & 44 & 15\\
+8 & 162 & 40 & 122 & 0\\
+9 & 144 & 40 & 104 & 0\\
+10 & 144 & 40 & 104 & 0\\
+합계 & 1,140 & 342 & 798 & 58\\
+평균 & 114 & 34.2 & 79.8 & 5.8\\
+\bottomrule
+\end{tabular}
+\end{table}
+\subsubsection{왜 B와 C에 집중하는가?}
+같은 네 대를 사용하는 여섯 배치를 비교하면 도시 선택과 진입비의 영향을 구분할 수 있다.
+최적화는 이 여섯 배치뿐 아니라 차량을 0--3대 사용하는 경우도 고려한다.
+\begin{table}[H]
+\centering\small
+\caption{4대를 배치하는 모든 경우의 비교 (비용: USD)}\label{tab:sc-six}
+\begin{tabular}{lrrrrr}
+\toprule
+배치 & 처리량 & 진입비 & 차량비 & 미충족 손실 & $Z$\\\midrule
+$(0,2,2)$ & 34.2 & 40 & 20 & 798 & 858\\
+$(1,1,2)$ & 35 & 60 & 20 & 790 & 870\\
+$(1,2,1)$ & 35 & 60 & 20 & 790 & 870\\
+$(2,0,2)$ & 32.8 & 40 & 20 & 812 & 872\\
+$(2,2,0)$ & 32.6 & 40 & 20 & 814 & 874\\
+$(2,1,1)$ & 33.8 & 60 & 20 & 802 & 882\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/01_baseline.png}
+\caption{도시별 처리·미충족 수요와 네 대 배치의 목적함수 비교.}\label{fig:sc-01_baseline}
+\end{figure}
+\textbf{해석.} 다른 도시별 조건이 같은 현재 사례에서는 큰 시장 B와 C를 선택하는 것이 유리하다.
+다만 용량 상한 때문에 시장규모와 처리량이 비례하지는 않는다.
+$(1,1,2)$와 $(1,2,1)$은 $(0,2,2)$보다 0.8건을 더 처리하지만,
+추가 공헌이익 8보다 추가 진입비 20이 커서 목적함수가 12 높다.
+
+\FloatBarrier
+\subsection{엣지 케이스 실험}
+엣지 케이스는 차량·수요가 없거나 비용이 극단적인 조건에서 모델이 예상대로 작동하는지 확인하는 검사이다.
+각 실험은 기본값에서 표의 입력만 변경한다. 해를 구한 뒤 독립 전수계산과 비교하고,
+모든 최적해에 대해 사전에 정한 예상 성질을 검사하였다.
+\begin{table}[H]
+\centering\small
+\caption{엣지 케이스의 변경 입력과 예상 성질}\label{tab:sc-edge-design}
+\begin{tabular}{lP{.36\linewidth}P{.47\linewidth}}
+\toprule
+구분 & 변경 입력 & 검사할 예상 성질\\\midrule
+E1 & $Q=0$ & 미진입·배치 0, 모든 수요 미충족\\
+E2 & $M=(0,0,0)$ & 미진입·배치 0, 목적함수와 부족·유휴 0\\
+E3 & $\bar q=(0,2,2)$ & A에 차량 배치·진입 없음\\
+E4 & $c^-=(0,0,0)$ & 서비스 유인이 사라져 미진입, 목적함수 0\\
+E5 & $F=(10000,10000,10000)$ & 진입비가 너무 커서 미진입\\
+E6 & $Q=8$ & 도시별 상한에 도달: $(2,2,2)$, 총 6대\\
+E7 & $F=(0,0,0)$ & 차량을 배치한 도시는 반드시 진입 상태\\
+E8 & $p_c^s=10/M_c$ (모든 $c,s$) & 수요 10건씩: $(1,1,1)$, 부족·유휴 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[H]
+\centering\small
+\caption{엣지 케이스의 배치·서비스 결과}\label{tab:sc-edge-service}
+\begin{tabular}{lrrrrrr}
+\toprule
+구분 & 대표 배치 & 처리량 & 처리율(\%) & 미충족 & 유휴 & 검사\\\midrule
+E1 & $(0,0,0)$ & 0 & 0 & 114 & 0 & PASS\\
+E2 & $(0,0,0)$ & 0 & --- & 0 & 0 & PASS\\
+E3 & $(0,2,2)$ & 34.2 & 30 & 79.8 & 5.8 & PASS\\
+E4 & $(0,0,0)$ & 0 & 0 & 114 & 0 & PASS\\
+E5 & $(0,0,0)$ & 0 & 0 & 114 & 0 & PASS\\
+E6 & $(2,2,2)$ & 49.8 & 43.68 & 64.2 & 10.2 & PASS\\
+E7 & $(1,1,2)$ & 35 & 30.7 & 79 & 5 & PASS\\
+E8 & $(1,1,1)$ & 30 & 100 & 0 & 0 & PASS\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[H]
+\centering\small
+\caption{엣지 케이스의 비용 분해와 개선액 (USD)}\label{tab:sc-edge-cost}
+\begin{tabular}{lrrrrrrr}
+\toprule
+구분 & 진입비 & 차량비 & 유휴 비용 & 미충족 손실 & $Z$ & $Z_0$ & 개선액\\\midrule
+E1 & 0 & 0 & 0 & 1,140 & 1,140 & 1,140 & 0\\
+E2 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+E3 & 40 & 20 & 0 & 798 & 858 & 1,140 & 282\\
+E4 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+E5 & 0 & 0 & 0 & 1,140 & 1,140 & 1,140 & 0\\
+E6 & 60 & 30 & 0 & 642 & 732 & 1,140 & 408\\
+E7 & 0 & 20 & 0 & 790 & 810 & 1,140 & 330\\
+E8 & 60 & 15 & 0 & 0 & 75 & 300 & 225\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/04_edges.png}
+\caption{E1--E8의 배치와 목적함수. 서로 다른 조건의 목적함수는 성과 순위가 아니다.}\label{fig:sc-04_edges}
+\end{figure}
+\textbf{해석.} E1·E4·E5는 모두 미진입이지만, E4는 미충족 손실계수 자체가 0이어서 목적함수도 0이다.
+E6은 차량 한도가 8이어도 도시별 상한 때문에 6대만 배치한다.
+E7에는 $(1,1,2)$와 $(1,2,1)$의 두 최적 배치가 있다.
+E8은 각 도시에 한 대만 배치해 수요를 전부 처리하므로 네 번째 차량은 사용하지 않는다.
+E2의 처리율은 수요가 0이므로 정의하지 않는다.
+$c^+=c^-=0$인 경우에도 보고용 부족·유휴량은 수요와 용량의 차이로 다시 계산하였다.
+
+\FloatBarrier
+\subsection{민감도 분석}
+\subsubsection{실험 설계와 읽는 방법}
+한 번에 한 입력 종류만 바꾸고 나머지 조건은 기본값으로 고정한 뒤 다시 최적화한다.
+배치가 바뀌는지와 성과가 얼마나 달라지는지를 함께 본다.
+도시별 비용·생산성을 함께 바꾸는 실험은 공통 수준의 변화이며,
+$M_A$ 실험은 A의 상대적 시장규모만 바꾸는 실험이다.
+\begin{table}[H]
+\centering\small
+\caption{주요 민감도 실험의 변경 범위}\label{tab:sc-sensitivity-design}
+\begin{tabular}{lP{.48\linewidth}P{.35\linewidth}}
+\toprule
+입력 & 변경 대상·범위 & 고정 조건\\\midrule
+$Q$ & 전체 차량 한도 0--8, 간격 1대 & 도시별 상한 2대, 나머지 기본값\\
+$F$ & 세 도시 공통 0--20, 간격 1; 추가 큰 값 & 차량비·수요 등 기본값\\
+$\kappa$ & 세 도시 공통 5--20, 간격 0.5 & 총 차량 4대, $c^+=0$ 등 기본값\\
+$M_A$ & A만 0.5--2배, 간격 0.05배 & B·C의 $M$, 모든 $p$ 등 기본값\\
+$c^+$ & 세 도시 공통 0--20, 간격 0.5 & 미충족 손실·수요 등 기본값\\
+$\alpha$ & 수요 변동 폭 0--1배, 간격 0.05 & 도시별 평균 수요·시나리오 수 유지\\
+\bottomrule
+\end{tabular}
+\end{table}
+$F$의 추가 실행값은 $40,80,120,150,155,159,160,161,162,163,170,200$이다.
+그림은 배치, 처리율, 비용 분해, 미진입 대비 개선 순으로 읽는다.
+음영은 복수 최적해의 범위이며 신뢰구간이 아니다.
+대표해는 진입 도시 수가 적은 해를 우선하고, 이후 $q,y$의 사전순으로 선택하였다.
+배치가 유지되더라도 비용은 바뀔 수 있다. 특히 $M$이나 $c^-$를 바꾸면 비교 기준도 변하므로
+목적함수 하나만으로 성과의 좋고 나쁨을 판단하지 않는다.
+
+\subsubsection{총 차량 한도 $Q$}
+\begin{table}[H]
+\centering\small
+\caption{주요 설정의 결과: 총 차량 한도 (처리량: 건/년, 금액: USD)}\label{tab:sc-selected-Q}
+\begin{tabular}{lrrrrr}
+\toprule
+입력값 & 대표 배치 & 처리량 & 처리율(\%) & $Z$ & 개선액\\\midrule
+0 & $(0,0,0)$ & 0 & 0 & 1,140 & 0\\
+3 & $(0,1,2)$ & 26.2 & 22.98 & 933 & 207\\
+4 & $(0,2,2)$ & 34.2 & 30 & 858 & 282\\
+5 & $(1,2,2)$ & 43 & 37.72 & 795 & 345\\
+6 & $(2,2,2)$ & 49.8 & 43.68 & 732 & 408\\
+8 & $(2,2,2)$ & 49.8 & 43.68 & 732 & 408\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/05_Q.png}
+\caption{총 차량 한도에 따른 배치·처리율·비용·개선액.}\label{fig:sc-05_Q}
+\end{figure}
+\textbf{해석.} $Q=4\to5$에서 A에 한 대를 추가하고 개선액이 63 증가한다.
+$Q=6$ 이후에는 세 도시의 상한 합계 6대 때문에 결과가 유지된다.
+이 구간의 둔감함은 수요가 충분히 충족되었기 때문이 아니라 도시별 배치 제한 때문이다.
+$Q=3$에서는 $(0,1,2)$와 $(0,2,1)$이 동률이다.
+
+\subsubsection{공통 진입비 $F$}
+\begin{table}[H]
+\centering\small
+\caption{주요 설정의 결과: 공통 진입비 (처리량: 건/년, 금액: USD)}\label{tab:sc-selected-F}
+\begin{tabular}{lrrrrr}
+\toprule
+입력값 & 대표 배치 & 처리량 & 처리율(\%) & $Z$ & 개선액\\\midrule
+0 & $(1,1,2)$ & 35 & 30.7 & 810 & 330\\
+8 & $(0,2,2)$ & 34.2 & 30 & 834 & 306\\
+20 & $(0,2,2)$ & 34.2 & 30 & 858 & 282\\
+160 & $(0,0,2)$ & 17.2 & 15.09 & 1,138 & 2\\
+162 & $(0,0,0)$ & 0 & 0 & 1,140 & 0\\
+200 & $(0,0,0)$ & 0 & 0 & 1,140 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/06_F_zoom.png}
+\caption{진입비 0--20에서의 집중·분산 전환.}\label{fig:sc-06_F_zoom}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/07_F_full.png}
+\caption{더 큰 진입비에서 단일 도시 진입과 미진입으로 전환하는 비용 비교.}\label{fig:sc-07_F_full}
+\end{figure}
+\textbf{해석.} 진입비가 낮으면 세 도시에서 얻는 추가 서비스가 유리하다.
+두 도시 배치의 비용은 $818+2F$, 세 도시 배치는 $810+3F$이므로 $F=8$에서 동률이다.
+모든 후보 비용의 하한을 비교하면 $F<8$에서 세 도시, $8<F<160$에서 B·C,
+$160<F<162$에서 C만 진입하며, $F>162$에서 미진입한다.
+경계값에서는 인접 전략이 동률이다. 이는 현재 합성 입력의 전환점이다.
+
+\clearpage
+\subsubsection{차량 생산성 $\kappa$}
+\begin{table}[H]
+\centering\small
+\caption{주요 설정의 결과: 차량 생산성 (처리량: 건/년, 금액: USD)}\label{tab:sc-selected-kappa}
+\begin{tabular}{lrrrrr}
+\toprule
+입력값 & 대표 배치 & 처리량 & 처리율(\%) & $Z$ & 개선액\\\midrule
+5 & $(0,2,2)$ & 18.2 & 15.96 & 1,018 & 122\\
+10 & $(0,2,2)$ & 34.2 & 30 & 858 & 282\\
+12 & $(0,2,2)$ & 39.4 & 34.56 & 806 & 334\\
+12.5 & $(1,1,2)$ & 42.7 & 37.46 & 793 & 347\\
+20 & $(1,1,2)$ & 61 & 53.51 & 610 & 530\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/08_kappa.png}
+\caption{차량 한 대의 처리 용량을 바꾼 결과.}\label{fig:sc-08_kappa}
+\end{figure}
+\textbf{해석.} 생산성이 높아지면 B의 두 번째 차량보다 A의 첫 차량에서 얻는 서비스가 유리해질 수 있다.
+$\kappa=12$에서는 집중·분산이 동률이고, 12.5에서는 세 도시 배치가 선택된다.
+$\kappa=20$의 대표 배치는 $(1,1,2)$이며 처리율은 약 53.5\%, 목적함수는 610이다.
+기본값보다 남는 용량이 늘더라도 처리량도 증가하므로 유휴량만으로 성과를 판단하지 않는다.
+
+\clearpage
+\subsubsection{A의 시장규모 $M_A$}
+\begin{table}[H]
+\centering\small
+\caption{주요 설정의 결과: A의 시장규모 배율 (처리량: 건/년, 금액: USD)}\label{tab:sc-selected-M_A-multiplier}
+\begin{tabular}{lrrrrr}
+\toprule
+입력값 & 대표 배치 & 처리량 & 처리율(\%) & $Z$ & 개선액\\\midrule
+0.5 & $(0,2,2)$ & 34.2 & 34.62 & 706 & 282\\
+1 & $(0,2,2)$ & 34.2 & 30 & 858 & 282\\
+1.25 & $(0,2,2)$ & 34.2 & 28.13 & 934 & 282\\
+1.3 & $(2,0,2)$ & 34.24 & 27.81 & 948.8 & 282.4\\
+2 & $(2,0,2)$ & 34.8 & 24.1 & 1,156 & 288\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/09_A_market.png}
+\caption{A의 시장규모만 변경한 결과. 배율 1은 $M_A=80$이다.}\label{fig:sc-09_A_market}
+\end{figure}
+\textbf{해석.} 1.25배($M_A=100$)에서는 $(0,2,2)$와 $(2,0,2)$가 동률이고,
+1.30배($M_A=104$)에서는 B의 두 차량을 A로 옮긴 $(2,0,2)$가 선택된다.
+A와 B의 시장규모가 같아지는 지점에서 선택확률의 주변분포도 같으므로 동일한 차량 수의 기대 처리량이 같아진다.
+$M_A$ 증가는 평균 수요와 변동 폭을 함께 키우는 변화이다.
+
+\clearpage
+\subsubsection{공통 유휴 페널티 $c^+$}
+기본값이 0이므로 음수로 낮추지 않고 0에서 양수로 증가시켰다.
+이는 차량비 $K$ 외에 남는 용량에 추가 비용을 부과하는 실험이다.
+\begin{table}[H]
+\centering\small
+\caption{주요 설정의 결과: 공통 유휴 페널티 (처리량: 건/년, 금액: USD)}\label{tab:sc-selected-c_plus}
+\begin{tabular}{lrrrrr}
+\toprule
+입력값 & 대표 배치 & 처리량 & 처리율(\%) & $Z$ & 개선액\\\midrule
+0 & $(0,2,2)$ & 34.2 & 30 & 858 & 282\\
+5 & $(0,2,2)$ & 34.2 & 30 & 887 & 253\\
+10 & $(0,2,2)$ & 34.2 & 30 & 916 & 224\\
+15 & $(0,2,2)$ & 34.2 & 30 & 945 & 195\\
+15.5 & $(1,1,2)$ & 35 & 30.7 & 947.5 & 192.5\\
+20 & $(1,1,2)$ & 35 & 30.7 & 970 & 170\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/13_cplus.png}
+\caption{유휴 페널티에 대한 배치와 성과의 민감도.}\label{fig:sc-13_cplus}
+\end{figure}
+\textbf{해석.} 실행점 0--14.5에서는 $(0,2,2)$가 유지되지만 비용은 증가한다.
+이 배치는 평균 5.8건의 유휴 용량이 있으므로 $Z=858+5.8c^+$이다.
+분산 배치 $(1,1,2)$와 $(1,2,1)$은 유휴 용량이 5건이며 $Z=870+5c^+$이다.
+따라서 두 비용식은 $c^+=15$에서 같아진다. 이 값에서 세 배치가 동률이며,
+15.5--20의 실행점에서는 두 분산 배치가 최적이다.
+배치 전환 후 처리율은 30.0\%에서 약 30.70\%로 높아지지만,
+추가 유휴 비용 때문에 $c^+=20$의 개선액은 기본값 282보다 낮은 170이다.
+
+\clearpage
+\subsubsection{평균 수요를 유지한 변동성 $\alpha$}
+\[
+\bar p_c=\frac{1}{|S|}\sum_{s\in S}p_c^s,\qquad
+p_c^s(\alpha)=\bar p_c+\alpha(p_c^s-\bar p_c),\quad 0\le\alpha\le1.
+\]
+$\alpha=0$은 모든 시나리오가 평균 수요와 같은 경우이고, 1은 원래 시나리오이다.
+새 시나리오를 난수로 뽑지 않고 기존 시나리오의 변동 폭만 조절한다.
+\begin{table}[H]
+\centering\small
+\caption{주요 설정의 결과: 수요 변동 배율 (처리량: 건/년, 금액: USD)}\label{tab:sc-selected-alpha}
+\begin{tabular}{lrrrrr}
+\toprule
+입력값 & 대표 배치 & 처리량 & 처리율(\%) & $Z$ & 개선액\\\midrule
+0 & $(0,2,2)$ & 40 & 35.09 & 800 & 340\\
+0.35 & $(0,2,2)$ & 40 & 35.09 & 800 & 340\\
+0.4 & $(0,2,2)$ & 40 & 35.09 & 800 & 340\\
+0.5 & $(0,2,2)$ & 40 & 35.09 & 800 & 340\\
+1 & $(0,2,2)$ & 34.2 & 30 & 858 & 282\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/10_alpha.png}
+\caption{평균 수요를 유지하면서 변동 폭만 변경한 결과.}\label{fig:sc-10_alpha}
+\end{figure}
+\textbf{해석.} 변동이 없을 때는 $(0,2,2)$, $(2,0,2)$, $(2,2,0)$가 동률이다.
+원래 변동성에서는 $(0,2,2)$만 최적이며 목적함수는 800에서 858로 증가한다.
+대표 배치가 같아도 동률 해의 범위와 성과가 달라지므로, 대표 배치 하나만 보고 둔감하다고 판단할 수 없다.
+
+\clearpage
+\paragraph{평균 수요만 보고 결정한 배치의 재평가.}
+평균 수요로 구한 모든 최적 배치를 고정하고 원래 시나리오에서 다시 평가하였다.
+평균 문제 자체의 목적함수 800과 시나리오 문제의 858을 직접 비교하지 않는다.
+\begin{table}[H]
+\centering\small
+\caption{평균 수요 방식의 배치를 원래 시나리오에서 평가}\label{tab:sc-mean}
+\begin{tabular}{lrr}
+\toprule
+평균 수요의 최적 배치 & 공통 시나리오 평가비용 & 시나리오 최적 대비 추가 비용\\\midrule
+$(0,2,2)$ & 858 & 0\\
+$(2,0,2)$ & 872 & 14\\
+$(2,2,0)$ & 874 & 16\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/11_mean_comparison.png}
+\caption{동일 시나리오에서 두 방법을 평가한 결과. 음영은 평균 수요 문제의 동률 배치 사이 차이이다.}\label{fig:sc-11_mean_comparison}
+\end{figure}
+\textbf{해석.} 평균 수요로는 구별되지 않은 배치들이 변동 수요에서는 858, 872, 874의 비용을 낸다.
+시나리오 최적 배치 대비 추가 손실은 0--16이다. 따라서 항상 16을 절감한다는 의미는 아니다.
+
+\subsubsection{나머지 주요 입력의 3수준 점검}
+주요 전환점 분석과 함께 기존의 8개 입력별 3수준 실험도 유지하였다.
+$M$ 배율은 세 도시 모두에 적용하며, $Q$를 제외한 나머지 공통 값 역시 모든 도시에 적용한다.
+각 행에서 표시하지 않은 입력은 기본값이다. 단위는 입력표와 같고, $M$만 배율이다.
+\begin{table}[H]
+\centering\small
+\caption{8개 입력의 3수준 점검: 대표 배치와 성과}\label{tab:sc-original24}
+\begin{tabular}{lrrrrr}
+\toprule
+입력 & 설정 & 대표 배치 & 처리율(\%) & $Z$ & 개선액\\\midrule
+$M$ 배율 & 0 & $(0,0,0)$ & --- & 0 & 0\\
+$M$ 배율 & 1 & $(0,2,2)$ & 30 & 858 & 282\\
+$M$ 배율 & 2 & $(0,2,2)$ & 15.96 & 1,976 & 304\\
+$\kappa$ & 5 & $(0,2,2)$ & 15.96 & 1,018 & 122\\
+$\kappa$ & 10 & $(0,2,2)$ & 30 & 858 & 282\\
+$\kappa$ & 20 & $(1,1,2)$ & 53.51 & 610 & 530\\
+$\bar q$ & 0 & $(0,0,0)$ & 0 & 1,140 & 0\\
+$\bar q$ & 2 & $(0,2,2)$ & 30 & 858 & 282\\
+$\bar q$ & 4 & $(0,2,2)$ & 30 & 858 & 282\\
+$Q$ & 0 & $(0,0,0)$ & 0 & 1,140 & 0\\
+$Q$ & 4 & $(0,2,2)$ & 30 & 858 & 282\\
+$Q$ & 8 & $(2,2,2)$ & 43.68 & 732 & 408\\
+$F$ & 0 & $(1,1,2)$ & 30.7 & 810 & 330\\
+$F$ & 20 & $(0,2,2)$ & 30 & 858 & 282\\
+$F$ & 1,000 & $(0,0,0)$ & 0 & 1,140 & 0\\
+$K$ & 0 & $(0,2,2)$ & 30 & 838 & 302\\
+$K$ & 5 & $(0,2,2)$ & 30 & 858 & 282\\
+$K$ & 100 & $(0,0,0)$ & 0 & 1,140 & 0\\
+$c^+$ & 0 & $(0,2,2)$ & 30 & 858 & 282\\
+$c^+$ & 2 & $(0,2,2)$ & 30 & 869.6 & 270.4\\
+$c^+$ & 5 & $(0,2,2)$ & 30 & 887 & 253\\
+$c^-$ & 0 & $(0,0,0)$ & 0 & 0 & 0\\
+$c^-$ & 10 & $(0,2,2)$ & 30 & 858 & 282\\
+$c^-$ & 20 & $(0,2,2)$ & 30 & 1,656 & 624\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/smallcase/12_original_sweeps.png}
+\caption{원본의 24개 설정에 대한 미진입 대비 개선액. 세 점 사이의 정확한 전환점은 이 그림만으로 확정하지 않는다.}\label{fig:sc-12_original_sweeps}
+\end{figure}
+\textbf{해석.} $M$을 두 배로 늘리면 목적함수는 증가하지만 개선액도 282에서 304로 증가한다.
+도시별 차량 상한 2대에서 4대로의 완화는 기본 조건에서 최적비용을 바꾸지 않는다.
+$K=100$에서는 미진입하며, $c^-=20$에서는 배치가 같아도 놓친 수요의 평가액이 커진다.
+$c^+=0,2,5$만 보면 배치가 유지되지만, 앞의 확장 실험에서는 15에서 전환점이 확인된다.
+따라서 ``민감하지 않다''는 해석에는 반드시 조사한 범위를 함께 명시해야 한다.
+
+
+\end{document}

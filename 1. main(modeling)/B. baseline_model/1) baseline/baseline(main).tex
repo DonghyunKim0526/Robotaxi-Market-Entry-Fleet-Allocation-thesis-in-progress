@@ -1,0 +1,182 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}\usepackage{lmodern,amsmath,amssymb,array,tabularx,booktabs,xcolor,enumitem}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage{kotex}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\newcommand{\hd}[1]{\par\vspace{8pt}\textbf{#1}\par\vspace{3pt}}
+\newcommand{\circnum}[1]{\textcircled{\scriptsize #1}}
+\newcommand{\note}{\textreferencemark\ }
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\under}[2]{\underbrace{#1}_{\text{#2}}}
+\newcommand{\paper}[1]{\href{#1}{paper}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{1. Core model: City selection + vehicle deployment + multiple penalties}
+
+\[
+\boxed{\begin{aligned}
+\min_{y,q,O,U}\quad
+&\under{\sum_c F_c y_c}{Entry costs}
++\under{\sum_c K_c q_c}{Vehicle costs}\\
+&+\frac{1}{|S|}\sum_s\sum_c\left[
+\under{c_c^+O_c^s}{Remaining capacity}
++\under{c_c^-U_c^s}{Foregone contribution margin}
+\right].
+\end{aligned}}
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In $c^+,c^-$, $+,-$ distinguish excess and shortage, rather than the signs of costs. All demand, throughput, and costs use \textbf{the same evaluation period.} \note I suppose that setting the evaluation period is needed, and the model determines the city/vehicle deployment to apply during that period. 
+%%%%%%%%%%%%%%%%%%%%move from pg3 to pg1%%%%%%%%%%%%%
+\\
+
+\textbf{2. Constraints }
+
+\[
+\boxed{\begin{aligned}
+0\le q_c\le\bar q_c y_c&\qquad\forall c,\\
+\sum_c q_c\le Q,&\\
+\kappa_c q_c-M_c p_c^s=O_c^s-U_c^s
+&\qquad\forall c,s,\\
+y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0},&\\
+O_c^s,U_c^s\ge0.&
+\end{aligned}}
+\]
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.32\linewidth}Y@{}}
+\toprule
+Constraint & Meaning \\ \midrule
+$0\le q_c\le\bar q_c y_c$ & Zero vehicles if the city is not entered; up to the city-specific limit if it is entered \\
+$\sum_cq_c\le Q$ & Total vehicle limit \\
+$\kappa_c q_c-M_c p_c^s=O_c^s-U_c^s$ & The difference between service capacity and robotaxi demand equals unused capacity minus unmet demand. \\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%% 삭제 예정%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bottomrule
+\end{tabularx}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hd{3. Explanations}
+
+\textbf{A. Construct two types of demand }
+
+\[
+D_c^s = M_c p_c^s,\qquad 
+D_c^{N,s}= M_c (1-p_c^s)
+\]
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.12\linewidth}>{\raggedright\arraybackslash}p{0.42\linewidth}Y@{}}
+\toprule
+Symbol & Meaning & Explanation \\ \midrule
+$M_c$ &Total number of \textbf{potential travel opportunities across all modes} & Robotaxi demand + human-driven taxi demand + other demand \\
+$p_c^s$ & Probability of choosing robotaxi service for a travel opportunity
+in city $c$ under the specified service conditions,
+before applying fleet-capacity constraints & Need to be specified with reference service conditions such as fares and waiting times \\
+$D_c^s$ & Robotaxi choice demand & Demand \textbf{before} applying vehicle shortages \\
+$D_c^{N,s}$ & Demand not choosing robotaxis & Human-driven taxis, other modes, giving up the trip, etc. \\
+\bottomrule
+\end{tabularx}
+}
+
+\textbf{B. Constraints}\\
+1) Once demand $D_c^s$ and service capacity $\kappa_c q_c$ are determined, the following two values are calculated based on the deployment outcome; they are not variables that need to be investigated separately. $(x)^+=\max\{x,0\}$. Both values are measured in trips.
+
+\[
+\begin{aligned}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+O_c^s&=(\kappa_c q_c-D_c^s)^+&&\text{Remaining service capacity},\\
+U_c^s&=(D_c^s-\kappa_c q_c)^+&&\text{Unserved potential demand}.
+\end{aligned}
+\]\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%2pg%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\hd{4. Notation used in the model}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.1\linewidth}>{\raggedright\arraybackslash}p{0.37\linewidth}Y@{}}
+\toprule
+Symbol & Meaning & Type and unit \\ \midrule
+$C$ & Set of potential candidate cities & Input set; cities \\
+$S$ & Set of demand scenarios & Input set; scenarios \\
+$y_c$ & 1 if city $c$ is entered, else 0 & Decision variable; binary (0 or 1) \\
+$q_c$ & Number of vehicles deployed in city $c$ & Decision variable; vehicles (integer) \\
+$\kappa_c$ & Number of trips one vehicle can serve during the period & Scale parameter; trips/vehicle over the evaluation period.  \\
+$Q$ & Total number of vehicles available for deployment & Input parameter; vehicles \\
+$\bar q_c$ & Upper bound on vehicle deployment in each city & Input parameter; vehicles \\
+
+%%%%%%%%%%%%%% 비용 항목 %%%%%%%%%%%%%%%%%
+$F_c$
+& Fixed cost of city entry and basic infrastructure 
+& Input parameter; currency over the evaluation period
+\\
+
+$K_c$
+& Per-vehicle preparation, deployment, and holding cost
+over the evaluation period
+& Input parameter; currency/vehicle over the evaluation period
+\\
+
+$c_c^+$
+& Additional loss per unit of unused service capacity
+& Input parameter; currency/trip of unused capacity
+\\
+
+$c_c^-$
+& Foregone contribution margin per unit of unserved
+potential demand
+& Input parameter; currency/unserved trip
+\\
+
+$M_c$ & Total number of \textbf{potential travel opportunities across all modes}
+in city $c$ during one year. $c$ & Input parameter; usage opportunities over the evaluation period. \newline data or assumption \\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$p_c^s$ & Probability of choosing robotaxi service for a travel opportunity
+in city $c$ under the specified service conditions,
+before applying fleet-capacity constraints. & Scenario input; dimensionless probability in $[0,1]$ \\
+$D_c^s$ & Robotaxi choice demand & Derived input; trips over the evaluation period. \newline $D_c^s= M_cp_c^s$ \\
+$D_c^{N,s}$ & Demand not choosing robotaxis (human-driven taxis, other modes, giving up the trip, etc.) & Derived input; trips over the evaluation period. \newline $D_c^{N,s}= M_c(1-p_c^s)$ \\
+
+$O_c^s$ & Unused service capacity
+& Outcome variable; trips over the evaluation period. \newline $O_c^s =(\kappa_c q_c-D_c^s)^+$ \\
+
+$U_c^s$ & Unserved robotaxi demand
+& Outcome variable; trips over the evaluation period. \newline $U_c^s=(D_c^s-\kappa_c q_c)^+$ \\
+
+
+\bottomrule
+\end{tabularx}
+}
+
+\note Demand-related variables consist of the inputs $p_c^s,M_c$ and outcome variables calculated from scenario demand and deployment in the model. For the baseline model, $M_c$ is fixed.
+\note Outcome variables are not quantities to be predicted by collecting data for each one separately. They are outcomes calculated from demand and deployment.
+
+
+
+\end{document}

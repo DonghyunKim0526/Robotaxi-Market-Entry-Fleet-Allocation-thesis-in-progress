@@ -1,0 +1,424 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}\usepackage{lmodern,amsmath,amssymb,array,tabularx,booktabs,xcolor,enumitem}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\usepackage[normalem]{ulem}
+\usepackage{xltabular}
+\usepackage{comment}
+\usepackage{mdframed}
+\usepackage{kotex}
+\usepackage{longtable}
+\usepackage[unicode,colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+
+\newcommand{\paper}[1]{\href{#1}{paper}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\newcommand{\hd}[1]{\par\vspace{8pt}\textbf{#1}\par\vspace{3pt}}
+\newcommand{\circnum}[1]{\textcircled{\scriptsize #1}}
+\newcommand{\note}{\textreferencemark\ }
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\paper}[1]{\href{#1}{paper}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}p{0.045\linewidth}}
+
+\title{\textbf{$M$을 정하는 과정 정리}}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-10mm}
+
+\section{요약}
+이 문서는 고정된 $M$을 정하는 과정을 정리하였다.
+
+최초 회귀 추정하려 했던 $M$의 공변량이 $p$와도 영향을 줄 가능성이 커서 \textcolor{blue}{$M$을''전체 잠재 시장''이라고 정의}한다. 이에 \textcolor{blue}{$M_c$을 고정된 값(도시별 특정 상수)}로 정하여 도시별 \textcolor{blue}{$\textit{(인구)} $×$ \textit{1인당 통행 발생량}$}으로 산출한다. \red{데이터를 확인해보고 세부 산출 방법을 구상할 예정이고, 아래는 가이드라인만 제시한다.}
+
+
+
+%=====================================================================
+\section{이미 정해 놓은 후보군}
+
+\texttt{B. Candidates/candidates\_(M,p)}에서 이미 자료조사를 통해 선별한 후보 driving factor들이 아래와 같다.
+
+\subsection{Driving factors of $M$}
+The papers below mainly explain \textbf{observed ride-hailing usage}, so they do not include the `unrealized demand' included in the definition of $M$, making direct estimation impossible. However, I suppose the demand patterns provided by these papers lead to constructing `potential travel opportunities $M$' through modeling.
+
+{\small
+\begin{xltabular}{\linewidth}{@{} >{\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.32\linewidth} >{\raggedright\arraybackslash}p{0.3\linewidth} Y @{}}
+\toprule
+Variable & Supporting paper & Scope established in the paper & Measurement data \\ \midrule
+\endhead
+\textbf{Population and population density} & Elkhouly and Alhadidi, \textit{Ride-sharing Determinants} (\paper{https://arxiv.org/abs/2406.11590}); Zhang et al., \textit{Examining spatial heterogeneity\ldots} (\paper{https://arxiv.org/abs/2209.07980}) & Relationship of population and local density with conventional ride-hailing usage. Density effects may vary by area & \href{https://www.census.gov/programs-surveys/acs}{ACS} \\
+\textbf{Employment and economic activity} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Uses the economically active population and employment environment to explain usage & \href{https://lehd.ces.census.gov/data/}{LEHD/LODES}, ACS \\
+\textbf{Income} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Analyzes the relationship between income and usage in Chicago & \href{https://data.census.gov/table/ACSDT5Y2024.B19013}{ACS B19013} \\
+\textbf{Share of car-free households} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Analyzes the relationship between households without cars and usage & \href{https://data.census.gov/table/ACSDT1Y2022.B08201}{ACS B08201} \\
+\textbf{Land-use mix, accessibility, and commercial activity} & Zhang et al., \textit{Examining spatial heterogeneity\ldots} (\paper{https://arxiv.org/abs/2209.07980}) & Nonlinear and spatial differences in the urban environment and ridesourcing usage & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD} \\
+\textbf{Restaurant and leisure-facility density} & Loa, Lee, and Circella, \textit{Just another ride-hailing?} (\paper{https://link.springer.com/article/10.1007/s11116-026-10751-9}) & Relationship with \textbf{robotaxi trip counts in SF}. Does not separate the effects of $M$ and $p$ & \href{https://www.census.gov/programs-surveys/cbp.html}{Census CBP}, OpenStreetMap \\
+\textbf{Public transport and walking environment} & Zhang et al. (\paper{https://arxiv.org/abs/2209.07980}); Cats et al., \textit{Beyond the dichotomy\ldots} (\paper{https://doi.org/10.1371/journal.pone.0262496}) & Analyzes the local environment and travel-time competitiveness and substitutability with public transport. Not a uniform increase/decrease effect & EPA SLD, \href{https://gtfs.org/documentation/overview/}{GTFS} \\
+\textbf{Airport-related market size} & Zhang et al. (\paper{https://arxiv.org/abs/2209.07980}) & Analyzes airport travel as a separate spatial category. \textbf{Does not estimate the direct effect of airport passenger counts} & \href{https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger}{FAA passenger data}. Used as a proxy for market size \\
+\textbf{Time, day of week, and season} & Elkhouly and Alhadidi (\paper{https://arxiv.org/abs/2406.11590}) & Analyzes differences in usage over time. Specific variables such as holidays are selected through separate design & Dates and times in trip data \\
+\textbf{Weather} & Additional: Liu, Jiang, and Chen, \textit{Quantifying the impact of weather on ride-hailing ridership: Evidence from Haikou, China} (2021, \paper{https://doi.org/10.1016/j.tbs.2021.04.002}) & Analyzes the relationship between weather and ride-hailing usage. Effects in U.S. cities require revalidation & \href{https://www.ncei.noaa.gov/cdo-web/}{NOAA CDO} \\
+\bottomrule
+\end{xltabular}
+}
+\note Elkhouly \& Alhadidi, / Loa, Lee, \& Circella 논문에서와 같은 자료 모두 특정 도시 내의 구역을 대상으로 조사한 변수들이라 도시 전이 가정 필요하다.
+
+%----------------------------------
+\section{$M_c$를 상수로 정하는 방법}
+
+
+%-----------
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}>{\raggedright\arraybackslash}p{0.30\linewidth}>
+{\raggedright\arraybackslash}p{0.16\linewidth}>
+{\raggedright\arraybackslash}p{0.24\linewidth}Y@{}}
+\toprule
+방법 & $M_c$ 계산 & 필요한 자료 & 특징 & 선택여부 \\ \midrule
+(a) 기준 도시 + 가정한 $\beta$
+  & $\text{인구}_c\times m_{\mathrm{ref}}\times\prod_{k}\Big(\frac{x_{c,k}}{x_{\mathrm{ref},k}}\Big)^{\beta_k}$
+  & 기준 도시 1곳의 $M$
+  & $\beta$는 가정이라 민감도 분석 필수
+  & $X$ \\
+\midrule
+  
+(b) 구역 회귀로 $\beta$ 추정
+  & same as (a)
+  & 기준 도시의 구역별 자료
+  & 구역 $\to$ 도시 전이 가정 필요 + $\beta$는 가정이라 민감도 분석 필수
+  & $X$ \\
+\midrule
+
+\textbf{\textcolor{blue}{(c) 인구집단별 통행률 교차분류}}
+  & \textcolor{blue}{$\sum_g \text{인구}_{c,g}\times(\text{집단 }g\text{의 1인당 통행률})$}
+  & \textcolor{blue}{NHTS(미국 전국 가구통행조사)의 집단별 통행률 + ACS의 도시별 인구 구성}
+  & \textcolor{blue}{교통계획의 표준적인 통행 발생 방법. 회귀 없이 모든 도시에 같은 정의로 적용 가능} 
+  & \textcolor{blue}{$O$}\\
+\bottomrule
+\end{tabularx}
+}
+
+%----------------------------------
+\begin{mdframed}[linecolor=red!60,linewidth=2pt]
+\color{black!60}
+
+
+\section{(a), (b) 선택 시}
+For (a) and (b), $\beta$를 추정하고, 그 식에 각 후보 도시의 $x_c$와 인구를 넣어 $M_c$를 한 번 계산하는 방식이다. \red{\textbf{단, 이 방식으로 계산한 $M_c$는 overall ride-hailing을 정의한 것으로, 기존에 정의한 잠재 시장 $M_c$에 적용하려면 전이 가정이 필요하다.}}
+
+\[
+M_c=\text{인구}_c\times m_{\mathrm{ref}}\times\prod_{k}\Big(\frac{x_{c,k}}{x_{\mathrm{ref},k}}\Big)^{\beta_k}
+\]
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+\item $m_{\mathrm{ref}}$: 기준 도시(예: 시카고)의 인구당 ride-hailing 통행
+\item $\beta_k$: 변수 $k$가 1\% 오를 때 인구당 통행이 몇 \% 오르는가(탄력성)
+
+
+\item \textbf{$\beta$를 정하는 방법}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}>{\raggedright\arraybackslash}p{0.38\linewidth}Y@{}}
+\toprule
+방법 & 내용 & 특징 \\ \midrule
+(a) $\beta=1$ 가정
+  & 모든 변수에 대한 가중치 동일
+  & 단순 but $\beta$ 민감도 실험 필수\\
+(b) 기준 도시 \textbf{안의 구역} 자료로 추정
+  & 시카고 TNP 자료의 구역별 통행 + ACS 구역별 변수로
+    $\log(\text{통행}/\text{인구})=a+\sum_k\beta_k\log x_k$ 회귀
+  & 관측 수가 많아 $n/10$ 기준 (rule of thumb) 충족. 구역 $\to$ 도시 전이 가정 필요 \\
+
+\bottomrule
+\end{tabularx}
+}
+
+\end{itemize}
+
+%-------------------------------------------
+\subsection{$M$의 driving factor 선택 기준}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{0.06\linewidth}Y>{\raggedright\arraybackslash}p{0.14\linewidth}@{}}
+\toprule
+번호 & 기준 & 성격 \\ \midrule
+1 & 문헌이 ride-hailing 이용량과 일관된 부호의 연관을 보고; 추정 부호가 어긋나면 제외·설명 & 사전 + 사후 \\
+2 & 모든 후보 도시에서 같은 출처·정의·지리 단위로 결정 시점에 구할 수 있음 & 사전 \\
+3 & 해석 가능; 변수 수 $\le n/10$, 개념당 하나 & 사전 \\
+4 & 규모 무관 비율(인구당·면적당·가구당); 인구는 규모 인자로 분리 & 사전 \\
+5 & 결정 $q$와 무관(외생) & 사전 \\
+6 & 후보 도시 값이 학습 데이터 범위 안 & 사전 \\
+7 & 적합 후 잔차가 $x$에 대해 패턴 없음(평균 0, 퍼짐 일정) & 사후 \\
+\bottomrule
+\end{tabularx}
+}
+
+\subsection{각 기준에 대한 검토}
+
+\textbf{1. 문헌에서 일관된 부호의 연관을 보고한 변수}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item 의미: 특정 변수가 해석이 positive한 방향인지 negative한 방향인지 애매한 경우는 해석이 어려워져 배제한다. [사후 검증] 일관된 방향으로 해석이 나타나는 경우에도 추정 후 부호가 문헌과 어긋나면 제외하거나 설명한다.
+\item 주의점: 조사한 문헌의 factor들은 ``관측된 ride-hailing 이용''에 대한 것이지 전체 잠재 시장 $M$에 대한 것이 아니다. 즉, ``$M$에 확실히 영향''이라고 단정할 수 없으며, 선정한 변수는 ``ride-hailing 이용량과의 연관''으로, $M$으로의 전이는 가정으로 명시한다.
+\end{itemize}
+
+\textbf{2. 모든 후보 도시에 데이터가 있는 변수}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item \circnum{1} 같은 출처·같은 정의(예: ACS 5년 추정), \circnum{2} 같은 지리 단위(시 경계 vs 광역권 vs 서비스 구역 --- 섞이면 안 됨), \circnum{3} 결정 시점에 이미 있는 값(미래 자료 금지).
+\end{itemize}
+
+\textbf{3. 해석 가능한 변수}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item ``어떤 context가 진입을 결정하는가''가 드러나는 변수를 고른다. 상관관계가 있는 변수 다수 선택은 가급적 배제한다 (ex. 밀도·무차량 가구·대중교통).
+\end{itemize}
+
+\textbf{4. 규모 무관 비율}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item 밀도는 면적당, 소득은 가구당, 공항은 인구당 이용객이라 전부 ``인구당''은 아니다. 그리고 인구 자체는 공변량이 아니라 $M=\text{인구}\times(\text{인구당 비율})$의 규모 인자로 빠진다. 종속변수가 인구당 통행이면 공변량도 비율이어야 한다는 것이 정확한 규칙이다.
+\end{itemize}
+
+\textbf{5. 외생 변수}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item 결정 $q$에 따라 변하지 않는 변수. ex. ``과거 ride-hailing 이용량''의 경우, $M$ 쪽은 대부분 통과하지만, 공변량으로 쓰면 예측력은 최고인 대신 ``왜''를 설명하지 못한다.
+\end{itemize}
+
+\textbf{6. 후보 도시의 값이 학습 범위 안}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item 범위 밖이면 $\hat f(x_c)$가 외삽이 되어 Kannan 가정 2의 예측오차가 커진다.
+\end{itemize}
+
+\textbf{7. 공변량이 잔차와 무관}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item 적합 후 점검 항목이다. OLS에서는 포함된 공변량과 잔차의 상관이 자동으로 0이라 기준으로는 아무것도 못 거른다. 의도한 것은 Kannan의 가정(잔차 분포가 $x$에 따라 달라지지 않음: 평균 0, 등분산성)이고, 이건 잔차 그림이나 이분산 검정으로 확인한다. 깨지면 종속변수를 비율·로그로 바꾸거나(4번이 이 역할) 빠진 변수를 넣는다. 이 기준은 ``선택 후 확인: 잔차에 $x$에 대한 패턴이 없어야 하며, 있으면 변환 또는 변수 추가''로 읽는다.
+\end{itemize}
+
+%----------------------------------------
+\subsection{후보군에 기준 적용: $M$}
+
+\subsection{적용 표}
+
+기준 1--5를 driving factor 표의 각 변수에 적용한 결과이다. 6·7은 데이터와 회귀가 있어야 판정할 수 있으므로 ``추후''로 둔다.
+판정은 \textbf{선택} / \textbf{보류}(데이터·부호 확인 후 결정) / \textbf{제외}의 세 단계다.
+기준 1 칸의 $+$는 해당 논문에서 확인한 부호이고, \textbf{``확인 필요''}는 표에 부호가 기록되어 있지 않아 원 논문에서 다시 확인해야 하는 항목이다.
+
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.17\linewidth}CCCCC>{\raggedright\arraybackslash}p{0.08\linewidth}Y@{}}
+\toprule
+변수 & 1 & 2 & 3 & 4 & 5 & 판정 & 이유 / 쓰는 형태 \\ \midrule
+Population & -- & ○ & ○ & × & ○ & 분리 & 공변량이 아니라 규모 인자. $M=\text{인구}\times\hat f(x)$에서 곱해 주는 자리에 둔다 (기준 4). \\
+Population density & △ & ○ & ○ & ○ & ○ & 보류 & 표에 ``Density effects may vary by area''. 지역에 따라 \textbf{크기}가 다른 것인지 \textbf{부호}가 뒤집히는 것인지 Zhang et al.에서 확인 후 결정. 둘 다 남으면 무차량 가구 비율과의 상관을 보고 기준 3(개념당 하나)으로 재검토. \\
+\textcolor{blue}{Employment / economic activity} & $+$ & ○ & ○ & ○ & ○ & 선택 & Elkhouly \& Alhadidi: 경제활동인구 비율 유의, 양의 효과. LEHD/LODES·ACS로 모든 도시 가능. 인구당 일자리 수 또는 경제활동인구 비율로 쓴다. 소득과의 상관 점검 필요(3.3). \\
+\textcolor{blue}{Income} & $+$ & ○ & ○ & ○ & ○ & 선택 & Elkhouly \& Alhadidi: 중위소득 유의, 양의 효과. ACS B19013으로 모든 도시 가능. 가구 중위소득(가구당 값). 단일 도시(시카고 구역) 근거이므로 도시 수준에서 부호 사후 확인 필수. \\
+\textcolor{blue}{Share of car-free households} & $+$ & ○ & ○ & ○ & ○ & 선택 & Elkhouly \& Alhadidi: 무차량 가구 비율 유의, 양의 효과. ACS B08201로 모든 도시 가능. 이미 가구 비율이라 기준 4 자연 충족. 해석이 가장 직접적(차가 없으면 호출 수요). \\
+Land-use mix / accessibility & \red{확인 필요} & ○ & △ & ○ & ○ & 보류 & 표에 ``Nonlinear and spatial differences''. 비선형이어도 단조(부호 일정)일 수 있으므로 Zhang et al.에서 확인. 지수 형태라 해석은 간접적(기준 3 △). \\
+Restaurant / leisure density & △ & ○ & ○ & ○ & ○ & 보류 & 근거가 SF 로보택시 통행 한 도시이고 $M$과 $p$ 효과를 분리하지 못함. CBP로 데이터는 가능. $p$ 쪽 후보로 재검토. \\
+Public transport / walking & × & ○ & ○ & ○ & ○ & 제외 & 표에 ``Not a uniform increase/decrease effect''(대체·보완 양방향). 기준 1 탈락. \\
+Airport-related market size & × & ○ & ○ & ○ & ○ & 보류 & ``Does not estimate the direct effect''이고 대리변수. 인구당 공항 이용객으로 쓸 수는 있으나 기준 1을 못 넘으므로, 넣는다면 ``대리변수''라고 명시하고 민감도로만. \\
+Time / day of week / season & -- & ○ & × & -- & ○ & 제외 & 도시 특성이 아니라 시간 변수. 연 단위 진입 결정에서는 평균에 묻힌다. 연도 추세 하나만 고려. \\
+Weather & △ & ○ & × & -- & ○ & 제외 & 근거가 중국 하이커우 자료이며 미국 재검증 필요(기준 1 불확실). 시간 변수라 연 단위 결정에서 평균에 묻힘. \\
+\bottomrule
+\end{tabularx}
+}
+
+\subsection{추가 검토: \textcircled{1} 변수 간 상관 \textcircled{2} 분석 단위}
+
+\textbf{(i) 경제활동인구 비율과 소득의 상관.} 두 변수는 보통 양의 상관을 갖지만 같은 것은 아니다(대학 도시는 경제활동 비율이 높고 소득이 낮을 수 있고, 은퇴 인구가 많은 도시는 반대). 논문은 두 변수를 같은 공간회귀에 넣어 둘 다 유의하다고 보고했으므로, 시카고 구역 수준에서는 서로 구분되는 정보를 가진 셈이다. 우리 도시 수준 데이터에서는 다시 확인해야 한다: 상관계수와 VIF를 점검하고, 상관이 높으면(예: $|r|>0.7$ 또는 VIF $>5$) 기준 3(개념당 하나)에 따라 하나만 남긴다. 남기는 우선순위는 무차량 가구 비율(해석이 가장 직접적) $>$ 소득 또는 경제활동 비율 중 하나.
+
+\textbf{(ii) 분석 단위의 전이.} 논문은 시카고 한 도시 안의 구역 단위(community area 또는 census tract --- 원 논문에서 확인) 공간회귀다. 우리는 도시 단위로 쓰려 한다. 도시 \textbf{안} 구역 사이에서 성립한 관계가 도시 \textbf{사이}에서도 성립한다는 보장은 없다(집계 수준이 바뀌면 관계가 달라질 수 있음). 따라서 기준 1의 근거는 ``구역 수준 증거''라고 명시하고, 도시 수준 전이는 가정으로 두며, 기준 1의 사후 검증(도시 수준 데이터에서 부호 재확인)으로 보완한다. 도시 간 비교에서는 소득에 생활비 차이가 섞이므로 지역 물가로 조정하거나 상대값을 쓰는 것도 고려한다.
+
+\subsection{1차 선택 결과}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item \textbf{선택(3개, 부호 확인됨)}: \textcolor{blue}{\textbf{경제활동인구 비율(또는 인구당 일자리), 가구 중위소득, 무차량 가구 비율}}. 종속변수는 인구당 ride-hailing 통행량, 인구는 규모 인자로 분리. 셋 중 상관이 높은 쌍이 있으면 하나로 줄인다(3.3).
+\item \textbf{보류(4개)}: 밀도, 토지이용 혼합도(부호 반전 여부 확인), 식당·여가시설 밀도($p$ 쪽 후보로 이동 검토), 공항 이용객(대리변수로 민감도에서만).
+\item \textbf{제외(3개)}: 대중교통·보행 환경, 시간·요일·계절, 날씨.
+\end{itemize}
+
+\subsection{\textbf{(a), (b) 방식에 대한 결론}}
+\begin{itemize}
+    \item 선택한 공변량 \textbf{(경제활동인구 비율(또는 인구당 일자리), 가구 중위소득, 무차량 가구 비율)}이 $M$보다 ride-hailing을 고르느냐($p$)에 더 영향을 줄 가능성이 더 클 수 있다.
+    \item 4.5의 내용에 따라 변수 간 상관과 구역 → 도시 전이 가정을 별도로 고려해야 한다. 
+\end{itemize}
+
+\end{mdframed}
+%-----------------------------------
+\section{(c) 선택 시}
+
+\textcolor{blue}{$M_c$를 \textbf{NHTS의 인구집단별 1인당 통행률 × 도시별 인구}로 구성한다. 이 방법으로 하면 회귀 없이 모든 후보 도시에 같은 정의로 계산하는 고정값이 산출된다.}
+
+\red{세부적인 산출과정은 데이터를 직접 보고 다시 정리예정. 아래는 방법에 대한 가이드라인만 서술.}
+
+%----------------------------------------
+\subsection{필요한 데이터}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.17\linewidth}>{\raggedright\arraybackslash}p{0.35\linewidth}>{\raggedright\arraybackslash}p{0.37\linewidth}Y@{}}
+\toprule
+필요한 것 & 출처 (링크) & 비고 \\ 
+\midrule
+인구집단별 1인당 통행률 $r_g$
+  & NHTS (FHWA 전국 가구통행조사) 공개 마이크로데이터 (가구·개인·통행 파일): \href{https://nhts.ornl.gov/downloads}{nhts.ornl.gov/downloads}
+  & 응답자가 하루 통행일지를 기록. 가구 차량 수, 소득 구간, 가구원 수, 연령, 도시 규모 등 분류 변수와 통행 수단이 들어 있음. 2017 조사는 주(州) 추가표본 포함 약 13만 가구로 크고, 2022 조사는 표본이 훨씬 작으니 셀 수를 정할 때 주의 \\
+\midrule  
+도시별 집단 인구 $N_{c,g}$
+  & ACS 5년 추정 (모든 지리 단위에 제공): \href{https://www.census.gov/programs-surveys/acs}{census.gov/programs-surveys/acs}
+  & 집단을 두 변수 이상으로 교차할 때 표준 표에 없는 조합은 ACS PUMS(마이크로데이터, PUMA 단위 $\ge$ 10만 명)에서 직접 집계 \\
+\midrule
+도시 인구(규모 인자)
+  & ACS \href{https://data.census.gov/table/ACSDT5Y2022.B01003}{B01003} 또는 Census
+  & \\
+검증용 지역 가구통행조사
+  & MPO 자료. 예: 시카고 CMAP \href{https://www.cmap.illinois.gov/}{cmap.illinois.gov}, 뉴욕 NYMTC \href{https://www.nymtc.org/}{nymtc.org}
+  & 총 통행량 비교로 오차 크기 확인 \\
+\bottomrule
+\end{tabularx}
+}
+
+\note 링크는 작성 시점 기준이며, 표 번호(B08201 등)의 연도 접미사(ACSDT5Y2022)는 쓰는 ACS 연도에 맞게 바꾼다. \\
+\note ACS 표 조회: \href{https://data.census.gov/}{data.census.gov}. \\ 
+\note ACS 표 예: \href{https://data.census.gov/table/ACSDT5Y2022.B08201}{B08201}(가구원 수 $\times$ 보유 차량 수), \href{https://data.census.gov/table/ACSDT5Y2022.B19001}{B19001}(가구 소득 구간), \href{https://data.census.gov/table/ACSDT5Y2022.B01001}{B01001}(연령). \\ 
+\note 교차 집계 ACS PUMS: \href{https://www.census.gov/programs-surveys/acs/microdata.html}{census.gov/programs-surveys/acs/microdata} \\ 
+\note 집계 도구: \href{https://data.census.gov/mdat/}{data.census.gov/mdat}
+
+\note 둘 다 공개 자료이고 모든 후보 도시에 같은 정의로 적용되므로 기준 2(출처·정의·지리 단위 동일)를 만족한다. 단, NHTS 공개 파일은 도시를 직접 식별하지 않는다(주, 도시 규모 구간, 일부 대도시권 코드만). 그래서 ``도시별 통행률''이 아니라 \textbf{``집단별 전국 통행률''을 도시의 인구 구성에 곱하는} 방식이 된다. 이것이 교차분류의 핵심이다.
+
+%----------------------------------
+\subsection{절차}
+
+\textbf{1. 집단 $g$를 정한다.} 교통계획에서 통행 발생을 가장 잘 가르는 변수는 가구 차량 수와 소득이고, 최초 $M_c$의 공변량 선택과도 겹친다. 
+
+\begin{comment}
+예: 차량 수 $\{0,1,2+\}$ $\times$ 소득 $\{$저, 중, 고$\}$ = 9개 셀. 셀이 많으면 NHTS 셀당 표본이 줄어 통행률이 불안정해지므로 10개 안팎으로 제한한다. 도시 규모(NHTS의 MSA 규모 구간)를 한 축 더 넣으면 대도시 특성이 조금 반영된다.
+\[
+G=V\times I,\qquad V=\{0,\,1,\,2+\},\quad I=\{\text{저},\,\text{중},\,\text{고}\},\qquad |G|=9
+\]
+\end{comment}
+
+\textbf{2. NHTS에서 $r_g$를 계산한다.} 통행 파일을 집단별로 나누고, 가중치를 써서 집단 $g$의 연간 1인당 통행 수를 구한다
+
+\begin{comment}
+(2017 파일의 통행 가중치는 연간으로 환산되어 있으니 합산하면 연간 통행이 된다. 변수명과 가중치 정의는 해당 연도 코드북에서 확인).
+\[
+r_g=\frac{\displaystyle\sum_{t\in T_g} w^{\mathrm{trip}}_t}{\displaystyle\sum_{i\in P_g} w^{\mathrm{person}}_i}
+\qquad
+\begin{aligned}
+&T_g:\ \text{집단 } g\text{에 속한 응답자의 통행 레코드 집합}\\
+&P_g:\ \text{집단 } g\text{에 속한 응답자(개인) 집합}\\
+&w^{\mathrm{trip}}_t,\ w^{\mathrm{person}}_i:\ \text{통행·개인 가중치 (연간 환산)}
+\end{aligned}
+\]
+통행 가중치가 하루 기준이면 분자에 365를 곱한다.
+\end{comment}
+
+
+\textbf{3. ACS에서 $N_{c,g}$를 구한다.} 각 후보 도시에 대해 집단별 인구를 구한다. 차량 수 $\times$ 소득 교차는 표준 표에 없으므로 PUMS에서 PUMA별로 집계해 도시로 합친다. 가구 단위 자료이면 가구원 수를 곱해 사람 수로 바꾼다.
+
+\begin{comment}
+\[
+N_{c,g}=\sum_{u\in U_c}\ \sum_{h\in H_u:\ g(h)=g} w_h\,n_h
+\qquad
+\begin{aligned}
+&U_c:\ \text{도시 } c\text{를 이루는 PUMA 집합}\\
+&H_u:\ \text{PUMA } u\text{의 PUMS 가구 레코드},\quad g(h):\ \text{가구 } h\text{의 집단}\\
+&w_h:\ \text{가구 가중치},\quad n_h:\ \text{가구원 수}
+\end{aligned}
+\]
+표준 표(B08201, B19001)로 한 변수씩만 쓸 때는 $N_{c,g}$를 해당 표의 셀 값(가구 수 $\times$ 평균 가구원 수)으로 바로 읽는다.
+\end{comment}
+
+\textbf{4. 곱해서 더한다.} 모든 후보 도시에 같은 $r_g$를 쓰므로 도시 간 차이는 인구 규모와 구성에서만 나온다.
+\[
+M_c=\sum_{g\in G} N_{c,g}\;r_g
+\]
+인구를 규모 인자로 분리해 쓰면
+\[
+M_c=\text{인구}_c\times\sum_{g\in G}\pi_{c,g}\,r_g,\qquad \pi_{c,g}=\frac{N_{c,g}}{\text{인구}_c}\ (\text{도시 } c\text{의 집단 구성비}),
+\]
+즉 $\bar r_c=\sum_g\pi_{c,g}r_g$가 도시 $c$의 ``구성 가중 1인당 통행률''이다.
+
+\textbf{5. 검증.} 지역 교통계획기구(MPO)의 가구통행조사가 있는 도시(시카고 CMAP, 뉴욕 NYMTC 등)에서 총 통행량과 비교해 오차 크기를 보고, 그 크기를 $M$ 민감도 범위로 쓴다.
+\[
+e_c=\frac{M_c-M_c^{\mathrm{MPO}}}{M_c^{\mathrm{MPO}}},\qquad
+\text{민감도 범위: } M_c\times\big(1\pm\max_{c'}|e_{c'}|\big)
+\]
+
+%------------------------------
+
+\subsection{example}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.30\linewidth}rrr@{}}
+\toprule
+집단 $g$ (차량 $\times$ 소득) & $r_g$ (연간 1인당 통행) & 도시 A 인구 $N_{A,g}$ & $N_{A,g}\times r_g$ \\ \midrule
+0대 $\times$ 저소득 & 900 & 60{,}000 & 54.0M \\
+0대 $\times$ 중·고소득 & 1{,}000 & 40{,}000 & 40.0M \\
+1대 $\times$ 저소득 & 1{,}100 & 150{,}000 & 165.0M \\
+1대 $\times$ 중·고소득 & 1{,}250 & 250{,}000 & 312.5M \\
+2대+ $\times$ 전체 & 1{,}350 & 500{,}000 & 675.0M \\ \midrule
+\textbf{합계} & & 1{,}000{,}000 & $\boldsymbol{M_A=1{,}246.5\text{M}}$ \\
+\bottomrule
+\end{tabularx}
+}
+
+\begin{comment}
+같은 $r_g$로 도시 B를 계산하면, B의 무차량 가구가 많을수록 합이 작아지고 2대+ 가구가 많을수록 커진다. 즉 ``무차량 가구 비율''은 이 방식에서 $M$을 \textbf{줄이는} 쪽으로 작용한다. 차가 없는 사람은 통행 자체를 덜 하기 때문이다. 반면 ride-hailing을 \textbf{고르는} 비율($p$)은 올린다. 앞서 ``무차량 가구 비율은 $M$보다 $p$ 요인''이라고 한 것이 이 구조에서 명확해진다.
+\end{comment}
+
+%------------------------------------
+\subsection{사전 정의}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item \textbf{어떤 통행을 ``이용 기회''로 볼 것인가.} 모든 사람 통행을 다 넣으면 $M$이 매우 커지고 $p$는 매우 작아진다. 걷기 300m 같은 통행은 로보택시로 대체될 기회가 아니므로, 예를 들어 ``일정 거리 이상의 비도보 통행''으로 좁히는 선택지가 있다. NHTS에는 통행 거리와 수단이 있어 이 조건을 걸 수 있다:
+
+\begin{comment}
+이 선택이 $M$의 자릿수를 정하므로 교수님이 말한 스케일 문제와 직결된다.
+\end{comment}
+
+\item \textbf{지리 단위.} 로보택시 서비스 구역은 도시 전체가 아니라 대도시권 일부다. 시(place) 경계, 카운티, CBSA 중 하나로 고정하고 ACS도 같은 단위로 뽑아야 한다(기준 2).
+\item \textbf{연도.} 단위기간을 연도로 설정하였고 같은 연도의 데이터를 살피고 표본이 적정한 크기를 가져야 한다.
+
+\begin{comment}
+2017은 표본이 크지만 코로나 이전이고, 2022는 최근이지만 표본이 작다. 하나를 고르고 ACS 연도를 맞춘다.
+\end{comment}
+
+\end{itemize}
+
+%=====================================================================
+\subsection{한계}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item 집단별 통행률이 전국 공통이라는 가정이라, 밀도·대중교통 같은 도시 특성이 인구 구성을 통해서만 반영된다. 그 이상의 도시 효과를 넣으려면 (c) 구역 회귀와 결합해야 한다.
+\item 셀당 NHTS 표본이 작으면 $r_g$가 흔들린다. 셀 수를 줄이거나 표본이 큰 2017 자료를 쓰는 방안이 있다.
+\item $p$의 관측치는 같은 지리 단위에서 ``로보택시 통행 / $M_c$''로 재야 분모가 맞는다. 로보택시 통행 수의 도시별 자료는 따로 확인이 필요하다.
+\end{itemize}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+%---------------------------------------
+\begin{comment}
+\subsection{다음 할 일}
+\begin{enumerate}[leftmargin=*,itemsep=1pt]
+\item 보류 변수(밀도, 토지이용 혼합도)의 부호 반전 여부를 Zhang et al.에서 확인한다 (기준 1).
+\item 후보 도시 목록을 확정하고 선택 변수의 값을 같은 출처·연도·지리 단위로 모은다 (기준 2, 6). Elkhouly \& Alhadidi의 분석 단위(구역)를 확인해 3.3(ii)의 전이 가정을 문서에 적는다.
+\item 선택 변수 간 상관계수·VIF를 계산해 기준 3으로 최종 수를 정한다.
+\item 회귀 적합 후 추정 부호와 잔차 패턴을 점검한다 (기준 1 사후, 7). 어긋나면 제외하거나 변환.
+\item $p$의 종속변수(관측치)를 정한 뒤 1.2 표에 같은 기준을 적용한다. 요금·대기시간·차량 내 기능은 우리 결정에 의존하므로 기준 5에서 제외되고 decision-dependent 모델(④)로 넘어간다.
+\end{enumerate}
+\end{comment}
+
+\end{document}

@@ -1,0 +1,156 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}\usepackage{lmodern,amsmath,amssymb,array,tabularx,booktabs,xcolor,enumitem}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\usepackage{xcolor}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\newcommand{\hd}[1]{\par\vspace{8pt}\textbf{#1}\par\vspace{3pt}}
+\newcommand{\circnum}[1]{\textcircled{\scriptsize #1}}
+\newcommand{\note}{\textreferencemark\ }
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\under}[2]{\underbrace{#1}_{\text{#2}}}
+\newcommand{\paper}[1]{\href{#1}{paper}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{Problem of Interest}
+\textbf{Which cities among the potential candidate cities selected by the company should be allocated robotaxis, and how many?}\\
+
+To organize my thoughts, I tried to set a formula starting from simple models to developing into complex models. \textbf{The main model I suggest is the last model.}
+
+\circnum{1} Basic newsvendor model,\\
+\circnum{2} Model with added costs\\
+\circnum{3} Model that maximizes profit\\
+\circnum{4} multi-penalties.
+
+All of the formulations below determine city selection and vehicle numbers simultaneously.
+
+All demand, throughput, and costs use the same evaluation period. After the evaluation period is set, and the model determines the city/vehicle deployment to apply during that period. \textcolor{red}{(Need to think about how to set the period.)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{1. Notation used in common across every model}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.1\linewidth}>{\raggedright\arraybackslash}p{0.36\linewidth}Y@{}}
+\toprule
+Symbol & Meaning & How is the value determined? \\ \midrule
+$C$ & Set of potential candidate cities & The company's candidate list. \\
+$S$ & Set of demand scenarios & Need to be generated \\
+$y_c$ & 1 if city $c$ is entered, else 0 & \textbf{Determined by the optimization} \\
+$q_c$ & Number of vehicles deployed in city $c$ & \textbf{Determined by the optimization} \\
+$D_c^s$ & Potential robotaxi demand in scenario $s$ & \textbf{Estimated from data + assumptions for missing parts} \\
+$\kappa_c$ & Number of trips one vehicle can serve during the period & Operational data or assumptions or fixed. \\
+$Q$ & Total number of vehicles available for deployment & Company input. If unavailable, set an experimental value \\
+$\bar q_c$ & Upper bound on vehicle deployment in each city & Facility and operating limits. $Q$ if there is no separate limit \\
+$a_c$ & 1 if operation in the city is feasible at the planning stage & Assessed using permit, ODD, and facility data. Separate assumptions for unverified conditions \\
+$B$ & Upper bound on the number of cities that can be entered simultaneously & Company input or an experimental value \textbf{only when an actual restriction exists} \\
+$R_c^s$ & Actual throughput & A value calculated based on the deployment outcome in the model \\
+$O_c^s$ & Remaining service capacity & A value calculated based on the deployment outcome in the model \\
+$U_c^s$ & Unserved potential demand & A value calculated based on the deployment outcome in the model \\
+\bottomrule
+\end{tabularx}
+}
+
+$D_c^s$ is a sampled value of uncertain demand. \textbf{After the scenarios are generated, it is a fixed input during optimization}, and the model does not choose demand.
+
+\hd{2. Common constraints}
+\[
+\boxed{\begin{aligned}
+y_c\le q_c\le\bar q_c y_c &\qquad \forall c\in C,\\
+\sum_{c\in C}q_c\le Q,\quad \sum_{c\in C}y_c\le B&\\
+y_c\le a_c&\qquad\forall c\in C,\\
+y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0}.&
+\end{aligned}}
+\]
+\newpage
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.35\linewidth}Y@{}}
+\toprule
+Constraint & Meaning \\ \midrule
+$y_c\le q_c\le\bar q_c y_c$ & Zero vehicles if the city is not entered; at least one vehicle is deployed if it is entered \\
+$\sum_c q_c\le Q$ & Total vehicle limit \\
+$\sum_{c\in C}y_c\le B$ & Limit on the number of cities selected \\
+$y_c\le a_c$ & Enter only cities where operation is feasible \\
+\bottomrule
+\end{tabularx}
+}
+
+\hd{3. Values calculated based on the deployment outcome}
+Once demand $D_c^s$ and service capacity $\kappa_c q_c$ are determined, the following three values are calculated based on the deployment outcome; \textbf{they are not variables that need to be investigated separately.}
+\[
+\begin{aligned}
+R_c^s&=\min\{D_c^s,\kappa_c q_c\}&&\text{Actual throughput},\\
+O_c^s&=(\kappa_c q_c-D_c^s)^+&&\text{Remaining service capacity},\\
+U_c^s&=(D_c^s-\kappa_c q_c)^+&&\text{Unserved potential demand}.
+\end{aligned}
+\]
+Here, $(x)^+=\max\{x,0\}$. All three values are measured in trips.
+
+\hd{\circnum{1} Basic form: Minimize the problems of surplus vehicles and shortages}
+\[
+\boxed{\min_{y,q}\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}
+\left[\under{O_c^s}{Remaining capacity}+\under{\rho U_c^s}{Loss from shortages}\right]}
+\]
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.14\linewidth}>{\raggedright\arraybackslash}p{0.4\linewidth}Y@{}}
+\toprule
+Additional symbol & Meaning & How to set it \\ \midrule
+$\rho>0$ & How much more important one unit of shortage is considered than one unit of remaining capacity & \textbf{Researcher assumption or company preference.} E.g., sensitivity experiments comparing 1, 2, and 5 \\
+\bottomrule
+\end{tabularx}
+}
+
+\red{This model has no need of precise company cost data, but excludes entry costs of cities.}\\
+\
+
+\hd{\circnum{2} Cost form: Minimize total costs, including entry and vehicle costs}
+\[
+\boxed{\begin{aligned}
+\min_{y,q}\quad&\under{\sum_c F_cy_c}{City entry costs}+\under{\sum_c K_cq_c}{Vehicle deployment and holding costs}\\
+&+\frac{1}{|S|}\sum_s\sum_c\left[\under{c_c^+O_c^s}{Loss from remaining capacity}+\under{c_c^-U_c^s}{Opportunity loss from unserved demand}\right]
+\end{aligned}}
+\]
+\newpage
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.12\linewidth}>{\raggedright\arraybackslash}p{0.37\linewidth}Y@{}}
+\toprule
+Additional symbol & Meaning and unit & How to set it / Required data \\ \midrule
+$F_c$ & Fixed cost of entering the city, in KRW or dollars & \textbf{Additional data required:} Costs of establishing a base and initial preparation. Explicit assumptions if unavailable \\
+$K_c$ & Deployment and holding cost per vehicle over the evaluation period & \textbf{Additional data required:} Vehicle, insurance, fixed operating costs, etc. \\
+$c_c^+$ & Additional loss per trip of remaining service capacity & Company data or assumptions. \textbf{Do not double-count the same costs as $K_c$} \\
+$c_c^-$ & Loss per trip of missed potential demand & Data or assumptions on contribution margin, customer churn, etc. \\
+\bottomrule
+\end{tabularx}
+}
+
+\hd{\circnum{3} Profit form: Maximize the profit from served rides}
+\[
+\boxed{\begin{aligned}
+\max_{y,q}\quad&\frac{1}{|S|}\sum_s\sum_c\under{m_c R_c^s}{Contribution margin from served rides}\\
+&-\under{\sum_cF_cy_c}{Entry costs}-\under{\sum_cK_cq_c}{Fixed vehicle costs}
+\end{aligned}}
+\]
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.12\linewidth}>{\raggedright\arraybackslash}p{0.42\linewidth}Y@{}}
+\toprule
+Additional symbol & Meaning & How to set it / Required data \\ \midrule
+$m_c$ & Revenue from one trip minus the variable costs incurred for that trip & \textbf{Additional data required:} Fares and variable costs such as operation and energy. Assumptions if unavailable \\
+\bottomrule
+\end{tabularx}
+}
+
+If customers cannot be served, the profit that would be earned decreases. \textbf{Adding the same revenue loss again as $c_c^-U_c^s$ may result in double counting.}
+
+This most directly reflects the company's perspective, but \red{fare and variable-cost data are required.} If it is not profitable, the result may be to enter no city.
+\end{document}

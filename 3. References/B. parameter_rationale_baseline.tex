@@ -1,0 +1,417 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,amsmath,amssymb,array,longtable,booktabs,enumitem, verbatim}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=blue,linkcolor=blue]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Baseline Model: Parameter Evidence and Setting Rationale}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+This document supports synthetic-data validation and sensitivity experiments for the baseline model. \textbf{The baseline model consists of fixed $M_c$, \textcolor{red}{exogenously given $p_c^s$}, city-entry decisions $y_c$, integer vehicle deployments $q_c$, and expected excess-capacity and unmet-demand costs.}
+
+\textbf{Evidence labels:} O denotes a value reported for a specific observation in a source; E denotes an estimate published by a source; D denotes an arithmetic derivation; and A denotes a researcher-designed assumption for the synthetic experiment.
+
+\textcolor{blue}{A source that provides a useful scale reference does not establish the proposed experimental range empirically. The range is designed using the source only as a reference.} \\
+
+\textbf{Evaluation basis:} \textbf{City entry and vehicle deployment are decided once, and one year of operation is evaluated.} $F_c$ is a one-time preparation and infrastructure cost incurred upon entry (USD), while $K_c$ is an incremental annual fixed cost per vehicle (USD/vehicle-year). $c_c^+$ is a monetary penalty for unused service capacity, and $c_c^-$ is the foregone contribution margin per unserved trip; both are measured in USD/trip. Demand and service capacity are measured in annual trips. The objective combines initial costs with costs, losses, and penalties over the one-year evaluation period.
+
+\section{Parameter ranges and recommended values}
+
+\small
+\begin{longtable}{P{0.10\linewidth}P{0.34\linewidth}P{0.48\linewidth}}
+\toprule
+Symbol & Synthetic experimental setting / domain & Evidence and interpretation \\
+\midrule\endfirsthead
+\toprule
+Symbol & Synthetic experimental setting / domain & Evidence and interpretation \\
+\midrule\endhead
+
+$C$ & \textbf{Three cities: A, B, and C.} & \textbf{A. Researcher assumption.} All candidate cities are assumed operationally feasible. \\
+\midrule
+
+$S$ & \textbf{Three scenarios} initially; subsequently sample 50, 100, and 500 scenarios using multiple random seeds. & \textbf{A. Researcher assumption.} \\
+\midrule
+
+$1/|S|$ & All scenarios are assumed equally likely. & \textbf{A. Researcher assumption.} \\
+\midrule
+
+$y_c$ & \textbf{$\{0,1\}$.} & \textbf{Determined by optimization.} If $F_c>0$, a city with $q_c=0$ has $y_c=0$ in an optimal solution. \\
+\midrule
+
+$q_c$ & Integer from \textbf{$0$ to $\min(\bar q_c,Q)$}, with $0\le q_c\le\min(\bar q_c,Q)$. & \textbf{A. Experimental feasible range.} The value of $q_c$ within that range is determined by optimization. \\
+\midrule
+
+$\bar q_c$ & 500 vehicles per city. Comparison values: 100, 500, and 1,000 vehicles. & \textbf{A/O. Researcher assumption informed by reported fleet sizes.} \hyperlink{rationale-R1}{[R1]}. \\
+\midrule
+
+$Q$ & 1,000 vehicles in total. Comparison values: 200, 1,000, and 2,000 vehicles. & \textbf{A. Researcher assumption representing the company's resource constraint.} \\
+\midrule
+
+$\kappa_c$
+& $8{,}760\ \text{trips}/(\text{vehicle}\cdot\text{year})$ per vehicle. Comparison values: $\{6{,}570,\ 8{,}760,\ 10{,}950\}\ \text{trips}/(\text{vehicle}\cdot\text{year})$.
+& \textbf{D/O. Derived using a reported Waymo operating-scale reference.} The sensitivity analysis applies $\pm25\%$ to the baseline value. \hyperlink{rationale-R2}{[R2]}. \\
+\midrule
+
+$M_c$ & $770{,}544{,}140\ \text{opportunities/year}$. Comparison values: 577,908,105; 770,544,140; and 963,180,175. & \textbf{D/O. Derived using reported data as references:} SFCTA's annual Uber/Lyft trip count and the SFMTA 2019 mode-share survey. The two sources are combined to construct an experimental baseline, and the sensitivity analysis applies $\pm25\%$ to it. \hyperlink{rationale-R3}{[R3]}, \hyperlink{rationale-R4}{[R4]}. \\
+\midrule
+
+$p_c^s$ & Domain $[0,1]$. Exploratory range: 0.02--0.50; baseline mean values: $(0.02,0.1,0.2,0.4)$. & \textbf{A. Researcher assumption.} This probability is ultimately to be estimated, but assumed values are used to validate the model in the first experiment. \\
+\midrule
+
+$F_c$ & \$3,500,000. Comparison values: \$2,625,000; \$3,500,000; and \$4,375,000. & \textbf{D/O. Derived using reported Waymo Austin project costs as references.} The assumed entry approach is to lease and retrofit one existing operating facility. The baseline combines charging/electrical work, facility conversion, and assumed additional preparation costs of 25\%. \hyperlink{rationale-R5}{[R5]}. \\
+\midrule
+
+$K_c$ & \$7,972. Comparison values: \$5,979; \$7,972; and \$9,965. & \textbf{D/O. Derived using reported AAA data as a reference.} The baseline uses the annual total of personal new-vehicle ownership cost components: depreciation, financing, insurance, and licensing/registration/taxes. \hyperlink{rationale-R6}{[R6]}. \\
+\midrule
+
+$c_c^+$ & Baseline: \$0 per unit of unused trip capacity. Optional penalty levels: 1, 3, and 5. & \textbf{A. Researcher assumption.} No separate additional loss from unused capacity is assumed in the baseline. \textcolor{red}{A positive value represents an additional penalty reflecting the company's preference.} \\
+\midrule
+
+$c_c^-$ & Baseline: \$10 per unserved trip. Comparison values: 2, 5, 10, 15, and 20. & \textbf{D/O. Reported fare data used as a reference.} Contribution margin is the company-retained fare minus incremental costs incurred by a trip. \hyperlink{rationale-R7}{[R7]}. \\
+\midrule
+
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Original source values and limitations of their use}
+
+\subsection*{\hypertarget{rationale-R1}{R1. Vehicle deployment scale: Uber and Waymo announcements}}
+
+\textbf{O:} On 24 June 2025, Uber stated that 100 Waymo vehicles were operating on its platform in Austin. On 5 May 2025, Waymo reported more than 1,500 commercial vehicles across San Francisco, Los Angeles, Phoenix, and Austin. On 17 February 2026, Waymo reported a company-wide fleet of 3,000 vehicles. \\
+\textbf{Use:} These reported counts provide references for comparing fleet scales. As researcher-designed assumptions (A), the baseline uses a per-city cap of $\bar q_c=500$ vehicles and a total fleet availability of $Q=1{,}000$ vehicles. The sensitivity comparisons use $\{100,500,1{,}000\}$ vehicles for $\bar q_c$ and $\{200,1{,}000,2{,}000\}$ vehicles for $Q$. \\
+\textbf{Limit:} The Austin count refers to Waymo vehicles on the Uber platform at that time, not all vehicles in the city. The count exceeding 1,500 is a four-city total, while 3,000 is a company-wide fleet figure from February 2026; the dates and reporting scopes differ. None of these sources establishes a city's physical fleet limit or the optimal deployment in this experiment. One operator's fleet also cannot be interpreted as the total supply of all robotaxis.
+
+\par\href{https://investor.uber.com/news-events/news/press-release-details/2025/Atlanta-The-Future-is-Here-with-Waymo-and-Uber-2025-y1tuDCCSgu/default.aspx}{Uber, \textit{Atlanta: The Future is Here with Waymo and Uber}, 24 June 2025.}
+
+\par\href{https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/#:~:text=over\%201\%2C500\%20vehicles}{Waymo Team, \textit{Scaling our fleet through U.S. manufacturing}, 5 May 2025, first paragraph under ``Tooling up for growth'' (commercial vehicles across four cities).}
+
+\par\href{https://waymo.com/blog/shorts/advice-not-control-the-role-of-remote-assistance/#:~:text=fleet\%20of\%203\%2C000\%20vehicles}{Waymo, \textit{Advice, not control: the role of Remote Assistance in Waymo's operations}, 17 February 2026, final body paragraph (company-wide fleet size).}
+
+\subsection*{\hypertarget{rationale-R2}{R2. Annual trips per vehicle: Waymo operating results as a reference}}
+
+\noindent
+\textbf{O:}
+Waymo reported more than 250,000 paid trips per week and more than 1,500 commercial vehicles across Phoenix, San Francisco, Los Angeles, and Austin. \\
+\textbf{Use:}
+The reported scale of vehicle operations is used as a reference for the experimental baseline of $\kappa_c$. \\
+\textbf{Limit:}
+Both figures in the May 2025 announcement are stated as ``more than'' values, so they do not yield an exact observed average per vehicle. Realized trip volume also differs from maximum service capacity. The figures do not account for differences across cities or variation over the year.
+
+\medskip
+\noindent
+\href{https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/#:~:text=more\%20than\%20250\%2C000\%20paid\%20trips\%20each\%20week}
+{Waymo Team, \textit{Scaling our fleet through U.S. manufacturing}, 5 May 2025, opening body paragraph (weekly paid trips)};
+\href{https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/#:~:text=over\%201\%2C500\%20vehicles}
+{same source, first paragraph under ``Tooling up for growth'' (commercial vehicle count).}
+
+\medskip
+\noindent
+\textbf{D: Derivation and experimental setting.}
+The simple ratio of the published totals,
+$250{,}000/(1{,}500\times7)\approx23.8$, motivates a baseline assumption of 24 trips per vehicle per day. Both totals cover the same four cities, so the ratio is not divided by four again. Assuming this daily level is maintained for 365 days gives $24\times365=8{,}760$ trips per vehicle-year. The sensitivity range is set at $\pm25\%$ of this baseline.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}
+    P{0.12\linewidth}
+    P{0.18\linewidth}
+    P{0.20\linewidth}
+    P{0.43\linewidth}
+@{}}
+\toprule
+Setting
+& Daily equivalent \newline (trips/vehicle-day)
+& Annual $\kappa_c$ \newline (trips/vehicle-year)
+& Basis for the setting \\
+\midrule
+\endfirsthead
+\toprule
+Setting
+& Daily equivalent \newline (trips/vehicle-day)
+& Annual $\kappa_c$ \newline (trips/vehicle-year)
+& Basis for the setting \\
+\midrule
+\endhead
+
+Low
+& 18
+& 6,570
+& 75\% of the baseline; a researcher-designed sensitivity assumption. \\
+\addlinespace
+
+\textbf{Baseline}
+& \textbf{24}
+& \textbf{8,760}
+& The simple ratio of Waymo's published totals, approximately 23.8 trips per vehicle-day, rounded to 24 and multiplied by 365 days. \\
+\addlinespace
+
+High
+& 30
+& 10,950
+& 125\% of the baseline; a researcher-designed sensitivity assumption. \\
+\bottomrule
+\end{longtable}
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\hypertarget{rationale-R3}{R3. Annual ride-hailing trips: SFCTA report}}
+
+\noindent
+\textbf{O:}
+SFCTA reported 38,527,207 Uber and Lyft trips in San Francisco County during the 12 months from September 2019 through August 2020. This is the published aggregate used in Figure 5 of the report. \\
+\textbf{Use:}
+The figure provides a reference for the annual scale of ride-hailing use in San Francisco. It is combined with the mode share in R4 to set an experimental baseline for annual potential usage opportunities $M_c$. \\
+\textbf{Limit:}
+The period includes months affected by COVID-19, and the report notes inconsistencies between operators' aggregate reports and individual trip reports. The figure covers reported Uber and Lyft trips; it should not be interpreted as the current total for all ride-hailing services, robotaxis, and conventional taxis.
+
+\par\href{https://tncs2020.sfcta.org/ch3_general/}
+{SFCTA, \textit{TNCs 2020: A Profile of Ride-Hailing in California}, Chapter 3, Figure 5 (12-month trip count for San Francisco County).}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\hypertarget{rationale-R4}{R4. Mode share and derivation of annual potential usage opportunities}}
+
+\noindent
+\textbf{O:}
+SFMTA's 2019 travel survey reported a TNC mode share, including Uber and Lyft, of approximately 5\% of surveyed trips. The other rounded mode shares were private automobile 48\%, walking 22\%, transit 22\%, bicycle 2\%, and other 1\%. Conventional taxis were included in the ``other'' category. The 5\% figure is a mode share based on trips, not the share of people who have ever used a ride-hailing service. \\
+\textbf{Use:}
+TNC trips are treated as 5\% and other trips as 95\% of the total. The total trip volume corresponding to the annual TNC count in R3 is then calculated in reverse. In the first experiment, this estimated total trip volume serves as a proxy for annual potential usage opportunities $M_c$. \\
+\textbf{Limit:}
+The survey covers trips by Bay Area residents within San Francisco and trips to or from San Francisco. It excludes visitors from outside the Bay Area and commercial trips. Its time period, population, and unit of observation therefore do not exactly match the operator-reported data in R3. In particular, operator vehicle-trip counts and individual trip counts may differ because of shared rides. Combining the two sources produces an experimental estimate that tolerates these differences; it is not a direct observation of potential usage opportunities. Travel opportunities that did not result in a trip are also absent from this calculation.
+
+\par\href{https://www.sfmta.com/media/20810/download?inline=}
+{SFMTA, \textit{Travel Decisions Survey 2019: Summary Report}, pp.~3--5 (survey coverage and mode shares).}
+
+\medskip
+\noindent
+\textbf{D: Derivation and experimental setting.}
+The number of non-TNC trips added to annual TNC trips is not obtained by multiplying the TNC count by 95\%. It is obtained using the ratio of non-TNC trips to TNC trips, $95/5$. The baseline is therefore set as follows:
+\[
+\begin{aligned}
+M_c
+&=38{,}527{,}207
+  +38{,}527{,}207\times\frac{0.95}{0.05}
+=\frac{38{,}527{,}207}{0.05}
+=770{,}544{,}140
+\quad\text{trips/year}.
+\end{aligned}
+\]
+The 5\% TNC mode share used in this calculation is a reference ratio for deriving $M_c$; it differs from the robotaxi choice probability $p_c^s$. The sensitivity range is set at $\pm25\%$ of the baseline. This range is a researcher-designed market-size assumption, not a statistical confidence interval.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}
+P{0.12\linewidth}
+P{0.18\linewidth}
+P{0.24\linewidth}
+P{0.39\linewidth}
+@{}}
+\toprule
+Setting
+& Relative to baseline
+& Annual $M_c$ \newline (trips/year)
+& Basis for the setting \\
+\midrule
+\endfirsthead
+\toprule
+Setting
+& Relative to baseline
+& Annual $M_c$ \newline (trips/year)
+& Basis for the setting \\
+\midrule
+\endhead
+
+Low
+& 75\%
+& 577,908,105
+& 75\% of the baseline; a researcher-designed sensitivity assumption. \\
+\addlinespace
+
+\textbf{Baseline}
+& \textbf{100\%}
+& \textbf{770,544,140}
+& SFCTA's annual count of 38,527,207 TNC trips divided by SFMTA's 5\% TNC mode share. \\
+\addlinespace
+
+High
+& 125\%
+& 963,180,175
+& 125\% of the baseline; a researcher-designed sensitivity assumption. \\
+\bottomrule
+\end{longtable}
+\endgroup
+
+\noindent
+In the sensitivity analysis, all other inputs and the scenarios for $p_c^s$ remain fixed. Only $M_c$ changes across these three levels, and the resulting changes in city entry, vehicle deployment, unserved demand, and the objective value are compared.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\hypertarget{rationale-R5}{R5. Initial city-entry cost: Waymo Austin facility projects}}
+
+\noindent
+\textbf{E:}
+The Texas Department of Licensing and Regulation (TDLR) project registrations list an estimated cost of \$300,000 for Waymo Austin Phase 1 and \$2,500,000 for Phase 2. Phase 1 covers three exterior EV chargers and related electrical work. Phase 2 covers renovation of approximately 38,000~ft$^2$ of office and business-operations space in an existing warehouse. Both projects were registered at the same address on 22 December 2023, with construction scheduled for 2024. These figures are registered estimated construction costs, not confirmed final expenditures. \\
+\textbf{Use:}
+The experiment assumes entry through leasing an existing building and renovating one operating facility. The sum of the two estimated construction costs is used as the facility-cost reference for $F_c$. Here $F_c$ is an incremental initial cost paid once when entering city $c$ during the one-year evaluation period; it is not an annual-equivalent cost. \\
+\textbf{Limit:}
+This is one facility case in Austin and does not directly establish actual entry costs in other cities. The calculation does not include vehicle acquisition, land purchase, annual rent, or recurring operating costs. It has not been verified that the facility and three chargers could support the entire deployed fleet. The actual timing of construction payments is unknown; the experiment assumes they are paid in the entry year. Historical registered amounts are used as scale references without inflation adjustment.
+
+\medskip
+\noindent
+\par\href{https://www.tdlr.texas.gov/TABS/Search/Print/TABS2024008167}
+{Texas Department of Licensing and Regulation, \textit{Waymo Austin--Phase 1}, TABS2024008167, Estimated Cost and Scope of Work};
+\href{https://www.tdlr.texas.gov/TABS/Search/Print/TABS2024008168}
+{same agency, \textit{Waymo Austin--Phase 2}, TABS2024008168, Estimated Cost and Scope of Work.}
+
+\medskip
+\noindent
+\textbf{D/A: Derivation and experimental setting.}
+Adding the estimated costs of the two distinct construction phases gives a facility-cost reference of \$2,800,000. For additional one-time expenses whose amounts are not available in the public records, such as permitting responses, training, and pre-launch preparation, the experiment assumes a blanket addition of 25\% of that reference amount. This percentage is a researcher assumption, not an estimate from the source or an industry standard. It is not a sum of individually investigated preparation costs.
+\[
+\begin{aligned}
+\text{Facility-cost reference}
+&=300{,}000+2{,}500{,}000
+=2{,}800{,}000\quad\text{USD},\\
+\text{Assumed additional preparation cost}
+&=2{,}800{,}000\times0.25
+=700{,}000\quad\text{USD},\\
+F_c&=2{,}800{,}000+700{,}000
+=3{,}500{,}000\quad\text{USD}.
+\end{aligned}
+\]
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}
+P{0.12\linewidth}
+P{0.18\linewidth}
+P{0.24\linewidth}
+P{0.39\linewidth}
+@{}}
+\toprule
+Setting & Relative to baseline & Initial $F_c$ \newline (USD per city entry) & Basis for the setting \\
+\midrule
+\endfirsthead
+\toprule
+Setting & Relative to baseline & Initial $F_c$ \newline (USD per city entry) & Basis for the setting \\
+\midrule
+\endhead
+
+Low & 75\% & \$2,625,000
+& 75\% of the baseline; a researcher-designed sensitivity assumption. \\
+\addlinespace
+
+\textbf{Baseline} & \textbf{100\%} & \textbf{\$3,500,000}
+& Waymo Austin's \$2,800,000 combined estimated construction cost plus an assumed 25\% for additional preparation. \\
+\addlinespace
+
+High & 125\% & \$4,375,000
+& 125\% of the baseline; a researcher-designed sensitivity assumption. \\
+\bottomrule
+\end{longtable}
+\endgroup
+\noindent
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\hypertarget{rationale-R6}{R6. Annual cost per vehicle: AAA (2025) ownership-cost reference}}
+
+\noindent
+\textbf{E:}
+The American Automobile Association (AAA) reports annual depreciation of \$4,334, finance costs of \$1,131, insurance of \$1,694, and licensing, registration, and taxes of \$813 for new personal vehicles. These are average costs calculated using five popular models in each of nine vehicle categories and a five-year, 75,000-mile ownership period. \\
+\textbf{Use:}
+The sum of these four components is adopted as the synthetic baseline for $K_c$, representing incremental preparation, deployment, and fixed holding costs for one vehicle over one year. \\
+\textbf{Limit:}
+The source concerns personal vehicles; it is neither an actual robotaxi cost nor a rigorous lower bound. Preparation and deployment costs, autonomous-driving equipment, differences in commercial insurance, fixed parking, and management costs have not been separately adjusted or added. Fuel, maintenance, and tire costs that vary with driving volume are excluded from this sum.
+
+\par\href{https://newsroom.aaa.com/wp-content/uploads/2025/09/UPDATE-AAA-Fact-Sheet-Your-Driving-Cost-9.2025-1.pdf#page=1}{AAA, \textit{Your Driving Costs 2025}, cost-component table on p.~1 and Methodology on p.~2.}
+
+\medskip
+\noindent
+\textbf{D/A: Derivation and experimental setting.}
+The annual sum is $4{,}334+1{,}131+1{,}694+813=7{,}972$ USD per vehicle-year. The first synthetic experiment assumes this reference amount approximates the entire $K_c$. Because it is already an annual figure, it is not multiplied by 365. The sensitivity analysis applies $\pm25\%$ to the baseline, comparing $7{,}972\times0.75=5{,}979$ and $7{,}972\times1.25=9{,}965$.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.12\linewidth}P{0.18\linewidth}P{0.24\linewidth}P{0.39\linewidth}@{}}
+\toprule
+Setting & Relative to baseline & Annual $K_c$ \newline (USD/vehicle-year) & Basis for the setting \\
+\midrule
+\endfirsthead
+\toprule
+Setting & Relative to baseline & Annual $K_c$ \newline (USD/vehicle-year) & Basis for the setting \\
+\midrule
+\endhead
+
+Low & 75\% & \$5,979 & 75\% of the baseline; a researcher-designed sensitivity assumption. \\
+\addlinespace
+\textbf{Baseline} & \textbf{100\%} & \textbf{\$7,972} & The sum of AAA's depreciation, finance, insurance, and licensing/registration/tax components is adopted as an approximation. \\
+\addlinespace
+High & 125\% & \$9,965 & 125\% of the baseline; a researcher-designed sensitivity assumption. \\
+\bottomrule
+\end{longtable}
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{\hypertarget{rationale-R7}{R7. Fare comparison: Obi's original pricing study (June 2025)}}
+
+\textbf{O:} In 705 standardized San Francisco searches from 25 March through 25 April 2025 in which all three providers were available, Waymo's mean quoted fare was \$20.43.\\
+\textbf{Use:} A reference for the magnitude of fares.\\
+\textbf{Limit:} Quoted fares are not realized company receipts or contribution margins. The platform revenue split and incremental trip costs remain unknown. \\
+\textbf{A example:} An assumed company-retained fare of \$18 minus assumed incremental costs of \$8 gives $c_c^-=\$10$. This subtraction is illustrative and is not an estimate from Obi.
+
+\par\href{https://rideobi.com/wp-content/uploads/2025/10/Obi-Report-Pricing-Insights-On-Waymo-Uber-and-Lyft.pdf}{Obi, \textit{The Road Ahead}, summary and printed p.~5.}
+
+
+\begin{comment}
+\section{Connection to the executed experiments}
+
+For the existing daily experiment, the authoritative record of selected inputs, scenario definitions, execution procedure, and results is \texttt{numerical\_experiments.tex}, currently in the \texttt{1. main(modeling)/baseline model/} folder on Overleaf. The annual inputs in the table above are proposed settings; they are not results from an executed annual experiment. The experiment file and code must subsequently be updated to annual inputs, after which run identifiers and results should be recorded.
+
+As general consistency checks, compare total fleet availability with $\sum_c M_c\bar p_c/\kappa_c$, calculate the no-entry cost analytically, and check whether the contribution from additional service can cover deployment cost. These checks should be performed before a run and do not replace optimization results.
+
+For entry to be economically meaningful, avoided shortage cost must cover fixed and vehicle costs. If $c_c^-\kappa_c>K_c$, a vehicle serving sufficient demand can generate positive operating contribution before entry cost. This does not prove that entry is optimal under the fleet constraint. An exact per-city screen is
+\[
+\max_{1\le q\le\min(\bar q_c,Q)}
+\{g_c(0)-g_c(q)\}>0,
+\]
+\[
+g_c(q)=F_c\mathbf1_{q>0}+K_cq+
+\frac{1}{|S|}\sum_{s\in S}
+\left[
+c_c^+(\kappa_cq-D_c^s)^+
++c_c^-(D_c^s-\kappa_cq)^+
+\right].
+\]
+Checking each city's profitability separately does not determine the joint optimum because cities compete for the available fleet $Q$.
+
+\section{Interpretation boundaries}
+
+An unentered city retains its potential unmet demand. If $y_c=0$, then $q_c=0$ and $U_c^s=D_c^s$. When $c_c^-$ represents foregone contribution margin, the no-entry cost is a constant benchmark for the revenue opportunity. Subtracting this constant shows that the model is equivalent to maximizing expected contribution from served demand minus entry costs, vehicle costs, and additional idle-capacity costs. It does not imply a legal obligation to provide service.
+
+Demand is exogenous, and scenario costs are summed by city. Therefore, changing dependence across cities while preserving each city's weighted marginal demand distribution leaves the baseline objective unchanged for any fixed deployment. A dependence experiment is consequently a structural check. Correlation would affect the result only after adding a decision that links cities within a scenario, such as vehicle relocation or shared recourse.
+
+\textbf{Additional evidence needed for real-data calibration:} a target service-area boundary and date; company-retained fares and incremental costs per trip; vehicle purchase or lease terms and commercial insurance; actual service hours and full trip-cycle times; depot and charging constraints; and a choice model whose denominator matches $M_c$. Until these are available, the results establish model correctness and comparisons under synthetic settings, not recommendations for optimal real-world fleet sizes.
+
+\end{comment}
+
+\end{document}

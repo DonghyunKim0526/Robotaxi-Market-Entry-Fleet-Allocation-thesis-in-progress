@@ -1,0 +1,78 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=17mm]{geometry}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{leftmargin=*,nosep,topsep=2pt}
+\newcommand{\block}[1]{\vspace{5pt}{\large\bfseries #1}\par\vspace{2pt}}
+\newcommand{\E}{\mathbb{E}_s}
+\pagestyle{empty}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries 로보택시 도시 진입·차량 배치}\\[4pt]
+{\large 모델 정식화와 발전 과정}\\[5pt]
+\end{center}
+
+\block{1. 연구 질문}
+\textbf{어느 도시에 진입하고, 각 도시에 차량을 몇 대 배치할 것인가?}
+원문은 이 질문을 기본형, 비용형, 이익형으로 정식화한 모델 검토 기록이다.
+도시 진입 $y_c$와 차량 수 $q_c$는 수요 시나리오를 알기 전에 동시에 결정하며,
+모든 시나리오에 같은 배치를 적용한다.
+
+\block{2. 핵심 구조}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}p{27mm}X@{}}
+\toprule
+결정 & $y_c\in\{0,1\}$: 도시 진입 여부, \quad $q_c\in\mathbb Z_{\ge0}$: 차량 수 \\
+입력 & $D_c^s$: 시나리오별 수요, $\kappa_c$: 차량당 처리 용량,
+$Q$: 총차량 한도, $\bar q_c$: 도시별 차량 한도 \\
+운영 결과 & $R_c^s=\min(D_c^s,\kappa_c q_c)$: 처리 수요 \\
+ & $O_c^s=(\kappa_c q_c-D_c^s)^+$: 미사용 용량,
+$U_c^s=(D_c^s-\kappa_c q_c)^+$: 미충족 수요 \\
+\bottomrule
+\end{tabularx}
+{\small $(x)^+=\max(x,0)$. 수요는 생성 후 고정되는 입력이며 최적화가 선택하지 않는다.
+
+
+\block{3. 세 가지 목적함수 비교}
+\begin{tabularx}{\linewidth}{@{}p{21mm}X@{}}
+\toprule
+\textbf{모델} & \textbf{목적함수와 의미} \\
+\midrule
+① 기본형 & $\displaystyle \min\;\E\!\left[\sum_c(O_c^s+\rho U_c^s)\right]$ \\
+ & 초과·부족의 균형을 확인. $\rho$는 부족의 상대적 중요도이며 진입·차량 비용은 제외. \\
+\addlinespace
+② 비용형 & $\displaystyle \min\;\sum_c(F_cy_c+K_cq_c)+\E\!\left[\sum_c(c_c^+O_c^s+c_c^-U_c^s)\right]$ \\
+ & 진입비, 차량비, 유휴 페널티, 미충족 손실을 함께 최소화.
+\textbf{현재 baseline의 목적함수에 해당.} \\
+\addlinespace
+③ 이익형 & $\displaystyle \max\;\E\!\left[\sum_c m_cR_c^s\right]-\sum_c(F_cy_c+K_cq_c)$ \\
+ & 처리 통행의 공헌이익에서 진입·차량 비용을 차감. $m_c$는 통행당 수입에서 변동비를 뺀 값. \\
+\bottomrule
+\end{tabularx}
+
+\block{4. 공통 제약과 이후 수정 사항}
+\[
+y_c\le q_c\le\bar q_c y_c,\qquad
+\sum_c q_c\le Q,\qquad
+\sum_c y_c\le B,\qquad y_c\le a_c.
+\]
+$a_c$는 운영 가능 여부, $B$는 동시 진입 도시 수의 한도이며 실제 제한이 있을 때 적용한다.
+
+
+\block{5. 해석할 때 기억할 점}
+\begin{itemize}
+\item \textbf{비용 중복 방지:} $K_c$에 포함한 비용을 $c_c^+$에 다시 넣지 않는다.
+이익형에서 놓친 공헌이익을 동일한 미충족 손실로 다시 차감하지 않는다.
+\item \textbf{모델 간 연결:} 동일 수요·제약에서 $c_c^+=0$, $c_c^-=m_c$이면
+비용형은 이익형과 같은 최적 배치를 낸다. 두 목적함수는 부호와 수요에 따른 상수만 다르다.
+\item \textbf{유휴량과 유휴비용 구분:} $c_c^+=0$이어도 $O_c^s$는 발생할 수 있다.
+추가 유휴 페널티만 0이며 차량비는 남는다.
+\item \textbf{문서 범위:} 서두에 ④ multi-penalties가 예고되어 있으나, ④ 모델 feedback 받고 ② 비용형을 baseline으로 사용. 
+\end{itemize}
+\end{document}

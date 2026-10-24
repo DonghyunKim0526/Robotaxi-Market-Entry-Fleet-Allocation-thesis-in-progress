@@ -1,0 +1,105 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{kotex}
+\usepackage{framed}
+\usepackage{textcomp}\usepackage{lmodern,amsmath,amssymb,array,tabularx,booktabs,xcolor,enumitem}
+\usepackage{algorithm} \usepackage{algpseudocode}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\newcommand{\hd}[1]{\par\vspace{8pt}\textbf{#1}\par\vspace{3pt}}
+\newcommand{\circnum}[1]{\textcircled{\scriptsize #1}}
+\newcommand{\note}{\textreferencemark\ }
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\under}[2]{\underbrace{#1}_{\text{#2}}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{Common second stage (공통)}
+\[
+H(q,D)=\min_{O,\,U\ge 0}\ \sum_{c}\big(c_c^{+}O_c+c_c^{-}U_c\big)
+\qquad\text{s.t.}\qquad
+\kappa_c q_c-D_c=O_c-U_c\quad\forall c.
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{\circnum{1} Baseline (newsvendor + SAA)}
+\quad \circnum{a} Contextual $\times$ \quad \circnum{b} DRO $\times$ \quad \circnum{c} Decision-dependent $\times$
+\[
+\min_{y,\,q}\ \sum_{c}F_c y_c+\sum_{c}K_c q_c+\frac{1}{|S|}\sum_{s\in S}H\big(q,D^{s}\big),
+\qquad D^{s}_c=M_c\,p^{s}_c .
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{\circnum{2} Contextual (ER-SAA)} --- 시나리오가 $x$에서 나옴.
+\[
+\min_{y,\,q}\ \sum_{c}F_c y_c+\sum_{c}K_c q_c
++\mathbb{E}\big[\,H\big(q,\;D(X,\varepsilon)\big)\ \big|\ X=x\,\big]
+\]
+\[
+\approx\ \min_{y,\,q}\ \sum_{c}F_c y_c+\sum_{c}K_c q_c
++\frac{1}{n}\sum_{i=1}^{n}H\Big(q,\;\hat g(x)+\hat Q(x)\,\hat\varepsilon_i\Big)
+\]
+\note $n$은 회귀 데이터 관측치 수. $n=|S|$이고, $|S|$는 데이터 개수로 결정됨.\\
+\note 시나리오는 회귀 예측 $\hat g(x)$ + 데이터 잔차 $\hat\varepsilon_i$로 생성. $x$가 변하면 시나리오 전체가 옮겨감 $\Rightarrow$ ER-SAA.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{\circnum{3} Contextual + DRO} --- 잔차 분포의 가중치를 믿지 않음.
+\[
+\min_{y,\,q}\ \sum_{c}F_c y_c+\sum_{c}K_c q_c
++\sup_{\mathbb{P}\in\,\mathcal{U}_\delta(\hat{\mathbb{P}}_\varepsilon)}
+\mathbb{E}_{\mathbb{P}}\Big[H\Big(q,\;\hat g(x)+\hat Q(x)\,\varepsilon\Big)\Big]
+\]
+\note 집합 $\mathcal U$ 안의 분포 중 기대비용을 가장 크게 만드는 분포를 골라 그것으로 평가.
+\red{Kannan의 discrete-support ambiguity set (CVaR형, $\phi$-divergence형).}\\
+\note \circnum{2}의 각 잔차 확률 $1/n$ 대신, 경험분포에서 거리 $\delta$ 안에 있는 모든 분포 중 최악을 사용.
+$\delta=0$이면 \circnum{2}로 돌아옴.
+즉 DRO는 \circnum{2}의 $1/n$을 ``$1/n$ 근처의 최악 가중치''로 바꾼 것.\\
+\note CVaR형: 시나리오 점은 그대로 두고 가중치 $p_1,\dots,p_n$만 $1/n$ 근처에서 바꾸는 것:
+\[
+\mathcal{U}=\Big\{p\in\mathbb{R}^n_{+}:\ \sum_{i=1}^{n}p_i=1,\ \ p_i\le\frac{1}{n(1-\zeta)}\ \ \forall i\Big\}.
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{\circnum{4} Contextual + Decision-dependent} --- 수요가 $q$에 반응 (EV 논문).
+\[
+\min_{y,\,q}\ \sum_{c}F_c y_c+\sum_{c}K_c q_c
++\mathbb{E}\big[\,H\big(q,\;D(X,q,\varepsilon)\big)\ \big|\ X=x\,\big]
+\]
+\[
+D_c=M_c\big(x_c^{M}\big)\,p_c\big(x_c^{p},\,q_c\big)+Q_c\,\varepsilon_c
+\]
+\note \circnum{2}와 다른 점: $D$ 안에 $q$ 있음. 대기시간(?)이 $q$에 의존하므로 $p$가 $q$에 의존.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{\circnum{5} Contextual + DRO + Decision-dependent} --- \circnum{3}식 + \circnum{4}식.
+\[
+\min_{y,\,q}\ \sum_{c}F_c y_c+\sum_{c}K_c q_c
++\sup_{\mathbb{P}\in\,\mathcal{U}_\delta(\hat{\mathbb{P}}_\varepsilon)}
+\mathbb{E}_{\mathbb{P}}\Big[H\big(q,\;D(x,q,\varepsilon)\big)\Big]
+\]
+\[
+D_c=M_c\big(x_c^{M}\big)\,p_c\big(x_c^{p},\,q_c\big)+Q_c\,\varepsilon_c
+\qquad\red{\text{구현 가장 어려움}}
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hd{\circnum{3}에서 기댓값 $\mathbb{E}$ 구하기}
+1. discrete-support형 (가중치만 바꿈) \quad 2. Wasserstein형
+\begin{itemize}[leftmargin=1.5em]
+\item \red{$\displaystyle\sup_{p\in\mathcal U}\sum_{i}p_i\,H(q,\hat D_i)$}는 $p$에 대한 선형 문제라 쌍대를 취하면 몇 개의 보조변수와 제약으로 바뀐다.
+\item CVaR형이면 결과가 ``시나리오 비용의 CVaR'' 한 항이 되어 기존 MILP에 제약 몇 줄 추가하는 수준.
+\item 본 모델은 2단계가 선형($\kappa_c q_c-D_c=O_c-U_c$)이라 CVaR형 방식이 가장 쉽다.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

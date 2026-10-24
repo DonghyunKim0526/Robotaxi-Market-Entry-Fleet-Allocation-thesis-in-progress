@@ -1,0 +1,414 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=20mm]{geometry}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb}
+\usepackage{array,longtable,booktabs,calc}
+\usepackage{xurl}
+\usepackage{xcolor}
+\usepackage[unicode,hidelinks]{hyperref}
+\usepackage{comment}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\setcounter{secnumdepth}{0}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\allowdisplaybreaks
+
+\begin{document}
+
+\textbf{\(p\) 추정에 사용할 수 있는 공개 선택실험 원자료를
+찾아서 파일 내용까지 확인했어.} 다만 인간택시와 자율주행 택시 사이의
+선택자료이므로, 도보·대중교통까지 포함한 현재 \(p\)와는 범위를 맞춰야
+해.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypertarget{muxc758-driving-factors-uxadfcuxac70-uxb17cuxbb38-uxcd94uxac00}{%
+\subsection{\texorpdfstring{1. \(M\)의 driving factors}{1. M의 driving factors}}\label{muxc758-driving-factors-uxadfcuxac70-uxb17cuxbb38-uxcd94uxac00}}
+
+아래 논문들은 주로 \textbf{관측된 ride-hailing 이용량}을 설명하기 때문에 M의 정의에 포함되는 '미실현 수요'까지 포함되지 않아 직접 추정은 불가능. 하지만 논문들이 제공하는 수요 패턴은 '잠재 이동 기회 \(M\)'을 모형적으로 구성하는데 중요한 단서가 된다.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1600}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}@{}}
+
+  
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+변수
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+근거 논문
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+논문에서 확인한 범위
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textcolor{red}{측정자료}
+\end{minipage} \\
+
+
+\midrule\noalign{}
+\endhead
+
+
+\bottomrule\noalign{}
+\endlastfoot
+
+\textbf{인구·인구밀도} & Elkhouly·Alhadidi, \emph{Ride-sharing
+Determinants} (\href{https://arxiv.org/abs/2406.11590}{논문}); Zhang 외,
+\emph{Examining spatial heterogeneity\ldots{}}
+(\href{https://arxiv.org/abs/2209.07980}{논문}) & 인구 및 지역 밀도와
+일반 ride-hailing 이용량의 관계. 밀도 효과는 지역에 따라 달라질 수 있음
+& \href{https://www.census.gov/programs-surveys/acs}{ACS} \\
+
+\textbf{고용·경제활동} & Elkhouly·Alhadidi
+(\href{https://arxiv.org/abs/2406.11590}{논문}) & 경제활동인구·고용환경을 이용량
+설명에 사용 & \href{https://lehd.ces.census.gov/data/}{LEHD/LODES},
+ACS \\
+
+\textbf{소득} & Elkhouly·Alhadidi
+(\href{https://arxiv.org/abs/2406.11590}{논문}) & Chicago에서 소득과
+이용량의 관계 분석 &
+\href{https://data.census.gov/table/ACSDT5Y2024.B19013}{ACS B19013} \\
+
+\textbf{무차량 가구 비율} & Elkhouly·Alhadidi
+(\href{https://arxiv.org/abs/2406.11590}{논문}) & 자동차를 보유하지 않은
+가구와 이용량의 관계 분석 &
+\href{https://data.census.gov/table/ACSDT1Y2022.B08201}{ACS B08201} \\
+
+\textbf{토지이용 혼합·접근성·상업활동} & Zhang 외, \emph{Examining
+spatial heterogeneity\ldots{}}
+(\href{https://arxiv.org/abs/2209.07980}{논문}) & 도시환경과
+ridesourcing 이용량의 비선형·공간적 차이 &
+\href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA
+SLD} \\
+
+\textbf{식당·여가시설 밀도} & Loa·Lee·Circella, \emph{Just another
+ride-hailing?}
+(\href{https://link.springer.com/article/10.1007/s11116-026-10751-9}{논문})
+& \textbf{SF 로봇택시 이용 건수}와의 관계. \(M\)과 \(p\)의 효과를 분리한
+결과는 아님 &
+\href{https://www.census.gov/programs-surveys/cbp.html}{Census CBP},
+OpenStreetMap \\
+
+\textbf{대중교통·보행환경} & Zhang 외 
+(\href{https://arxiv.org/abs/2209.07980}{논문}); Cats 외, \emph{Beyond
+the dichotomy\ldots{}}
+(\href{https://doi.org/10.1371/journal.pone.0262496}{논문}) & 지역환경
+및 대중교통과의 시간 경쟁력·대체 가능성 분석. 일률적인 증가·감소 효과는
+아님 & EPA SLD, \href{https://gtfs.org/documentation/overview/}{GTFS} \\
+
+\textbf{공항 관련 시장규모} & Zhang 외
+(\href{https://arxiv.org/abs/2209.07980}{논문}) & 공항 이동을 별도
+공간적 유형으로 분석. \textbf{공항 여객 수의 직접 효과를 추정한 것은
+아님} &
+\href{https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger}{FAA
+여객자료}. 시장규모 대리변수로 사용 \\
+
+\textbf{시간·요일·계절} & Elkhouly·Alhadidi
+(\href{https://arxiv.org/abs/2406.11590}{논문}) & 시간에 따른 이용량
+차이 분석. 휴일 등 구체적 변수 선택은 별도 설계 & Trip 자료의
+날짜·시간 \\
+
+\textbf{기상} & \textbf{추가:} Liu·Jiang·Chen, \emph{Quantifying the
+impact of weather on ride-hailing ridership: Evidence from Haikou,
+China} (2021, \href{https://doi.org/10.1016/j.tbs.2021.04.002}{논문}) &
+날씨와 ride-hailing 이용량의 관계 분석. 미국 도시에서의 효과는 재검증
+필요 & \href{https://www.ncei.noaa.gov/cdo-web/}{NOAA CDO} \\
+\end{longtable}
+
+$M$의 결정요인은 도시특성(원안) + 시간/계절 맥락(상황) + 시장 활동(결과: 과거 Uber/Lyft 이용량)\textbf{과거 이용량}은 별도로 사용할 수 있는 예측변수야. 다만 이것은 ''왜 수요가 발생하는가''를 설명하지 못하지, \textbf{수요의 크기(규모)를 보여주는 결과 데이터}로 구분하면 돼.
+
+
+%%%%%%%%%%%%%%%%p의 driving factors%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypertarget{puxc758-driving-factors-uxadfcuxac70-uxb17cuxbb38-uxcd94uxac00}{%
+\subsection{\texorpdfstring{2. \(p\)의 driving factors}{2. p의 driving factors}}\label{puxc758-driving-factors-uxadfcuxac70-uxb17cuxbb38-uxcd94uxac00}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1600}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}@{}}
+
+  
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+변수
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+근거 논문
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+적용 범위
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+필요한 측정자료
+\end{minipage} \\
+
+
+\midrule\noalign{}
+\endhead
+
+
+\bottomrule\noalign{}
+\endlastfoot
+
+\textbf{상대 요금} & \textbf{추가:} Yin·Cherchi, \emph{Willingness to
+pay for automated taxis\ldots{}} (2024; 온라인 2022,
+\href{https://doi.org/10.1007/s11116-022-10319-3}{논문}) & 일반택시와
+자율주행 택시의 선택실험 & 양쪽 제시요금 + 선택결과 \\
+
+\textbf{상대 대기시간} & Yin·Cherchi
+(\href{https://doi.org/10.1007/s11116-022-10319-3}{논문}) & 서비스 조건에 따른 선택을 분석 & 양쪽 제시 대기시간 + 선택결과 \\
+
+\textbf{차내 이동시간} & Yin·Cherchi
+(\href{https://doi.org/10.1007/s11116-022-10319-3}{논문}) & 요금·시간 사이의 선택상충 관계 분석
+& 양쪽 제시 이동시간 \\
+
+\textbf{신뢰·가격가치·이용습관} & \textbf{추가:} Wei 외, \emph{Using the
+Extended Unified Theory\ldots{}} (2024,
+\href{https://www.nature.com/articles/s41599-024-03271-3}{논문}) &
+로봇택시 수용의향·행동 연구. \textbf{설문 척도를 바로 선택확률로 해석할
+수 없음} & 개인 태도·습관 설문 \\
+
+\textbf{연령·로봇택시 관련 지식} & Yin·Cherchi
+(\href{https://doi.org/10.1007/s11116-022-10319-3}{논문}) & 개인 특성에
+따른 선택 차이. ``젊을수록 무조건 선호'' 같은 부호 고정은 부적절 & 개인
+특성과 선택자료 연결 \\
+
+\textbf{이용후기·차내 지원기능} & Yin·Cherchi
+(\href{https://doi.org/10.1007/s11116-022-10319-3}{논문}) & 고객평가,
+목적지 변경·운영자 소통 등의 기능을 선택속성으로 분석 & 선택실험의
+서비스 속성 \\
+
+\textbf{로봇택시 이용 경험} & \textbf{추가:} Yin·Cherchi·Nettle,
+\emph{Living in a City Where Automated Taxis are Operating and Using
+Them\ldots{}} (2023,
+\href{https://doi.org/10.1177/03611981231155181}{논문}) & 거주지역의
+운행 여부와 개인 이용 경험에 따른 선호 차이 분석 & 개인 이용 경험 \\
+
+\textbf{대중교통 등 대안의 경쟁력} & Cats 외, \emph{Beyond the dichotomy\ldots{}}
+(\href{https://doi.org/10.1371/journal.pone.0262496}{논문}) &
+\textbf{일반 ride-hailing의 근거}. 로봇택시 고유의 선호효과는 아님 &
+대안의 이용 가능 여부·요금·시간 \\
+\end{longtable}
+
+앞서 제시한 \textbf{픽업 도보시간·동행자·소득·차량 보유}는 여전히 검토할
+후보야. 하지만 이번에 확인한 자료만으로 각각을 ``로봇택시 선택에 유의한
+효과가 입증된 변수''라고 표시하지는 않겠어.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3.M의 이동량 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+
+\hypertarget{muxc758-uxc774uxb3d9uxb7c9-uxc790uxb8cc-uxc2e4uxc81c-uxd655uxbcf4-uxac00uxb2a5uxd55c-uxc790uxb8cc}{%
+\subsection{\texorpdfstring{※ \(M\)의 이동량 자료 --- 실제 확보 가능한 자료}{3. M의 이동량 자료 --- 실제 확보 가능한 자료}}\label{muxc758-uxc774uxb3d9uxb7c9-uxc790uxb8cc-uxc2e4uxc81c-uxd655uxbcf4-uxac00uxb2a5uxd55c-uxc790uxb8cc}}
+
+\textbf{왜 필요한가?} 인구·소득은 설명변수 \(X\)야. 이 변수로 이동량을
+예측하려면, 학습할 때 \textbf{실제로 얼마나 이동했는지에 해당하는 정답
+자료}가 필요해.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2800}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2600}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2600}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+자료
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+포함 내용·확보 상태
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(M\) 추정에 사용하는 방법
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+한계
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{2022 NHTS 가구통행조사} & \textbf{CSV ZIP을 열어 확인함.}
+Trip·개인·가구·차량 파일 제공.
+\href{https://nhts.ornl.gov/downloads}{공식 안내} ·
+\href{https://nhts.ornl.gov/assets/2022/download/csv.zip}{CSV ZIP} &
+이동 목적·거리·수단을 기준으로 분석 대상 이동을 정의하고, 조사 가중치로
+규모 추정 & 공개 파일만으로 모든 후보 도시를 개별 식별·추정하기 어려움.
+미실현 이동은 포착하지 못함 \\
+\textbf{NextGen NHTS Passenger OD} & 지역 간 이동량 추정자료.
+\href{https://nhts.ornl.gov/od/downloads}{공식 다운로드} & 후보 도시권
+간 이동 규모·월별 차이를 비교하는 보완자료 & 도시 행정경계보다 넓은
+구역이며, \textbf{관측자료를 가공한 추정치}. 로봇택시 적합 이동을 직접
+제공하지 않음 \\
+\textbf{Chicago TNP Trips} & 일반 ridesourcing의 완료 이동기록.
+\href{https://data.cityofchicago.org/Transportation/Transportation-Network-Providers-Trips-2023-2024-/n26f-ihde}{2023--2024
+원자료} & 출발지역·기간별 건수를 집계해 관측된 ride-hailing 이용량
+예측모형 학습 & Chicago 한 도시. 비이용·포기·실패 수요는 포함하지
+않음 \\
+\textbf{NYC TLC HVFHV} & Uber/Lyft 등 고용량 호출서비스의 trip 자료.
+\href{https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page}{원자료·사전}
+& NYC 내 지역·시간별 시장활동 및 요금·대기시간 측정 & NYC 한 도시. 완료
+기록을 잠재 이동 전체로 해석할 수 없음 \\
+\end{longtable}
+
+NHTS ZIP에서 확인한 핵심 항목은 다음이야.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+파일·항목
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+의미
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+왜 필요한가?
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{tripv2pub.csv} & 개인별 이동기록 & 이동 횟수 집계 \\
+\texttt{TRPTRANS} & 이동수단 & 어떤 수단을 이용한 이동인지 구분 \\
+\texttt{TRPMILES}, \texttt{TRVLCMIN} & 이동거리·소요시간 & 로봇택시
+분석에 포함할 이동 범위 설정 \\
+\texttt{WHYTRP1S}, \texttt{WHYTO} & 이동 목적 & 출퇴근·쇼핑·여가 등의
+구성 파악 \\
+\texttt{WTTRDFIN} & 이동 가중치 & 표본 건수를 모집단 이동량으로 확장 \\
+\texttt{HOUSEID}, \texttt{PERSONID} & 가구·개인 연결키 & 이동기록과
+인구·소득·차량 보유 특성 연결 \\
+\end{longtable}
+
+가중치는 코드북의 정의대로 적용해야 해. 단순 행 개수나 가중합을 곧바로
+``도시별 하루 수요''로 해석하면 안 돼.
+\href{https://nhts.ornl.gov/documentation}{NHTS 공식 문서}
+
+\textbf{현재의 넓은 \(M\) 정의를 유지하려면 NHTS 같은 전체 이동자료가 더
+가깝고, Chicago·NYC 자료는 ride-hailing 시장의 대리자료로 사용하는 것이
+맞아.}
+
+\end{comment}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%p의 선택자료%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypertarget{puxc758-uxc120uxd0dduxc790uxb8cc-uxacf5uxac1c-uxc6d0uxc790uxb8ccuxb97c-uxcc3euxc558uxc5b4}{%
+\subsection{\texorpdfstring{※ \(p\)의 선택자료 --- 공개 원자료를
+찾았어}{4. p의 선택자료 --- 공개 원자료를 찾았어}}\label{puxc758-uxc120uxd0dduxc790uxb8cc-uxacf5uxac1c-uxc6d0uxc790uxb8ccuxb97c-uxcc3euxc558uxc5b4}}
+
+\textbf{자료명:} \emph{Virtual Reality Experiment to Study the Role of
+Social Conformity in the Acceptance of Autonomous Vehicles: Taxi
+Passenger Choice Data, 2022--2023}
+
+\textbf{작성자:} Elisabetta Cherchi, Hao Yin, Bilal Farooq, Mohsen
+Nazemi\\
+\textbf{제공기관:} UK Data Service, 2024\\
+\textbf{접근:} 등록 없이 내려받는 공개 자료. \textbf{ZIP·README·선택자료
+열을 직접 확인했어.}
+\href{https://reshare.ukdataservice.ac.uk/857195/}{자료 설명} ·
+\href{https://reshare.ukdataservice.ac.uk/857195/1/857195_bundle.zip}{원자료
+ZIP}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+구분
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Newcastle, 영국
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Toronto, 캐나다
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+개인 특성 자료의 응답자 수 & 589명 & 584명 \\
+반복 선택실험 기록 & 6,376건 & 5,264건 \\
+선택자료 & \texttt{Newcastle\_Stated\ Choice\ Data.xlsx} &
+\texttt{Toronto\_Stated\ Choice\ Data.xlsx} \\
+함께 제공 & 개인·이동 특성, 43개 태도 문항 & 개인·이동 특성, 43개 태도
+문항 \\
+\end{longtable}
+
+선택 건수는 독립적인 사람 수가 아니야. 동일인이 여러 번 응답하므로
+분석과 검증에서 응답자별 반복성을 고려해야 해.
+
+\textbf{파일에 실제로 들어 있는 핵심 변수}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+원자료 열
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+의미
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+네 모델에서의 역할
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{Choice} & \textbf{1=일반택시, 2=자율주행 택시} & \(p\)를
+추정하기 위한 선택결과 \\
+\texttt{NT\_travelcost}, \texttt{AT\_travelcost} & 두 택시의 제시요금 &
+상대 요금 \\
+\texttt{NT\_waitingtime}, \texttt{AT\_waitingtime} & 두 택시의 대기시간
+& 상대 대기시간 \\
+\texttt{NT\_traveltime}, \texttt{AT\_traveltime} & 두 택시의 이동시간 &
+상대 이동시간 \\
+\texttt{NT\_review}, \texttt{AT\_review} & 고객평가 & 서비스 평가 \\
+\texttt{RID} & 응답자 연결키 & 개인 특성·태도 자료와 연결 \\
+\end{longtable}
+
+자료 README에 명시된 방법론 논문은 Yin·Cherchi의 \textbf{``Conducting
+Stated Choice Experiments within a Virtual Reality environment: an
+application to the choice of automated taxi''}야.
+\href{https://doi.org/10.1016/j.trpro.2023.12.043}{방법론 논문}
+
+\textbf{왜 필요한가?} 이 자료는 ``요금과 시간이 이럴 때 실제 응답자가
+어느 쪽을 골랐는가''를 함께 제공해. 따라서 임의로 \(p=0.1\)을 정하는
+대신 \textbf{조건에 따른 선택확률을 추정하는 첫 실험}을 할 수 있어.
+
+\textbf{다만 현재 모델과 중요한 차이가 있어.}
+
+\[
+\begin{gathered}
+\underbrace{P(\text{로봇택시 선택}\mid\text{일반택시 또는 로봇택시 중 선택})}_{\text{이 자료로 추정할 수 있는 확률}}
+\\[6pt]
+\neq
+\\[6pt]
+\underbrace{P(\text{로봇택시 선택}\mid\text{네가 정의한 잠재 이동 기회})}_{\text{현재 모델의 }p}
+\end{gathered}
+\]
+
+이 자료에는 \textbf{도보·대중교통·이용 포기를 고르는 선택지가 없어.}
+또한 미국의 실제 이용기록이 아니라 영국·캐나다의 가상 선택실험이야.
+그러므로 현재의 넓은 \(M\)에 추정확률을 바로 곱하면 안 돼.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+당장 가능한 작업
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+추가로 필요한 작업
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+공개 선택자료로 \textbf{요금·대기시간·이동시간에 반응하는 택시 간
+선택모형} 구현 & 현재 \(p\)를 추정하려면 도보·대중교통·비이용 등도
+포함한 선택자료 확보 또는 별도 시장참여 모형 \\
+NHTS로 \textbf{이동시장 구성과 규모} 분석 & 후보 도시의 세부 통행자료와
+미국 서비스 조건으로 보정·검증 \\
+\end{longtable}
+
+따라서 \textbf{자료 기반 구현은 시작할 수 있어. 다만 확보한 선택자료가
+설명하는 확률의 범위를 먼저 명시해야 해.}
+
+
+\end{document}

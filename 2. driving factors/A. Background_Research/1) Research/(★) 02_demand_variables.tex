@@ -1,0 +1,1321 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=17mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{longtable,booktabs,array,calc}
+\usepackage{etoolbox}
+\usepackage{upquote}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{mdframed}
+\usepackage[unicode,hidelinks]{hyperref}
+\setcounter{secnumdepth}{-\maxdimen}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\AtBeginEnvironment{longtable}{\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.18}}
+\newcommand{\missingmarketimage}{%
+\begin{center}\fbox{\parbox{0.90\linewidth}{\centering
+U.S. Robotaxi Markets by Company\\[6pt]
+\texttt{images/robotaxi\_market.png}\\[4pt]
+\small The image referenced in the source was not attached.
+}}\end{center}}
+\begin{document}
+\hypertarget{demand-side-variables-for-robotaxi-deployment-research}{%
+\section{Demand-Side Variables for Robotaxi Deployment Research}\label{demand-side-variables-for-robotaxi-deployment-research}}
+
+\hypertarget{key-principles}{%
+\subsection{Key Principles}\label{key-principles}}
+
+\begin{itemize}
+\tightlist
+\item
+  Only Paper 1 directly analyzes \textbf{observed robotaxi demand}.
+\item
+  Papers 2--4 analyze conventional \textbf{ride-sharing/ridesourcing demand} and therefore provide only indirect evidence for robotaxi demand.
+\item 
+  Papers 5--7 analyze \textbf{stated preferences or acceptance intentions} for automated taxis (choice-experiment and survey evidence). They identify mechanisms behind the choice probability $p$ but do not measure observed demand, and most of their attributes are operator decisions or survey constructs rather than city-level covariates.
+\item
+  When a paper does not establish a single directional effect, no positive or negative sign is assigned.
+\item
+  ``Official measurement data'' refers to public datasets that can be used to construct comparable variables across U.S. cities. These datasets do \textbf{not} by themselves establish that the variable affects demand.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{just-another-ride-hailing-examining-the-determinants-of-robotaxi-demand-in-san-francisco}{%
+\section{\texorpdfstring{1. \emph{Just another ride-hailing? Examining the determinants of robotaxi demand in San Francisco}}{1. Just another ride-hailing? Examining the determinants of robotaxi demand in San Francisco}}\label{just-another-ride-hailing-examining-the-determinants-of-robotaxi-demand-in-san-francisco}}
+
+\textbf{Authors:} Patrick Loa, Yongsung Lee, and Giovanni Circella\\
+\textbf{Journal:} \emph{Transportation} (2026)\\
+\textbf{Paper link:} \href{https://doi.org/10.1007/s11116-026-10751-9}{Springer DOI}\\
+\textbf{Study scope:} Monthly observed robotaxi trip productions and attractions across 194 San Francisco census tracts from September 2023 through August 2024\\
+\textbf{Evidence level:} \textbf{Direct empirical evidence on observed robotaxi demand}
+
+\hypertarget{robotaxi-demand-variables}{%
+\subsection{Robotaxi Demand Variables}\label{robotaxi-demand-variables}}
+
+All significance levels below are based on Table 3 of the paper. \texttt{***} indicates \(p<0.01\), while \texttt{**} indicates \(p<0.05\).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with robotaxi demand
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and significance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Population density & \textbf{Negative (-)} for both trip productions and trip attractions, \(p<0.01\). Census tracts with higher population density had lower observed robotaxi demand. & U.S. Census ACS population combined with Census TIGER/Line area, or EPA Smart Location Database population density & \href{https://www.census.gov/programs-surveys/acs}{ACS}, \href{https://api.census.gov/data/2024/acs/acs5/groups/B01003.html}{ACS B01003 Total Population}, \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Database} \\
+Employment density & \textbf{Positive (+)} for trip attractions, \(p<0.01\). It was not retained in the final trip-production model. & Census LEHD LODES Workplace Area Characteristics or EPA SLD employment density & \href{https://lehd.ces.census.gov/data/}{LEHD/LODES}, \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD} \\
+Land-use mix & \textbf{Positive (+)} for both trip productions and trip attractions, \(p<0.01\). & EPA Smart Location Database five-tier employment entropy or related land-use-mix indicators & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Database} \\
+Evening peak transit-service frequency per capita & \textbf{Positive (+)} for both trip productions and trip attractions, \(p<0.01\). & EPA SLD transit-frequency variables or official GTFS feeds from local transit agencies & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Database}, \href{https://gtfs.org/documentation/overview/}{GTFS Documentation} \\
+National Walkability Index & \textbf{Positive (+)} for both trip productions and trip attractions, \(p<0.01\). & EPA National Walkability Index & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Mapping} \\
+Density of art, entertainment, and recreation POIs & \textbf{Positive (+)} for both trip productions and trip attractions, \(p<0.01\). & The paper uses OpenStreetMap. A federal nationwide POI dataset is limited, but Census County Business Patterns can be used to measure establishments by NAICS category. & \href{https://www.census.gov/programs-surveys/cbp.html}{Census County Business Patterns}, \href{https://www.openstreetmap.org/}{OpenStreetMap} \\
+Density of restaurant POIs & \textbf{Positive (+)} for trip productions, \(p<0.01\). The trip-attraction model uses a combined restaurant-and-bar variable rather than restaurant density alone. & Census County Business Patterns food-service and drinking-place establishments or OpenStreetMap & \href{https://www.census.gov/programs-surveys/cbp.html}{Census CBP}, \href{https://www.openstreetmap.org/}{OpenStreetMap} \\
+Density of restaurant and bar POIs & \textbf{Positive (+)} for trip attractions, \(p<0.01\). & Census CBP NAICS 722 and related subcategories, or OpenStreetMap & \href{https://www.census.gov/programs-surveys/cbp.html}{Census CBP}, \href{https://www.openstreetmap.org/}{OpenStreetMap} \\
+Share of residents aged 18--34 & \textbf{Positive (+)} for both trip productions and trip attractions, \(p<0.01\). & ACS age-by-sex population tables & \href{https://api.census.gov/data/2024/acs/acs5/groups/B01001.html}{ACS B01001 Sex by Age} \\
+Share of residents identifying as female & \textbf{Negative (-)} for trip productions, \(p<0.01\), and trip attractions, \(p<0.05\). & ACS sex-by-age population tables & \href{https://api.census.gov/data/2024/acs/acs5/groups/B01001.html}{ACS B01001} \\
+Median household income & \textbf{Positive (+)} for both trip productions and trip attractions, \(p<0.01\). & ACS B19013 Median Household Income & \href{https://api.census.gov/data/2024/acs/acs5/groups/B19013.html}{ACS B19013} \\
+Share of zero-vehicle households & \textbf{Positive (+)} for trip productions, \(p<0.01\). It was not retained in the final trip-attraction model. & ACS B08201 Household Size by Vehicles Available & \href{https://api.census.gov/data/2024/acs/acs5/groups/B08201.html}{ACS B08201} \\
+Disadvantaged or equity-priority community designation & \textbf{Negative (-)} for both trip productions and trip attractions, \(p<0.01\). & California OEHHA CalEnviroScreen and MTC Equity Priority Communities. The same definition cannot be transferred directly to nationwide comparisons. & \href{https://oehha.ca.gov/calenviroscreen}{CalEnviroScreen}, \href{https://mtc.ca.gov/planning/transportation/access-equity-mobility/equity-priority-communities}{MTC Equity Priority Communities} \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper}}
+
+\hypertarget{spatial-and-temporal-characteristics-of-observed-demand}{%
+\subsubsection{Spatial and Temporal Characteristics of Observed Demand}\label{spatial-and-temporal-characteristics-of-observed-demand}}
+
+\begin{itemize}
+\tightlist
+\item
+  Mean monthly robotaxi trip productions per census tract increased from approximately 241 trips in September 2023 to approximately 1,410 trips in August 2024.
+\item
+  Demand was concentrated in downtown San Francisco and areas popular with tourists.
+\item
+  Trip productions and trip attractions exhibited statistically significant positive spatial autocorrelation in every month of the study period.
+\item
+  Because neighboring census tracts were not independent, the study estimated pooled spatial lag models.
+\end{itemize}
+
+\hypertarget{findings-related-to-trip-purpose}{%
+\subsubsection{Findings Related to Trip Purpose}\label{findings-related-to-trip-purpose}}
+
+The densities of art, entertainment, recreation, restaurant, and bar POIs were positively associated with demand. The authors interpret these results as evidence that robotaxis tend to be used for \textbf{discretionary activities}, including leisure, dining, and entertainment.
+
+\hypertarget{findings-related-to-public-transit}{%
+\subsubsection{Findings Related to Public Transit}\label{findings-related-to-public-transit}}
+
+Transit-service frequency was positively associated with robotaxi demand. However, this result alone does not establish a causal complementary relationship between transit and robotaxis. Areas with frequent transit service may also be downtown, employment, commercial, and entertainment centers.
+
+\hypertarget{main-limitations}{%
+\subsubsection{Main Limitations}\label{main-limitations}}
+
+\begin{itemize}
+\tightlist
+\item
+  The study examines one city and one period.
+\item
+  The dataset is aggregated at the census-tract level, so individual user characteristics cannot be observed.
+\item
+  The one-year study period is insufficient to identify stable long-term or seasonal demand patterns.
+\item
+  Supply-side changes, service-area expansion, prices, and waiting times could not be fully controlled.
+\item
+  The results describe differences across census tracts \textbf{within San Francisco}. The estimated coefficients are not guaranteed to explain demand differences across cities.
+\end{itemize}
+
+\hypertarget{paper-conclusion}{%
+\subsection{Paper Conclusion}\label{paper-conclusion}}
+
+\begin{quote}
+Observed robotaxi demand in San Francisco was positively associated with land-use mix, walkability, transit-service frequency, median household income, and leisure- and dining-related POI density. In contrast, population density and disadvantaged or equity-priority community designation were associated with lower demand. Among the studies reviewed here, this paper provides the strongest direct empirical evidence on robotaxi demand determinants.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{ride-sharing-determinants-spatial-and-spatio-temporal-bayesian-analysis-for-chicago-service-in-2022}{%
+\section{\texorpdfstring{2. \emph{Ride-sharing Determinants: Spatial and Spatio-temporal Bayesian Analysis for Chicago Service in 2022}}{2. Ride-sharing Determinants: Spatial and Spatio-temporal Bayesian Analysis for Chicago Service in 2022}}\label{ride-sharing-determinants-spatial-and-spatio-temporal-bayesian-analysis-for-chicago-service-in-2022}}
+
+\textbf{Authors:} Mohamed Elkhouly and Taqwa Alhadidi\\
+\textbf{Paper link:} \href{https://arxiv.org/abs/2406.11590}{arXiv}\\
+\textbf{Study scope:} Ride-sharing demand across Chicago's 77 community areas in 2022\\
+\textbf{Evidence level:} \textbf{Indirect ride-sharing evidence; not direct robotaxi evidence}
+
+The study analyzes demographic, socioeconomic, transportation, and land-use variables using spatial and spatiotemporal Bayesian models. The reported squared correlation between observed and fitted values in the spatiotemporal model was 0.95.
+
+\hypertarget{ride-sharing-demand-variables}{%
+\subsection{Ride-Sharing Demand Variables}\label{ride-sharing-demand-variables}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with ride-sharing demand
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Population size & \textbf{Positive (+)}. Reported in the abstract as a primary demographic determinant. & Census ACS B01003 & \href{https://api.census.gov/data/2024/acs/acs5/groups/B01003.html}{ACS B01003} \\
+Crime incidence & \textbf{Positive (+)}. Reported with population as a primary demographic determinant. & FBI Crime Data Explorer or official city police open data & \href{https://cde.ucr.cjis.gov/}{FBI Crime Data Explorer} \\
+Median income or income level & \textbf{Positive (+)}. Higher-income areas were associated with greater ride-sharing demand. & ACS B19013 & \href{https://api.census.gov/data/2024/acs/acs5/groups/B19013.html}{ACS B19013} \\
+Share of economically active residents & \textbf{Positive (+)}. A larger economically active population was associated with greater demand. & ACS B23025 Employment Status & \href{https://api.census.gov/data/2024/acs/acs5/groups/B23025.html}{ACS B23025} \\
+Share of car-free residents or households & \textbf{Positive (+)}. A larger car-free population was associated with greater demand. & ACS B08201 or B25044 & \href{https://api.census.gov/data/2024/acs/acs5/groups/B08201.html}{ACS B08201}, \href{https://api.census.gov/data/2024/acs/acs5/groups/B25044.html}{ACS B25044} \\
+Public-transit availability & Reported as an important determinant, but the abstract alone does not support assigning one universal coefficient direction. & EPA SLD transit-frequency and accessibility variables, National Transit Database, and local GTFS feeds & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD}, \href{https://www.transit.dot.gov/ntd}{FTA National Transit Database}, \href{https://gtfs.org/documentation/overview/}{GTFS} \\
+Walkability & Reported as an important determinant, but the abstract alone does not support assigning one universal coefficient direction. & EPA National Walkability Index & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Mapping} \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper-1}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  The spatial model accounts for spatial correlation across community areas.
+\item
+  The spatiotemporal model captures both geographic differences and temporal variation.
+\item
+  The authors identify population and crime as the most important demographic factors.
+\item
+  Income, economic activity, and car-free households were associated with higher demand.
+\item
+  Public-transit availability and walkability were also important, but the abstract does not establish a single coefficient direction that can be applied consistently across all model specifications.
+\end{itemize}
+
+\hypertarget{caution-for-robotaxi-research}{%
+\subsubsection{Caution for Robotaxi Research}\label{caution-for-robotaxi-research}}
+
+This paper examines ride-sharing demand in Chicago. It supports the following statement:
+
+\begin{quote}
+Prior ride-sharing research reports that population, income, economic activity, and car-free households are associated with demand.
+\end{quote}
+
+It does \textbf{not} support the stronger statement:
+
+\begin{quote}
+These variables increase robotaxi demand.
+\end{quote}
+
+For a robotaxi model, these variables should be labeled as \textbf{candidate contextual variables supported by proxy evidence}.
+
+\hypertarget{paper-conclusion-1}{%
+\subsection{Paper Conclusion}\label{paper-conclusion-1}}
+
+\begin{quote}
+Chicago ride-sharing demand was associated with demographic and socioeconomic characteristics, including population, crime, income, economic activity, and car-free households. Whether these effects have the same direction for robotaxi demand must be tested separately.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{examining-spatial-heterogeneity-of-ridesourcing-demand-determinants-with-explainable-machine-learning}{%
+\section{\texorpdfstring{3. \emph{Examining spatial heterogeneity of ridesourcing demand determinants with explainable machine learning}}{3. Examining spatial heterogeneity of ridesourcing demand determinants with explainable machine learning}}\label{examining-spatial-heterogeneity-of-ridesourcing-demand-determinants-with-explainable-machine-learning}}
+
+\textbf{Authors:} Xiaojian Zhang, Xiang Yan, Zhengze Zhou, Yiming Xu, and Xilei Zhao\\
+\textbf{Paper link:} \href{https://arxiv.org/abs/2209.07980}{arXiv}\\
+\textbf{Study scope:} Chicago ridesourcing trips, divided into airport, downtown, and neighborhood spatial contexts\\
+\textbf{Evidence level:} \textbf{Indirect ridesourcing evidence; not direct robotaxi evidence}
+
+This study uses explainable machine learning to examine how the importance and nonlinear effects of ridesourcing-demand determinants differ across spatial contexts.
+
+\hypertarget{ridesourcing-demand-variables}{%
+\subsection{Ridesourcing Demand Variables}\label{ridesourcing-demand-variables}}
+
+The central finding is not that each variable has one universal positive or negative effect. Instead, the effects are \textbf{nonlinear and context-dependent} across airport, downtown, and neighborhood trips.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with ridesourcing demand
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Land-use mix & \textbf{Nonlinear and spatially heterogeneous.} It contributes to ridesourcing-demand prediction as part of the built-environment variable group, but the paper does not establish one universal positive linear effect across all contexts. & EPA SLD land-use entropy & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Database} \\
+Walkability & \textbf{Nonlinear and spatially heterogeneous.} It is an important built-environment factor, but should not be assigned one universal directional effect. & EPA National Walkability Index & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Mapping} \\
+Intersection density and street connectivity & \textbf{Nonlinear and spatially heterogeneous.} & EPA SLD intersection-density measures & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA Smart Location Database} \\
+Population and employment density & \textbf{Nonlinear and spatially heterogeneous.} & ACS population, Census LEHD LODES employment, and EPA SLD & \href{https://www.census.gov/programs-surveys/acs}{ACS}, \href{https://lehd.ces.census.gov/data/}{LEHD/LODES}, \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD} \\
+Destination accessibility and commercial activity & \textbf{Nonlinear and spatially heterogeneous.} & EPA SLD destination-accessibility measures and Census CBP establishment data & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD}, \href{https://www.census.gov/programs-surveys/cbp.html}{Census CBP} \\
+Public-transit accessibility & \textbf{Nonlinear and spatially heterogeneous.} & EPA SLD, FTA NTD, and local GTFS feeds & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD}, \href{https://www.transit.dot.gov/ntd}{National Transit Database} \\
+Airport spatial context & The built-environment variable group collectively had the \textbf{largest predictive importance} for airport trips. This is not an estimated coefficient for airport passenger volume. & FAA annual passenger enplanements & \href{https://www.faa.gov/airports/planning_capacity/passenger_allcargo_stats/passenger}{FAA Passenger Boarding Data} \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper-2}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper-2}}
+
+\begin{itemize}
+\tightlist
+\item
+  The importance of the built environment differed across airport, downtown, and neighborhood contexts.
+\item
+  Collectively, built-environment variables had the greatest predictive importance for airport-trip demand.
+\item
+  In contrast, ridesourcing demand was generally most responsive to built-environment changes for downtown trips, followed by neighborhood trips and airport trips.
+\item
+  Therefore, ``the built environment is most important for airport trips'' and ``airport demand is most responsive to built-environment changes'' are not equivalent statements:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    The first refers to relative predictive importance.
+  \item
+    The second refers to the magnitude of demand response.
+  \end{itemize}
+\item
+  Because the study uses explainable machine learning, it does not estimate one fixed positive or negative regression coefficient for every variable.
+\end{itemize}
+
+\hypertarget{correct-interpretation-of-airport-passenger-volume}{%
+\subsubsection{Correct Interpretation of Airport Passenger Volume}\label{correct-interpretation-of-airport-passenger-volume}}
+
+The study treats airport trips as a separate spatial context. It does \textbf{not} estimate a relationship of the form:
+
+\begin{quote}
+A given increase in FAA enplanements causes a specific increase in citywide ridesourcing demand.
+\end{quote}
+
+FAA enplanements can therefore be used as:
+
+\begin{itemize}
+\tightlist
+\item
+  an official indicator of the size of the airport-related travel market; and
+\item
+  a potential measure of an airport demand anchor.
+\end{itemize}
+
+However, this paper does not justify assigning airport passenger volume a universally positive linear coefficient.
+
+\hypertarget{paper-conclusion-2}{%
+\subsection{Paper Conclusion}\label{paper-conclusion-2}}
+
+\begin{quote}
+The relationship between the built environment and ridesourcing demand is nonlinear and varies across airport, downtown, and neighborhood contexts. A demand model should therefore distinguish spatial contexts rather than impose one identical coefficient across an entire city.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{beyond-the-dichotomy-how-ride-hailing-competes-with-and-complements-public-transport}{%
+\section{\texorpdfstring{4. \emph{Beyond the Dichotomy: How Ride-hailing Competes with and Complements Public Transport}}{4. Beyond the Dichotomy: How Ride-hailing Competes with and Complements Public Transport}}\label{beyond-the-dichotomy-how-ride-hailing-competes-with-and-complements-public-transport}}
+
+\textbf{Authors:} Oded Cats, Rafał Kucharski, Santosh Rao Danda, and Menno Yap\\
+\textbf{Paper link:} \href{https://arxiv.org/abs/2104.04208}{arXiv}\\
+\textbf{Published version:} \href{https://doi.org/10.1371/journal.pone.0262496}{PLOS ONE DOI}\\
+\textbf{Study scope:} Uber trips in six U.S. and European cities, compared with the best available public-transport alternative for each trip\\
+\textbf{Evidence level:} \textbf{Indirect ride-hailing evidence; not direct robotaxi evidence}
+
+The paper concludes that the relationship between ride-hailing and public transport cannot be described as universally competitive or universally complementary.
+
+\hypertarget{ride-hailing-demand-variables}{%
+\subsection{Ride-Hailing Demand Variables}\label{ride-hailing-demand-variables}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with ride-hailing demand
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Relative travel-time competitiveness of ride-hailing versus public transport & Ride-hailing demand share was higher when ride-hailing was relatively faster. Ride-hailing demand share was lower when public-transport travel time was competitive. & Official transit-agency GTFS Schedule, GTFS Realtime, and road travel-time data & \href{https://gtfs.org/documentation/overview/}{GTFS Documentation}, \href{https://www.transit.dot.gov/ntd}{FTA National Transit Database} \\
+Availability of a viable public-transport alternative & Trips without a viable transit alternative were associated with the complementary, gap-filling role of ride-hailing. The study reported that approximately 20\%--40\% of ride-hailing trips lacked a viable public-transport alternative, depending on the city. & Official GTFS data used to calculate routing, travel time, transfers, and service availability & \href{https://gtfs.org/documentation/overview/}{GTFS} \\
+Public-transport service accessibility & Adding ride-hailing increased overall service accessibility, and the increase was larger in the analyzed U.S. cities than in the European cities. & EPA SLD transit accessibility, FTA NTD, and Census LEHD LODES job-accessibility measures & \href{https://www.epa.gov/smartgrowth/smart-location-mapping}{EPA SLD}, \href{https://www.transit.dot.gov/ntd}{FTA NTD}, \href{https://lehd.ces.census.gov/data/}{LEHD/LODES} \\
+Relative monetary cost of public transport and ride-hailing & Monetary cost was part of the comparison, but the paper's main conclusion emphasizes relative travel-time competitiveness. A single independent cost direction should not be assigned based on the abstract alone. & Official transit fare data and GTFS fare files & \href{https://gtfs.org/documentation/schedule/reference/}{GTFS Schedule Reference} \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper-3}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper-3}}
+
+\begin{itemize}
+\tightlist
+\item
+  Most ride-hailing trips had a formally available public-transport alternative.
+\item
+  Depending on the city, approximately 20\%--40\% of trips lacked a viable public-transport alternative.
+\item
+  When public-transport travel time was competitive with ride-hailing, ride-hailing demand share was lower.
+\item
+  When public transport was relatively slow or did not provide a viable alternative, ride-hailing demand share was higher.
+\item
+  Ride-hailing increased accessibility more in the analyzed U.S. cities than in the European cities.
+\item
+  Ride-hailing therefore competes with public transport for some trips while filling service gaps for others.
+\end{itemize}
+
+\hypertarget{caution-for-robotaxi-research-1}{%
+\subsubsection{Caution for Robotaxi Research}\label{caution-for-robotaxi-research-1}}
+
+These findings do not directly measure a robotaxi-specific technology effect. However, because robotaxis are also on-demand, point-to-point mobility services, the evidence supports testing variables such as:
+
+\[
+\text{Transit competitiveness}
+=
+\text{Transit travel time}
+-
+\text{Robotaxi travel time}
+\]
+
+In a candidate city without existing robotaxi service, actual robotaxi travel times and prices are unavailable. Early-stage analysis may therefore require conventional ride-hailing travel times, prices, or operational estimates as proxies.
+
+\hypertarget{paper-conclusion-3}{%
+\subsection{Paper Conclusion}\label{paper-conclusion-3}}
+
+\begin{quote}
+Ride-hailing and public transport are neither universally competitive nor universally complementary. Ride-hailing demand share declines when public transport is competitive in travel time, while ride-hailing fills accessibility gaps when viable public-transport alternatives are unavailable.
+\end{quote}
+
+
+%---------------------10/01/2026 추가-----------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Papers 5-7: evidence on the choice probability p (automated-taxi choice /
+%% acceptance). Paste before "Final Variables that may be considered for Research".
+%% Cats et al. (public-transport competitiveness) is already Paper 4 in this file.
+%% All figures below were read from the papers' result tables (Yin & Cherchi
+%% Table 3-4; Yin, Cherchi & Nettle Tables 1-2 and 5; Wei et al. Tables 1, 8, 9).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\hypertarget{willingness-to-pay-for-automated-taxis}{%
+\section{\texorpdfstring{5. \emph{Willingness to pay for automated taxis: a stated choice experiment to measure the impact of in-vehicle features and customer reviews}}{5. Willingness to pay for automated taxis: a stated choice experiment to measure the impact of in-vehicle features and customer reviews}}\label{willingness-to-pay-for-automated-taxis}}
+
+\textbf{Authors:} Hao Yin and Elisabetta Cherchi (Newcastle University)\\
+\textbf{Journal:} \emph{Transportation} 51:51--72 (2024; published online September 2022)\\
+\textbf{Paper link:} \href{https://doi.org/10.1007/s11116-022-10319-3}{Springer DOI}\\
+\textbf{Study scope:} Online stated choice (SC) experiment in five large Chinese cities (combined population about 74.6 million); 450 respondents aged 18+ who had used a normal taxi (NT) in the past year and had never used an automated taxi (AT); 2,700 choice observations; pilot in September 2020. Each task is a binary choice between an NT and an AT.\\
+\textbf{Evidence level:} \textbf{Stated-preference evidence on automated-taxi choice (individual level, China); not observed demand}
+
+Hybrid choice models (HCM) with a latent ``injunctive norm'' variable were estimated, and a resampling check (50 subsamples of about 75\%) showed the estimates are stable. The sample is not representative: age and gender match the five-city population, but education and taxi-use frequency are higher than average, and respondents are all existing taxi users.
+
+\hypertarget{automated-taxi-choice-variables}{%
+\subsection{Automated-Taxi Choice Variables}\label{automated-taxi-choice-variables}}
+
+All significance levels below are based on Table 3 (HCM column) and the WTP values on Table 4 of the paper.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with automated-taxi choice
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Travel cost (fare) & \textbf{Negative (--)}, coefficient $-0.085$ (robust t $=-11.9$). Highly significant; it is the denominator of all WTP values. & No official city-level dataset. In our model the fare is an operator decision (decision-dependent extension), not an exogenous covariate. & --- \\
+Waiting time & \textbf{Negative (--)}, $-0.077$ (t $=-9.5$). Respondents aged 60+ care less about waiting time (interaction $+0.038$, t $=2.2$). & No official dataset. Waiting time depends on fleet size $q$: decision-dependent. & --- \\
+In-vehicle travel time & \textbf{Negative (--)}, $-0.039$ (t $=-6.4$). & Not observable per service before entry. & --- \\
+In-vehicle feature: change destination during the trip & \textbf{Positive (+)}, $+0.226$ (t $=3.7$); WTP 0.35 euro per trip. & Service-design decision of the operator; not a city covariate. & --- \\
+In-vehicle feature: chat with an operator & \textbf{Positive (+)}, $+0.497$ (t $=5.2$); WTP 0.78 euro per trip. & Service-design decision; not a city covariate. & --- \\
+Good customer reviews & \textbf{Positive (+)}, $+0.363$ (t $=4.6$), stronger for trips of 30 min or more (interaction $+0.650$); WTP 1.58 euro for long trips and 0.57 euro for short trips. The most effective of the social-influence attributes tested. & No official dataset; platform ratings are proprietary. & --- \\
+Number of customers in the last hour (descriptive norm) & \textbf{Not significant} for the whole sample; significant only for respondents who heard of ATs from people who had used them (interaction $+0.236$). & --- & --- \\
+Heard of ATs operating in China (specific knowledge) & \textbf{Positive (+)}, direct effect $+0.326$ (t $=2.2$) plus an indirect effect through injunctive norms. Generic knowledge of AVs did not matter; only knowledge that ATs operate. & Exposure proxies: prior AV testing or pilot presence, months since first local testing (permit records, company pages). No official dataset. & --- \\
+Frequent taxi use (at least weekly) & \textbf{Positive (+)}, direct $+0.410$ (t $=2.8$) plus an indirect effect through injunctive norms. & Existing on-demand mobility intensity (ride-hailing trips per capita where cities publish trip data). & \href{https://data.cityofchicago.org/}{Chicago Data Portal}, \href{https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page}{NYC TLC} \\
+Age 18--29 & \textbf{No direct effect.} The negative direct coefficient in the simple logit ($-0.486$) is spurious; in the HCM age acts only indirectly through injunctive norms. & Age structure of the city (share aged 18--34) & \href{https://api.census.gov/data/2024/acs/acs5/groups/B01001.html}{ACS B01001} \\
+Income & \textbf{No effect found} (tested, not significant). & --- & --- \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper-4}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper-4}}
+
+\begin{itemize}
+\tightlist
+\item
+  All level-of-service attributes are negative and all in-vehicle and social-influence attributes are positive, as expected; every attribute is significant at more than 95\%.
+\item
+  The injunctive norm (what important others think) is a strong latent driver of AT choice (loading $0.725$, t $=8.7$); it is itself raised by having heard of ATs from users ($0.777$) more than from non-users ($0.320$), and by frequent taxi use.
+\item
+  The alternative-specific constant for the AT is strongly negative ($-4.08$ in the HCM): with identical attributes, respondents prefer the normal taxi. Positive attributes and norms have to overcome this baseline reluctance.
+\item
+  Results were stable across 50 random subsamples; no interaction with the ``enjoy talking with the driver'' items was significant.
+\end{itemize}
+
+\hypertarget{caution-for-robotaxi-research-4}{%
+\subsubsection{Caution for Robotaxi Research}\label{caution-for-robotaxi-research-4}}
+
+This paper measures \textbf{stated} preferences of Chinese taxi users. It supports the following statement:
+
+\begin{quote}
+Fare, waiting time, travel time, two in-vehicle features, good reviews, specific knowledge of operating ATs, and frequent taxi use influence an individual's hypothetical choice between an automated and a conventional taxi.
+\end{quote}
+
+It does \textbf{not} support the stronger statement:
+
+\begin{quote}
+A U.S. city's robotaxi choice probability $p$ is determined by these variables at the city level.
+\end{quote}
+
+For our model: fare and waiting time are decision variables (or depend on $q$) and belong to the decision-dependent extension; in-vehicle features and reviews are operator choices; the only attributes that can be built as city-level covariates from official data are age structure (which has \textbf{no direct effect} here) and proxies for exposure and on-demand mobility habit. Income had no effect in this sample.
+
+\hypertarget{paper-conclusion-4}{%
+\subsection{Paper Conclusion}\label{paper-conclusion-4}}
+
+\begin{quote}
+Chinese taxi users are willing to pay small but significant premiums for an automated taxi that lets them change destination (0.35 euro) or chat with an operator (0.78 euro), and a larger premium for good customer reviews (1.58 euro on long trips). Knowing that ATs already operate and using taxis frequently raise the probability of choosing an AT; income and age have no direct effect. The estimates are individual-level stated preferences and require validation against observed robotaxi demand.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{using-the-extended-unified-theory-of-acceptance-and-use-of-technology}{%
+\section{\texorpdfstring{6. \emph{Using the Extended Unified Theory of Acceptance and Use of Technology to explore how to increase users' intention to take a robotaxi}}{6. Using the Extended Unified Theory of Acceptance and Use of Technology to explore how to increase users' intention to take a robotaxi}}\label{using-the-extended-unified-theory-of-acceptance-and-use-of-technology}}
+
+\textbf{Authors:} Wei Wei, Jie Sun, Wei Miao, Tong Chen, Hanchu Sun, Shuyuan Lin, and Chao Gu\\
+\textbf{Journal:} \emph{Humanities and Social Sciences Communications} 11:746 (2024)\\
+\textbf{Paper link:} \href{https://doi.org/10.1057/s41599-024-03271-3}{Nature portfolio DOI}\\
+\textbf{Study scope:} Online questionnaire in China; 2,048 respondents surveyed, 1,284 valid after screening (valid rate 62.7\%). 59\% female; 76\% aged 23--40; 18.5\% had robotaxi ride experience; 60\% from Eastern China. UTAUT2 constructs measured on Likert scales and analyzed with structural equation modelling (SEM).\\
+\textbf{Evidence level:} \textbf{Survey-based acceptance evidence (individual level, China); not observed demand and not a choice probability}
+
+The model explains two outcomes: behavioural intention (BI) to take a robotaxi and self-reported use behaviour (UB). Note that \textbf{trust is not a construct in this paper}; the seven UTAUT2 antecedents are performance expectancy (PE), effort expectancy (EE), social influence (SI), facilitating conditions (FC), hedonic motivation (HM), price value (PV), and habit (HT).
+
+\hypertarget{robotaxi-acceptance-variables}{%
+\subsection{Robotaxi Acceptance Variables}\label{robotaxi-acceptance-variables}}
+
+Hypothesis results are from the paper's path analysis (Fig.~2, Table~8); moderation results from Table~9.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with acceptance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Performance expectancy & \textbf{Positive (+)} on intention (path $0.230$, $p=0.001$); no direct effect on use behaviour, indirect effect through intention significant. & No official dataset (survey construct). & --- \\
+Hedonic motivation & \textbf{Positive (+)} on intention; indirect effect on use behaviour significant, direct not. & No official dataset. & --- \\
+Price value & \textbf{Positive (+)} on intention; indirect effect on use behaviour significant, direct not. & Depends on the fare the operator sets: decision-dependent. & --- \\
+Habit & \textbf{Positive (+)} on \emph{both} intention and use behaviour; the largest total effect. Significant for the low-income group but not for the high-income group (income moderation). & Habit of on-demand mobility can be proxied by existing ride-hailing intensity where trip data are published. & \href{https://data.cityofchicago.org/}{Chicago Data Portal}, \href{https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page}{NYC TLC} \\
+Effort expectancy & \textbf{Not significant} on intention; \textbf{positive (+)} direct effect on use behaviour. & No official dataset. & --- \\
+Social influence & \textbf{Not significant} on intention; \textbf{positive (+)} direct effect on use behaviour. & No official dataset. & --- \\
+Facilitating conditions & \textbf{Not significant} on intention or on use behaviour. & No official dataset. & --- \\
+Behavioural intention & \textbf{Positive (+)} on use behaviour, mediating the antecedents above. & --- & --- \\
+Ride experience, gender, age (moderators) & \textbf{Largely no moderation}: none of the paths differs significantly by experience or age; by gender only FC $\to$ UB differs ($p=0.009$). & --- & --- \\
+Income (moderator) & Moderates three paths (HM $\to$ UB $p=0.031$, HT $\to$ UB $p=0.043$, BI $\to$ UB $p=0.003$). & \href{https://api.census.gov/data/2024/acs/acs5/groups/B19013.html}{ACS B19013} (income only; the moderated constructs themselves are not measurable) & \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper-5}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper-5}}
+
+\begin{itemize}
+\tightlist
+\item
+  Intention and actual use have different drivers: PE, HM, and PV work through intention, while EE and SI act directly on use; habit acts on both.
+\item
+  Having ridden a robotaxi before (18.5\% of the sample) did not change any path coefficient significantly.
+\item
+  Recommended operator strategies: reduce difficulty of use, improve cost-performance and ride experience, and provide publicity and guidance.
+\end{itemize}
+
+\hypertarget{caution-for-robotaxi-research-5}{%
+\subsubsection{Caution for Robotaxi Research}\label{caution-for-robotaxi-research-5}}
+
+This paper supports the following statement:
+
+\begin{quote}
+Performance expectancy, hedonic motivation, price value, and habit are associated with Chinese respondents' intention to use robotaxis, and habit, effort expectancy, and social influence with self-reported use.
+\end{quote}
+
+It does \textbf{not} support the stronger statement:
+
+\begin{quote}
+These constructs can be measured for a candidate city and used as covariates of $p$.
+\end{quote}
+
+All antecedents are latent survey constructs without an official city-level dataset. Price value depends on the fare (decision-dependent). The transferable implications are (i) prior on-demand mobility habit is the strongest single driver, which motivates an existing ride-hailing intensity proxy, and (ii) ride experience, age, and gender did not moderate acceptance, so there is no evidence here for age-based covariates.
+
+\hypertarget{paper-conclusion-5}{%
+\subsection{Paper Conclusion}\label{paper-conclusion-5}}
+
+\begin{quote}
+In a Chinese online survey analyzed with UTAUT2 and SEM, intention to take a robotaxi is driven by performance expectancy, hedonic motivation, price value, and habit, while actual use is driven directly by effort expectancy, social influence, and habit. The evidence is psychological and survey-based; it identifies mechanisms, not measurable city-level determinants of demand.
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{living-in-a-city-where-automated-taxis-are-operating}{%
+\section{\texorpdfstring{7. \emph{Living in a City Where Automated Taxis are Operating and Using Them: Does This Affect Consumers' Preferences?}}{7. Living in a City Where Automated Taxis are Operating and Using Them: Does This Affect Consumers' Preferences?}}\label{living-in-a-city-where-automated-taxis-are-operating}}
+
+\textbf{Authors:} Hao Yin, Elisabetta Cherchi, and Daniel Nettle (Newcastle University)\\
+\textbf{Journal:} \emph{Transportation Research Record} 2677(7):627--638 (2023)\\
+\textbf{Paper link:} \href{https://doi.org/10.1177/03611981231155181}{SAGE DOI}\\
+\textbf{Study scope:} Online SC experiment in China, March--April 2021; 633 participants, 485 valid respondents (completion 76.6\%): 151 living in cities without ATs (``NT cities''), 334 living in Guangzhou, Changsha, or Shanghai where ATs operated (299 non-users, ``AT cities'', and 35 AT users); 2,910 pseudo-observations. Same experimental design as Paper 5 plus attitudinal statements for injunctive norms, hedonic motivation, and trust.\\
+\textbf{Evidence level:} \textbf{Stated-preference evidence on how exposure and experience shift preferences (individual level, China); not observed demand}
+
+\hypertarget{exposure-and-experience-variables}{%
+\subsection{Exposure and Experience Variables}\label{exposure-and-experience-variables}}
+
+Results are from the HCM estimated separately for AT-city and NT-city residents (Tables 2--3) and the WTP values in Table 5.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with automated-taxi preference
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Living in a city where ATs operate (exposure) & \textbf{No direct effect} on AT choice at 95\%, and \textbf{no effect} on the WTP for travel time or waiting time. It changes the valuation of specific attributes: WTP for ``change destination'' is about half in AT cities (0.27 vs 0.64 GBP per trip) and WTP for good reviews on trips under 30 min is about three times higher in AT cities. & Binary ``public robotaxi service operating in the city'' and ``months since public launch'', from company service pages and permit records; 0 for a candidate city before entry. & \href{https://waymo.com/}{Waymo}, \href{https://zoox.com/}{Zoox}, \href{https://www.cpuc.ca.gov/}{California PUC} \\
+Prior usage experience (AT users vs non-users) & \textbf{No difference found} between the 35 AT users and the non-users (the user subsample is small). & Not observable before entry. & --- \\
+Awareness that ATs operate locally & 48\% of AT-city residents did not know ATs operated in their city; having heard of ATs operating raises AT preference equally in AT and NT cities. & Exposure proxies as above; awareness itself is not measurable from official data. & --- \\
+Trust (attitudinal latent variable) & \textbf{Positive (+) only in NT cities}; not significant in AT cities. The authors interpret that residents who can see ATs circulating no longer rely on stated trust. & No official dataset. & --- \\
+Hedonic motivation (latent variable) & \textbf{Positive (+) only in AT cities}; not significant in NT cities. & No official dataset. & --- \\
+Level-of-service attributes & Travel time and waiting time valuations are the same in both groups (WTP 3.31 GBP/h for travel time; 7.77 GBP/h for waiting time under 60, 5.00 GBP/h for 60+). & Decision-dependent in our model (fare, $q$). & --- \\
+\end{longtable}
+
+\hypertarget{other-findings-from-the-paper-6}{%
+\subsection{Other Findings from the Paper}\label{other-findings-from-the-paper-6}}
+
+\begin{itemize}
+\tightlist
+\item
+  Exposure works through \emph{what information people trust}: reviews from real local customers become more valuable, while an in-vehicle feature loses value once the service is familiar.
+\item
+  Generic knowledge of AVs, familiarity with automation levels, and the source of the information were not significant in either group.
+\item
+  AT-city respondents are from larger cities and take longer taxi trips, so part of the AT/NT difference may reflect city size rather than exposure.
+\end{itemize}
+
+\hypertarget{caution-for-robotaxi-research-6}{%
+\subsubsection{Caution for Robotaxi Research}\label{caution-for-robotaxi-research-6}}
+
+This paper supports the following statement:
+
+\begin{quote}
+Living where ATs operate changes how some service attributes and attitudes are valued, but not the valuation of travel and waiting time, and prior use did not change preferences.
+\end{quote}
+
+It does \textbf{not} support the stronger statement:
+
+\begin{quote}
+A city's $p$ rises with time since launch because residents' preferences become more favourable.
+\end{quote}
+
+The paper gives \textbf{weak support} for an exposure covariate: the direct exposure effect was not significant. If $p$ grows after launch in practice, that growth must be documented from ridership data, not from this paper. The useful implication is that trust-related reluctance matters in cities \emph{without} a service, which is exactly the situation of a candidate city at entry.
+
+\hypertarget{paper-conclusion-6}{%
+\subsection{Paper Conclusion}\label{paper-conclusion-6}}
+
+\begin{quote}
+Among Chinese taxi users, living in a city with operating automated taxis does not change the willingness to pay for travel or waiting time and does not shift the overall preference for ATs; it halves the value placed on changing destination, triples the value of good local reviews on short trips, and replaces trust with hedonic motivation as the significant attitude. Having used an AT made no difference. Exposure therefore changes which cues matter rather than how much people prefer ATs.
+\end{quote}
+
+%-- Additional papers---------------------%
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{modeling-users-adoption-of-shared-autonomous-vehicles}{%
+\section{\texorpdfstring{8. \emph{Modeling Users' Adoption of Shared Autonomous Vehicles Employing Actual Ridership Experiences}}{8. Modeling Users' Adoption of Shared Autonomous Vehicles Employing Actual Ridership Experiences}}\label{modeling-users-adoption-of-shared-autonomous-vehicles}}
+
+\textbf{Authors:} Roya Etminani-Ghasrodashti, Ronik Ketankumar Patel,
+Sharareh Kermanshachi, Jay Michael Rosenberger, and Ann Foss\\
+\textbf{Journal:} \emph{Transportation Research Record}
+2676(11):462--478 (2022)\\
+\textbf{Paper link:}
+\href{https://doi.org/10.1177/03611981221093632}{SAGE DOI}\\
+\textbf{Study scope:} Survey of users of an autonomous shuttle pilot
+in downtown Arlington and on a university campus; structural equation modelling\\
+\textbf{Evidence level:}
+\textbf{Survey evidence based on actual SAV experience;
+not a city-level robotaxi choice probability}
+
+\subsection{SAV Adoption Variables}
+
+The findings below summarize the published abstract.
+Coefficient magnitudes and significance levels require full-text verification.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with SAV adoption
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+
+Private-vehicle access
+& \textbf{Negative relationship with access}.
+Users with limited vehicle access were more likely to ride.
+Usual mode and trip frequency mediated vehicle-ownership effects.
+& ACS zero-vehicle household share is a contextual proxy,
+not the same measure as individual vehicle access.
+& \href{https://api.census.gov/data/2024/acs/acs5/groups/B08201.html}
+{ACS B08201} \\
+
+Income
+& \textbf{Greater use among lower-income individuals}.
+The result is specific to this pilot and its service conditions.
+& ACS median household income or income-group shares.
+& \href{https://api.census.gov/data/2024/acs/acs5/groups/B19013.html}
+{ACS B19013} \\
+
+Age
+& \textbf{Greater use among young adults}.
+This does not establish a universal age effect.
+& ACS age composition; a contextual proxy.
+& \href{https://api.census.gov/data/2024/acs/acs5/groups/B01001.html}
+{ACS B01001} \\
+
+Student status
+& \textbf{Greater use among university students}.
+Account for campus accessibility and student fare support.
+& ACS school-enrollment data and local university records.
+& \href{https://www.census.gov/programs-surveys/acs}{ACS} \\
+
+Service performance and waiting time
+& Service performance affected willingness to continue using SAVs.
+Waiting time, trip purpose, and frequency also mattered;
+the abstract does not establish one sign for every attribute.
+& Operator service records and linked user surveys;
+no common official dataset.
+& --- \\
+
+\end{longtable}
+
+\subsection{Other Findings from the Paper}
+
+\begin{itemize}
+\tightlist
+\item
+  Vehicle access influenced adoption through existing travel habits
+  and usage frequency.
+\item
+  The study distinguishes experienced usage from willingness
+  to continue using the service.
+\end{itemize}
+
+\subsubsection{Caution for Robotaxi Research}
+
+The pilot supports candidates concerning vehicle access, income,
+age, and student status.
+Its campus setting and fare conditions limit transfer to paid robotaxi markets.
+Individual survey findings do not directly establish city-level coefficients.
+
+\subsection{Paper Conclusion}
+
+\begin{quote}
+Actual SAV experience provides evidence on user characteristics
+and service conditions relevant to adoption.
+These findings motivate candidate variables for $p$,
+subject to validation in the target market.
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{preferences-for-shared-autonomous-vehicles}{%
+\section{\texorpdfstring{9. \emph{Preferences for shared autonomous vehicles}}{9. Preferences for shared autonomous vehicles}}\label{preferences-for-shared-autonomous-vehicles}}
+
+\textbf{Authors:} Rico Krueger, Taha H. Rashidi, and John M. Rose\\
+\textbf{Journal:} \emph{Transportation Research Part C:
+Emerging Technologies} 69:343--355 (2016)\\
+\textbf{Paper link:}
+\href{https://doi.org/10.1016/j.trc.2016.06.015}{Elsevier DOI}\\
+\textbf{Study scope:} Online stated-choice survey of 435 residents
+of major Australian metropolitan areas; mixed logit analysis
+of SAVs with and without dynamic ride-sharing (DRS)\\
+\textbf{Evidence level:}
+\textbf{Individual stated-choice evidence;
+not observed robotaxi demand}
+
+\subsection{SAV Choice Variables}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with SAV choice
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+
+Travel cost
+& Important determinant of stated SAV choice and DRS acceptance.
+& Offered fares and choice outcomes.
+Own-service fare is decision-dependent.
+& --- \\
+
+Travel time and waiting time
+& Important service attributes.
+Their valuations differ between shared and unshared SAV options.
+& Offered times and choice outcomes;
+operator records for applications.
+& --- \\
+
+Age
+& Younger individuals were more likely to adopt SAVs.
+& ACS age composition is a contextual proxy,
+not an individual preference measure.
+& \href{https://api.census.gov/data/2024/acs/acs5/groups/B01001.html}
+{ACS B01001} \\
+
+Multimodal travel patterns
+& \textbf{Positive (+)} relationship with SAV adoption propensity.
+& Individual mode-use surveys.
+NHTS may support a contextual proxy.
+& \href{https://nhts.ornl.gov/}{NHTS} \\
+
+Dynamic ride-sharing
+& SAVs with and without DRS were perceived as distinct options.
+& Offered sharing conditions and choice outcomes;
+an operator service-design attribute.
+& --- \\
+
+\end{longtable}
+
+\subsection{Other Findings from the Paper}
+
+\begin{itemize}
+\tightlist
+\item
+  Service design and existing mobility patterns both matter.
+\item
+  Willingness-to-pay differences indicate heterogeneity
+  between shared and unshared services.
+\end{itemize}
+
+\subsubsection{Caution for Robotaxi Research}
+
+Hypothetical choices may differ from actual usage.
+This paper supports service attributes, age, and multimodal behavior;
+its abstract does not establish an education or technology-affinity effect.
+
+\subsection{Paper Conclusion}
+
+\begin{quote}
+SAV preferences depend on service conditions and traveler characteristics.
+The findings motivate candidate mechanisms for $p$,
+rather than directly measuring a city's robotaxi share.
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{user-preferences-regarding-autonomous-vehicles}{%
+\section{\texorpdfstring{10. \emph{User preferences regarding autonomous vehicles}}{10. User preferences regarding autonomous vehicles}}\label{user-preferences-regarding-autonomous-vehicles}}
+
+\textbf{Authors:} Chana J. Haboucha, Robert Ishaq, and Yoram Shiftan\\
+\textbf{Journal:} \emph{Transportation Research Part C:
+Emerging Technologies} 78:37--49 (2017)\\
+\textbf{Paper link:}
+\href{https://doi.org/10.1016/j.trc.2017.01.010}{Elsevier DOI}\\
+\textbf{Study scope:} Stated-preference questionnaire of 721 individuals
+in Israel and North America.
+Commuting choices among a conventional car, a privately owned AV,
+and a shared AV\\
+\textbf{Evidence level:}
+\textbf{Individual stated-preference evidence on AV adoption;
+not observed robotaxi demand}
+
+\subsection{AV Adoption Variables}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with AV adoption
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+
+Age
+& Younger individuals were identified as likely early AV adopters.
+This summary does not isolate a robotaxi-specific effect.
+& ACS age composition.
+& \href{https://api.census.gov/data/2024/acs/acs5/groups/B01001.html}
+{ACS B01001} \\
+
+Student status
+& Students were identified as likely early AV adopters.
+& ACS enrollment data; local student population.
+& \href{https://www.census.gov/programs-surveys/acs}{ACS} \\
+
+Education
+& More educated individuals were identified
+as likely early AV adopters.
+& ACS educational-attainment shares.
+& \href{https://www.census.gov/programs-surveys/acs}{ACS} \\
+
+Technology interest and other attitudes
+& Five latent factors were identified:
+technology interest, environmental concern, driving enjoyment,
+public-transit attitude, and pro-AV sentiments.
+The abstract does not establish a sign for each factor.
+& Individual attitude surveys.
+Education is not a direct measure of technology interest.
+& --- \\
+
+Time spent in vehicles
+& Likely early adopters included individuals
+who spend more time in vehicles.
+& Individual travel surveys;
+NHTS provides possible contextual measures.
+& \href{https://nhts.ornl.gov/}{NHTS} \\
+
+\end{longtable}
+
+\subsection{Other Findings from the Paper}
+
+\begin{itemize}
+\tightlist
+\item
+  Conventional vehicles remained preferred in 44\% of choice decisions.
+\item
+  Adoption preferences differed between Israel and North America.
+\end{itemize}
+
+\subsubsection{Caution for Robotaxi Research}
+
+The study combines private and shared AV adoption.
+An association with AV adoption should not automatically become
+a coefficient for robotaxi choice.
+Attitudes and educational attainment require separate interpretation.
+
+\subsection{Paper Conclusion}
+
+\begin{quote}
+The study motivates age, student status, education,
+and technology-interest candidates.
+Their relevance to robotaxi $p$ requires validation
+with the appropriate choice outcome.
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{review-of-stated-preference-and-choice-studies}{%
+\section{\texorpdfstring{11. \emph{What have we learned? A review of stated preference and choice studies on autonomous vehicles}}{11. What have we learned? A review of stated preference and choice studies on autonomous vehicles}}\label{review-of-stated-preference-and-choice-studies}}
+
+\textbf{Authors:} Christos Gkartzonikas and Konstantina Gkritza\\
+\textbf{Journal:} \emph{Transportation Research Part C:
+Emerging Technologies} 98:323--337 (2019)\\
+\textbf{Paper link:}
+\href{https://doi.org/10.1016/j.trc.2018.12.003}{Elsevier DOI}\\
+\textbf{Study scope:} Review of AV surveys published from 2012 onward,
+organized by objectives, methods, study populations,
+and attitudinal components\\
+\textbf{Evidence level:}
+\textbf{Review of stated-preference and acceptance studies;
+not a new demand model or pooled coefficient estimate}
+
+\subsection{Candidate Variable Categories}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable category relevant to AV acceptance
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+
+Study-population characteristics
+& Reviewed surveys differ in their populations.
+The review does not provide one transferable coefficient
+for a demographic variable.
+& ACS can describe local demographic composition;
+specific variable support must come from individual studies.
+& \href{https://www.census.gov/programs-surveys/acs}{ACS} \\
+
+Attitudes and perceptions
+& Classifies attitudinal components that may affect
+behavioral intention.
+No universal direction is assigned here.
+& Comparable individual surveys;
+no common official city-level attitude dataset.
+& --- \\
+
+Willingness to pay
+& A major category of the reviewed research.
+Reported valuations depend on study design and context.
+& Stated-choice or willingness-to-pay surveys.
+& --- \\
+
+Benefits, barriers, and concerns
+& Synthesizes deployment benefits and acceptance concerns;
+does not estimate their effects on observed robotaxi demand.
+& Construct-specific surveys and service-condition records.
+& --- \\
+
+\end{longtable}
+
+\subsection{Other Findings from the Paper}
+
+\begin{itemize}
+\tightlist
+\item
+  Behavioral characteristics and perceptions dominate
+  the reviewed survey objectives.
+\item
+  The review identifies research gaps and differences
+  in study designs and populations.
+\end{itemize}
+
+\subsubsection{Caution for Robotaxi Research}
+
+Use this paper to organize candidates and locate primary studies.
+A review citation alone does not establish the direction,
+magnitude, or city-level measurability of a specific factor.
+
+\subsection{Paper Conclusion}
+
+\begin{quote}
+The review provides a framework for interpreting AV acceptance evidence.
+Specific $p$ variables still require support from relevant primary studies.
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{a-user-and-ridership-evaluation-of-shared-autonomous-vehicles}{%
+\section{\texorpdfstring{12. \emph{A User and Ridership Evaluation of Shared Autonomous Vehicles}}{12. A User and Ridership Evaluation of Shared Autonomous Vehicles}}\label{a-user-and-ridership-evaluation-of-shared-autonomous-vehicles}}
+
+\textbf{Authors:} Muhammad Arif Khan, Roya Etminani-Ghasrodashti,
+Sharareh Kermanshachi, Jay Michael Rosenberger, and Ann Foss\\
+\textbf{Journal:} \emph{Journal of Urban Planning and Development}
+149(1):05022048 (2023; published online December 2022)\\
+\textbf{Paper link:}
+\href{https://doi.org/10.1061/JUPDDM.UPENG-3945}{ASCE DOI}\\
+\textbf{Study scope:} Arlington RAPID pilot.
+Real-time trip-level ridership records and rider surveys;
+ordered logistic regression of usage frequency\\
+\textbf{Evidence level:}
+\textbf{Observed SAV usage and rider-survey evidence;
+not a city-level robotaxi market share}
+
+\subsection{SAV Ridership Variables}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2700}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1700}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable associated with SAV ridership
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Estimated direction and paper result
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official measurement data (city-level construction)
+\end{minipage} &
+\begin{minipage}[b]{\linewidth}\raggedright
+Official data link
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+
+Household income
+& \textbf{Negative (-)} association with frequent usage.
+Higher-income riders were less likely to use RAPID frequently.
+& ACS income measures are contextual proxies
+for the individual household measure.
+& \href{https://api.census.gov/data/2024/acs/acs5/groups/B19013.html}
+{ACS B19013} \\
+
+Usual transportation mode
+& Walking, cycling, and on-demand ridesharing users
+were more likely to use SAVs frequently.
+& Individual mode-use surveys.
+Existing ride-hailing records may provide a partial proxy.
+& \href{https://nhts.ornl.gov/}{NHTS} \\
+
+Perceived safety
+& \textbf{Positive (+)} association with frequent usage.
+Riders reporting higher perceived safety used the service more often.
+& Comparable rider safety surveys.
+Crash statistics do not measure perceived safety.
+& --- \\
+
+Activity distribution and service accessibility
+& Important for observed travel patterns.
+The abstract does not establish one universal coefficient sign.
+& Land-use and accessibility indicators
+combined with actual service coverage.
+& \href{https://www.epa.gov/smartgrowth/smart-location-mapping}
+{EPA SLD} \\
+
+\end{longtable}
+
+\subsection{Other Findings from the Paper}
+
+\begin{itemize}
+\tightlist
+\item
+  The study combines operational trip records
+  with individual rider information.
+\item
+  Spatial patterns and individual usage frequency
+  are examined through different evidence.
+\end{itemize}
+
+\subsubsection{Caution for Robotaxi Research}
+
+Frequency among existing riders differs from adoption
+among all potential travelers.
+Perceived safety may also change after repeated use.
+Pilot income effects require validation under the target fare conditions.
+
+\subsection{Paper Conclusion}
+
+\begin{quote}
+Income, existing travel modes, perceived safety,
+and accessibility help explain RAPID ridership.
+The findings support candidate mechanisms for $p$,
+without directly measuring population-wide robotaxi choice.
+\end{quote}
+
+
+
+%--------------------------------------------
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{final-variables-that-may-be-considered-for-research}{%
+\section{Final Variables that may be considered for Research}\label{final-variables-that-may-be-considered-for-research}}
+
+\hypertarget{a.-variables-with-direct-empirical-evidence-from-observed-robotaxi-demand}{%
+\subsection{A. Variables with Direct Empirical Evidence from Observed Robotaxi Demand}\label{a.-variables-with-direct-empirical-evidence-from-observed-robotaxi-demand}}
+
+Among the studies reviewed here, only Paper 1 provides direct empirical evidence.
+
+\begin{itemize}
+\tightlist
+\item
+  Population density: negative
+\item
+  Employment density: positive for trip attractions
+\item
+  Land-use mix: positive
+\item
+  Transit-service frequency: positive
+\item
+  Walkability: positive
+\item
+  Art, entertainment, and recreation POI density: positive
+\item
+  Restaurant and bar POI density: positive
+\item
+  Share of residents aged 18--34: positive
+\item
+  Share of female residents: negative
+\item
+  Median household income: positive
+\item
+  Share of zero-vehicle households: positive for trip productions
+\item
+  Disadvantaged or equity-priority community designation: negative
+\end{itemize}
+
+These findings describe variation \textbf{across census tracts within San Francisco}. They should not automatically be treated as city-level causal effects.
+
+\hypertarget{b.-variables-supported-only-by-indirect-ride-sharing-or-ridesourcing-evidence}{%
+\subsection{B. Variables Supported Only by Indirect Ride-Sharing or Ridesourcing Evidence}\label{b.-variables-supported-only-by-indirect-ride-sharing-or-ridesourcing-evidence}}
+
+\begin{itemize}
+\tightlist
+\item
+  City population size
+\item
+  Crime incidence
+\item
+  Share of economically active residents
+\item
+  Airport, downtown, and neighborhood spatial context
+\item
+  Nonlinear effects of intersection density
+\item
+  Relative public-transport versus ride-hailing travel time
+\item
+  Availability of a viable transit alternative
+\item
+  Public-transport disruptions and service gaps
+\end{itemize}
+
+These variables can be included as candidate predictors in a robotaxi-demand model, but they should be labeled:
+
+\begin{quote}
+Evidence from conventional ride-sharing or ridesourcing demand, not from observed robotaxi demand.
+\end{quote}
+
+%------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional: add to "Final Variables that may be considered for Research"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypertarget{c.-variables-from-stated-preference-and-acceptance-studies}{%
+\subsection{C. Variables from Stated-Preference and Acceptance Studies (Papers 5--7)}\label{c.-variables-from-stated-preference-and-acceptance-studies}}
+
+Papers 5--7 measure individual stated preferences or intentions in China, not observed demand. What they contribute to the $p$ covariate pool:
+
+\begin{itemize}
+\tightlist
+\item
+  Existing on-demand mobility habit: frequent taxi use raised AT choice (Paper 5) and habit was the strongest driver of intention and use (Paper 6). Proxy: ride-hailing trips per capita where published.
+\item
+  Exposure to an operating service: specific knowledge that ATs operate raised AT choice (Paper 5), but living in an AT city had no direct effect and prior use made no difference (Paper 7). Proxy: service-operating indicator and months since launch, with the caveat that the evidence for a positive exposure effect is weak.
+\item
+  Age: no direct effect on AT choice (Paper 5) and no moderation of acceptance (Paper 6). An age-structure covariate (ACS B01001) is therefore \textbf{not} supported by these papers; support must come from the ridership studies (Papers 1 and the Arlington SAV pilot).
+\item
+  Income: no effect on AT choice (Paper 5); moderates some acceptance paths (Paper 6). Not a consistent $p$ determinant in this evidence.
+\end{itemize}
+
+Fare, waiting time, in-vehicle features, reviews, and the UTAUT2 constructs are either operator decisions or survey constructs and are \textbf{not} exogenous city-level covariates of $p$; fare and waiting time enter the decision-dependent extension of the model instead.
+
+%-----------------------
+\hypertarget{c.-interpretation-cautions}{%
+\subsection{C. Interpretation Cautions}\label{c.-interpretation-cautions}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Population density is not necessarily positive.} The observed robotaxi study found a negative association.
+\item
+  \textbf{Public-transit accessibility is not necessarily negative.} Transit-service frequency was positively associated with robotaxi demand in San Francisco, while the six-city ride-hailing study found that competition or complementarity depends on relative travel time and service availability.
+\item
+  \textbf{The reviewed papers do not establish a direct robotaxi-demand coefficient for airport passenger volume.}
+\item
+  \textbf{Intersection density and other built-environment effects may be nonlinear and spatially heterogeneous.}
+\item
+  Associations should not be described as causal effects unless a study explicitly identifies causality.
+\end{itemize}
+
+\end{document}

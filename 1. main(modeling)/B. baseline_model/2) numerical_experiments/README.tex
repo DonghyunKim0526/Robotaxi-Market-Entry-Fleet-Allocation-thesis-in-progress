@@ -1,0 +1,160 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,amsmath,amssymb,array,tabularx,booktabs,xcolor,enumitem}
+\usepackage{float}                 % added: needed for the [H] float specifier used in the sensitivity tables
+\usepackage[margin=20mm]{geometry}
+\usepackage[unicode,colorlinks=true,urlcolor=blue,linkcolor=black]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}   % added: fixed-width ragged-right column used in the sensitivity tables
+\newcommand{\paper}[1]{\href{#1}{link}}
+
+\title{\textbf{README}\\[2pt]\large Numerical Experiments with Baseline Model}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-12mm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model}
+
+\subsection{Objective}
+
+\[
+\min_{y,q,O,U}\quad
+\underbrace{\sum_{c} F_c y_c}_{\text{entry costs}}
++\underbrace{\sum_{c} K_c q_c}_{\text{vehicle costs}}
++\frac{1}{|S|}\sum_{s\in S}\sum_{c\in C}\Big[
+\underbrace{c_c^{+}O_c^{s}}_{\text{unused capacity}}
++\underbrace{c_c^{-}U_c^{s}}_{\text{foregone margin}}
+\Big].
+\]
+
+The superscripts in $c_c^{+}$ and $c_c^{-}$ denote \emph{excess} and \emph{shortage},
+not the sign of the cost. Scenarios are weighted equally ($1/|S|$).
+
+\subsection{Constraints}
+
+\[
+\begin{aligned}
+&0\le q_c\le \bar q_c\, y_c && \forall c\in C,\\
+&\textstyle\sum_{c} q_c\le Q, &&\\
+&\kappa_c q_c - M_c p_c^{s} = O_c^{s}-U_c^{s} && \forall c\in C,\ s\in S,\\
+&y_c\in\{0,1\},\quad q_c\in\mathbb{Z}_{\ge 0}, &&\\
+&O_c^{s},\,U_c^{s}\ge 0. &&
+\end{aligned}
+\]
+
+{\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.32\linewidth}Y@{}}
+\toprule
+Constraint & Meaning \\ \midrule
+$0\le q_c\le\bar q_c y_c$ & No vehicles in a city that is not entered; up to the city-specific limit if it is entered. \\
+$\sum_c q_c\le Q$ & Total fleet limit. \\
+$\kappa_c q_c-M_c p_c^s=O_c^s-U_c^s$ & Service capacity minus robotaxi demand equals unused capacity minus unmet demand. \\
+\bottomrule
+\end{tabularx}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Numerical experiments with synthetic data (summary)}
+
+Two synthetic instances were run to answer two questions: (1) is the implementation correct and does it
+produce meaningful results, and (2) how sensitive are the results to parameter choices.
+Full details are in \texttt{numerical\_experiments.tex} (small instance) and \texttt{annual\_experiments.tex} (annual instance).
+
+\subsection{Small case instance (3 cities [A,B,C], $Q=4$, 10 hand-designed scenarios)}
+
+\textbf{Inputs.} $M=(80,100,120)$, $\kappa=10$, $\bar q=2$, $F=20$, $K=5$, $c^+=0$, $c^-=10$; mean choice probability 0.38 in every city.
+
+\textbf{Correctness.} The MILP (SciPy/HiGHS) and full enumeration of all 60 feasible $(y,q)$ give the same unique optimum $q=(0,2,2)$, $Z=858$.
+Eight edge cases behave as expected: no vehicles, no demand, $c^-=0$, or a prohibitive $F$ give no entry; $Q=8$ stops at the city limits $(2,2,2)$;
+$F=0$ enters all three cities; demand equal to one vehicle's capacity gives $(1,1,1)$ with $U=O=0$.
+
+\textbf{Meaningful results.} The model concentrates in the two larger markets: entering A would serve 0.8 more trips (margin 8) but costs $F=20$, so $Z$ rises by 12.
+Service rate 30\%, utilization 85.5\%, improvement over no entry $\Delta Z=282$.
+
+\textbf{Sensitivity.} Switching points are identified rather than only three levels:
+three cities for $F<8$, B and C for $8<F<160$, C alone for $160<F<162$, no entry above;
+three cities from $\kappa\ge12.5$ (tie at 12); $(2,0,2)$ from $M_A\ge1.3\times$ (tie at 1.25);
+$c^+$ leaves the allocation unchanged up to 15 and switches to $(1,1,2)$ from 15.5;
+$Q\ge6$ is capped by the city limits. Without demand variability three allocations tie; with it only $(0,2,2)$ is optimal,
+and mean-demand allocations cost 0--16 more under the scenarios.
+
+\subsection{Large case instance (3 cities [A,B,C], $Q=1{,}000$, 10 random scenarios)}
+
+\textbf{Inputs.} Literature-based proxies: $M=(577.9, 770.5, 963.2)$ million trips/year, $\kappa=8{,}760$, $\bar q=500$, $F=3.5$M, $K=7{,}972$, $c^+=0$, $c^-=10$;
+$p_c^s$ drawn independently from $\{0.002,0.005,0.01,0.02\}$ so that demand and capacity are of the same order.
+
+\textbf{Correctness.} Every solve was cross-checked against an independent dynamic program that also counts tied optima (the program itself was checked against enumeration on the small instance); all edge cases pass.
+
+\textbf{Meaningful results.} Optimum $q=(132,368,500)$ with 72 ties in the B--C split; $\Delta Z=60.85$M, service rate 34.9\%, utilization 90.6\%.
+The allocation follows the value of one more vehicle, $87{,}600\times P(\text{demand}>\text{capacity})-7{,}972$: A is filled only while all ten scenarios have unmet demand.
+Entering A is worth only 0.39M more than $(0,500,500)$.
+With the reference choice probabilities ($\ge0.02$) demand exceeds capacity in every scenario and any two cities tie regardless of $M$ and $p$; demand differences matter only near $p\approx\kappa\bar q/M$.
+
+\textbf{Sensitivity.} A drops out when $F>3.89$M, $\kappa\le8{,}212.5$, or demand grows by $\ge6.25\%$; A enters only for $Q\ge1{,}000$ and the city limits bind at 1{,}500;
+$\bar q\ge750$ gives $(0,440,560)$; $c^-=2,5,10$ give one, two, three cities.
+$c^+$ changes nothing up to 15 (it only lowers $\Delta Z$ by $827{,}397\,c^+$) and shrinks the fleet to 528 at 40; it is equivalent to raising $K$ by $c^+\kappa$ and $c^-$ by $c^+$.
+Mean-demand allocations cost 0.39--8.14M more under the scenarios, and 50-scenario samples give seed-dependent allocations while 500-scenario samples are stable.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Which Inputs Matter: Decision versus Performance Sensitivity}
+The large instance separates two kinds of sensitivity: inputs that change the optimal allocation, and inputs that change the improvement $\Delta Z$. The two lists differ.
+
+\begin{table}[H]
+\centering\small
+\caption{Inputs That Change the Optimal Allocation (Baseline $(132,368,500)$)}\label{tab:an-sens-decision}
+\begin{tabular}{P{.24\linewidth}P{.17\linewidth}P{.52\linewidth}}
+\toprule
+Input & Range examined & Effect on the allocation\\\midrule
+$Q$, $\bar q$ (fleet and city limits) & 0--2{,}000 / 100--1{,}500 & The limits dictate the allocation: C only for $Q\le500$, B added at 600, A added at 1{,}000, saturation at 1{,}500; $\bar q\ge750$ gives $(0,440,560)$.\\
+$\kappa$ (common) & $\pm25\%$ & A is dropped once $\kappa$ falls by about 3\% (switch near 8{,}498).\\
+Demand $M\cdot p$ (common) & $\times0.75$--$1.25$ & A is dropped at $+4.2\%$; smaller demand moves vehicles into A (170 at $\times0.75$).\\
+$c^-$ (common) & 2--20 & One city at 2, two cities at 5, three cities from 10.\\
+$\alpha$ (variability) & 0--1 & Two cities up to 0.7, three cities from 0.8.\\
+Differences in one city & $\pm25\%$ & $\kappa_c$, $c_c^-$, $M_c$, and $F_A$ move the allocation substantially; even small differences ($c_c^+=1$, $K_c\pm25\%$) break the B--C tie.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\caption{Inputs That Leave the Optimal Allocation Unchanged}\label{tab:an-sens-insensitive}
+\begin{tabular}{P{.24\linewidth}P{.22\linewidth}P{.47\linewidth}}
+\toprule
+Input & Range examined & Why the allocation is unchanged\\\midrule
+$K$ (common) & $\pm25\%$ & Every vehicle's value falls by the same amount in all cities, so the ordering is unchanged; $Q$ remains binding.\\
+$c^+$ (common) & 0--15 (switch near 35) & Same mechanism; $c^+$ can be absorbed into $K+c^+\kappa$ and $c^-+c^+$.\\
+$F$ (common) & up to $+11\%$ & Only above 3.89 million is A dropped; B and C are entered at every $F$ examined.\\
+$M_A$ & 0.875--1.25 & Only A's fleet adjusts (116--165 vehicles); the structure is unchanged.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\caption{Sensitivity of the Improvement $\Delta Z$ (USD Million), Most to Least Sensitive}\label{tab:an-sens-performance}
+\begin{tabular}{lP{.22\linewidth}P{.42\linewidth}}
+\toprule
+Input & Range examined & $\Delta Z$ over the range\\\midrule
+$c^-$ & 2--20 & 0.29 to 140.18\\
+$\kappa$ & $\pm25\%$ & 44.52 to 77.25\\
+$Q$, $\bar q$ & 0--1{,}500 / 100--1{,}500 & 0 to 84.12 / 13.39 to 61.95\\
+$F$, $K$ & $\pm25\%$ & linear: $\pm2.4$ ($F$), $\pm2.0$ ($K$)\\
+$M\cdot p$ multiplier & $\times0.75$--$1.25$ & 57.15 to 63.78\\
+$c^+$ & 0--15 & $-0.83$ per USD of $c^+$\\
+$M_A$ & $\times0.75$--$1.25$ & 60.46 to 61.43 (almost flat)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

@@ -1,0 +1,144 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=19mm]{geometry}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,multirow}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\newcommand{\evtitle}{Contextual Stochastic Optimization for Determining Electric Vehicle Charging Station Locations with Decision-Dependent Demand Learning}
+\newcommand{\boschtitle}{Cost-based analysis of autonomous mobility services}
+\newcommand{\fantitle}{Optimising fleet sizing and management of shared automated vehicle (SAV) services: A mixed-integer programming approach integrating endogenous demand, congestion effects, and accept/reject mechanism impacts}
+\newcommand{\zhangtitle}{Joint Fleet Sizing and Charging System Planning for Autonomous Electric Vehicles}
+\newcommand{\backtolist}{\par\smallskip\hyperlink{paper:list}{논문 목록으로 돌아가기}\par}
+\begin{document}
+\hypertarget{paper:list}{}
+\section*{비용항목 선정에 참고한 논문 목록}
+Reference의 파란색 제목을 누르면 아래의 논문별 설명으로 이동한다. Link는 외부 원문으로 연결된다. 동일 논문의 상세 설명은 한 번만 작성한다.
+
+{\small\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{@{}p{0.11\linewidth}Yp{0.13\linewidth}@{}}
+\toprule
+Term & Reference & Link \\
+\midrule
+\multirow[t]{2}{*}{$F_cy_c$}
+& \hyperlink{paper:ev}{\evtitle\ (Sun, Yu, and Bayraksan)} & \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{원문 / SSRN} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:zhang}{\zhangtitle\ (Zhang et al., 2018 preprint)} & \href{https://arxiv.org/abs/1811.00234}{원문} \\
+\midrule
+\multirow[t]{4}{*}{$K_cq_c$}
+& \hyperlink{paper:ev}{\evtitle\ (Sun, Yu, and Bayraksan)} & \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{원문 / SSRN} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:bosch}{\boschtitle\ (B\"osch et al., 2018)} & \href{https://doi.org/10.1016/j.tranpol.2017.09.005}{원문 / DOI} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:fan}{\fantitle\ (Fan et al., 2023)} & \href{https://pure.tudelft.nl/ws/portalfiles/portal/166828610/1_s2.0_S0968090X23003881_main.pdf}{원문} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:zhang}{\zhangtitle\ (Zhang et al., 2018 preprint)} & \href{https://arxiv.org/abs/1811.00234}{원문} \\
+\midrule
+$c_c^+O_c^s$ & \hyperlink{assumption:idle}{직접적인 근거 문헌 미확정: 본 연구의 추가 가정} & --- \\
+\midrule
+\multirow[t]{3}{*}{$c_c^-U_c^s$}
+& \hyperlink{paper:ev}{\evtitle\ (Sun, Yu, and Bayraksan)} & \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{원문 / SSRN} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:fan}{\fantitle\ (Fan et al., 2023)} & \href{https://pure.tudelft.nl/ws/portalfiles/portal/166828610/1_s2.0_S0968090X23003881_main.pdf}{원문} \\
+\cmidrule(l){2-3}
+& \hyperlink{paper:bosch}{\boschtitle\ (B\"osch et al., 2018)} & \href{https://doi.org/10.1016/j.tranpol.2017.09.005}{원문 / DOI} \\
+\bottomrule
+\end{tabularx}}
+
+\textbf{읽는 기준.} [구조 차용], [비용 분류 참고], [본 연구의 추가 가정]은 문헌 내용과 본 연구의 판단을 구분한다. 목록은 현재 계수의 금액까지 문헌에서 가져왔다는 뜻이 아니다.
+
+\textbf{EV 원문 위치.} 작업 폴더의 \texttt{3. papers/3.contextual\_stochastic\_optimization/EV\_charging\_station.pdf}. 공개 원문: \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{원문 / SSRN}. 정식 출판본: \href{https://doi.org/10.1016/j.trb.2026.103524}{원문 / DOI}.
+
+\newpage
+\hypertarget{paper:ev}{}
+\section*{1. \textcolor{blue}{\evtitle}}
+{\color{blue}Sun, H., Yu, X., and Bayraksan, G.\quad \href{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5078715}{원문 / SSRN}}
+
+\textbf{간단한 요약.} 불확실한 EV 충전 수요를 고려하여 충전소 개설 여부와 충전기 대수를 결정하는 2단계 모델이다. 개설비와 설치비를 1단계에서 반영하고, 수요 실현 후 수요 배정 및 미충족 수요를 평가한다. 원문의 수요는 맥락과 설치 결정에 의존하지만, 현재 로보택시 기본 모델은 외생 수요를 사용한다.
+
+\textbf{내 모델에 사용한 부분}
+\begin{itemize}
+\item \textbf{$F_cy_c$ --- [구조 차용].} \textcolor{blue}{Sec.~2.1, Eq.~(1a), PDF p.~7}의 개설 고정비 $f_i y_i$를 참고했다. 도시 진입 및 기본 인프라 고정비로 수정한다. 인허가ㆍ출시 준비의 세부 금액을 가져온 것은 아니다.
+\item \textbf{$K_cq_c$ --- [구조 차용].} 같은 식의 충전기 대수에 비례하는 설치비 $b_i z_i$를 참고했다. 차량 대수에 비례하는 준비ㆍ배치ㆍ고정 유지비로 수정한다. 세부 차량 비용은 별도로 정한다.
+\item \textbf{$c_c^-U_c^s$ --- [구조 차용 / 본 연구의 추가 가정].} \textcolor{blue}{Eq.~(2a), PDF p.~8}의 미충족 수요 패널티 $p_j s_j$ 구조를 참고했다. 놓친 공헌이익이라는 해석은 본 연구의 선택이다.
+\item \textbf{$c_c^+O_c^s$ --- [본 연구의 추가 가정].} 원문 \textcolor{blue}{Eqs.~(1)--(2)}에는 대응하는 유휴 용량 비용이 없다. 해당 항의 직접 근거로 인용하지 않는다.
+\end{itemize}
+\textbf{적용 범위.} 원문의 수익 항은 수요에 연결되어 있다. 실제 운행의 공헌이익이라는 본 연구의 해석과 구분한다. 원문의 비용 숫자를 로보택시 단가로 그대로 사용하지 않는다.
+\backtolist
+
+\hypertarget{paper:bosch}{}
+\section*{2. \textcolor{blue}{\boschtitle}}
+{\color{blue}B\"osch, P.~M., Becker, F., Becker, H., and Axhausen, K.~W. (2018). Transport Policy, 64, 76--91.}\quad \href{https://doi.org/10.1016/j.tranpol.2017.09.005}{원문 / DOI}
+
+\textbf{간단한 요약.} 자율주행 이동 서비스의 비용을 구성요소별로 분석한다. 차량 관련 고정비와 이용에 따른 비용을 구분하고 운영 방식에 따른 비용 구조를 비교한다.
+
+\textbf{내 모델에 사용한 부분}
+\begin{itemize}
+\item \textbf{$K_cq_c$ --- [비용 분류 참고].} \textcolor{blue}{Sec.~2 및 Appendix B}의 취득ㆍ감가상각ㆍ보험ㆍ주차 등 분류를 참고한다. 그중 평가기간 동안 차량 대수에 따라 발생하는 고정 비용을 $K_c$에 포함한다. 모든 감가상각을 무조건 고정비로 보는 것은 아니다.
+\item \textbf{$c_c^-$의 변동비 계산 --- [비용 분류 참고].} 에너지, 주행에 따른 정비ㆍ마모 등의 분류를 참고할 수 있다. 이를 운임에서 차감하여 공헌이익을 구성하는 것은 본 연구의 적용 방식이다.
+\end{itemize}
+\textbf{적용 범위.} 과거 스위스 기반 금액을 현재 대상 도시의 단가로 바로 옮기지 않는다. 비용 분류의 근거이며, 현재 목적함수 전체의 직접 출처는 아니다.
+\backtolist
+
+\newpage
+\hypertarget{paper:fan}{}
+\section*{3. \textcolor{blue}{\fantitle}}
+{\color{blue}Fan, Q., van Essen, J.~T., and Correia, G.~H.~de A. (2023). Transportation Research Part C, 157, 104398.}\quad \href{https://pure.tudelft.nl/ws/portalfiles/portal/166828610/1_s2.0_S0968090X23003881_main.pdf}{원문}
+
+\textbf{간단한 요약.} SAV 운영자의 이익을 고려하여 차량 규모와 운영을 최적화한다. 내생적 수요ㆍ혼잡ㆍ수요 수락 및 거절을 다루며, 매출, 차량 감가상각, 운영비와 지연 패널티를 포함한다.
+
+\textbf{내 모델에 사용한 부분}
+\begin{itemize}
+\item \textbf{$K_cq_c$ --- [구조 차용 / 비용 분류 참고].} \textcolor{blue}{Sec.~3.6, Eq.~(27), PDF pp.~12--13}의 차량 규모에 비례하는 감가상각 비용을 참고한다. 현재 $K_c$에는 별도로 정의한 차량별 배치ㆍ고정 유지 비용도 포함한다.
+\item \textbf{$c_c^-U_c^s$ --- [본 연구의 추가 가정].} 매출과 운영비를 함께 평가하는 회사 관점을 참고한다. 놓친 공헌이익 계수는 논문의 지연 패널티를 그대로 가져온 것이 아니다. 외생 수요 조건에서 매출ㆍ변동비를 미충족 수요 손실로 바꾸는 별도 해석이다.
+\end{itemize}
+\textbf{적용 범위.} 원문의 거리 기반 운영비를 그대로 $K_c$에 넣지 않는다. 지연된 서비스와 아예 충족하지 못한 수요도 서로 다른 결과이다.
+\backtolist
+
+\hypertarget{paper:zhang}{}
+\section*{4. \textcolor{blue}{\zhangtitle}}
+{\color{blue}Zhang, H., Sheppard, C.~J.~R., Lipman, T.~E., and Moura, S.~J. (2018 preprint).}\quad \href{https://arxiv.org/abs/1811.00234}{원문 / arXiv:1811.00234}
+
+\textbf{간단한 요약.} 자율주행 전기차의 차량 규모와 충전시설을 함께 계획한다. 투자비를 연간 비용으로 환산하고, 승객 운송 및 재배치 운행의 전력ㆍ유지보수 비용을 반영한다.
+
+\textbf{내 모델에 사용한 부분}
+\begin{itemize}
+\item \textbf{$F_cy_c$ --- [비용 분류 참고 / 본 연구의 추가 가정].} \textcolor{blue}{Sec.~III-A, Eq.~(11)}의 충전시설 투자비를 기본 인프라 비용 선정에 참고한다. 원문은 시설 규모를 결정하지만, 현재는 정해진 기본 시설 묶음을 도시별 고정비로 취급한다. 이는 별도의 단순화 가정이다.
+\item \textbf{$F_c,K_c$의 기간 환산 --- [구조 차용].} 투자비를 운영비와 일관된 기간 기준으로 맞추는 방식을 참고한다. 투자비 전액과 단기 운영비를 근거 없이 합산하지 않는다.
+\end{itemize}
+\textbf{적용 범위.} 승객 시간비용은 현재 회사 관점의 기본 모델에 채택하지 않는다. 시설 확장이나 재배치를 도입하면 비용 표현도 다시 검토한다.
+\backtolist
+
+\newpage
+\hypertarget{assumption:idle}{}
+
+\begin{comment}
+\section*{5. 문헌과 구분하여 남겨둘 모델 가정}
+\textbf{$c_c^+O_c^s$ --- [본 연구의 추가 가정 / 검토 중]}
+
+현재 확인한 관련 수식에서는 이 항의 직접 근거를 확정하지 못했다. 가능한 해석은 미사용 운영 예약 자원의 추가 부담 또는 모델 밖 대체 활용 기회의 손실이다. 그런 운영 상황이 존재한다는 가정과, 이를 남는 운행 가능 건수에 비례하는 손실로 환산하는 근거가 필요하다.
+
+리스료ㆍ보험료ㆍ고정 주차비를 이미 $K_c$에 포함했다면 다시 넣지 않는다. 다른 후보 도시의 놓친 공헌이익도 그 도시의 $c_c^-U_c^s$에 반영했다면 중복 부과하지 않는다. 경제적 의미는 미확정 상태로 기록하고, $c_c^+=0$과 양의 계수를 사용하는 실험을 비교할 수 있다.
+
+\textbf{$c_c^-U_c^s$ --- [본 연구의 추가 가정: 공헌이익 해석]}
+
+완료 운행을 $T_c^s=D_c^s-U_c^s$, 건당 공헌이익을 $m_c=r_c-v_c$라고 하자. $r_c$는 운임, $v_c$는 건당 변동비이다.
+\[
+-m_cT_c^s=-m_cD_c^s+m_cU_c^s.
+\]
+현재처럼 $D_c^s$와 $m_c$가 결정에 의존하지 않으면 첫 항은 상수이다. 대응하는 공헌이익 목적함수에서 $c_c^-=m_c$인 미충족 수요 비용으로 바꾸어도 최적 결정은 같고, 목적값은 상수만큼 달라진다. 수요가 결정에 의존하도록 확장하면 다시 검토해야 한다.
+
+\textbf{계수 값의 설정}
+
+비용 항목의 선택 근거와 숫자의 출처는 별도로 기록한다. 현재 문헌에서 숫자를 그대로 옮겼다고 주장하지 않는다. 실제 추정치 또는 명시한 합성 실험값을 사용하고 민감도를 확인한다. 배치 결정과 무관하게 이미 발생한 매몰비용은 $K_cq_c$에 새로 부과하지 않는다.
+
+\textbf{기록의 출발점}\par
+작업 폴더의 비용항목 선택 자료(pp.~9--11)를 바탕으로, EV 원문과 연결한 논문의 관련 절ㆍ수식을 확인하여 정리했다. 비용 선정의 근거를 추적하는 기록이며, 모든 계수가 실증적으로 확정되었다는 뜻은 아니다.
+\backtolist
+
+\end{comment}
+
+\end{document}
