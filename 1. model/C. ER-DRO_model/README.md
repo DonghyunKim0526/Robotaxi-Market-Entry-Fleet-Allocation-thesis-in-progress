@@ -65,6 +65,22 @@ Compared with the baseline's specified choice scenarios, ER-DRO **learns context
 - **Comparisons:** contextual ER-SAA, contextual ER-DRO, no-context benchmark, and a city-count-budget variant.
 - **Evaluation:** 1,000 separate true-model scenarios; report mean cost and the mean of the worst 10% (OOS CVaR at 0.9).
 
+## Solution method comparison: extensive form vs. L-shaped decomposition
+
+The revised document compares two ways of solving the same two-stage model at $N=15$, $c^-=5$, and $\zeta=0.9$:
+
+- **Extensive form:** put first-stage decisions and every scenario's recourse/CVaR constraints into one MILP and solve it with HiGHS.
+- **L-shaped decomposition:** iterate between a master problem in $(y,q,\tau)$ and scenario subproblems that evaluate recourse and generate cuts. The stages are linked through these cuts; they are not solved independently once in sequence. Lower/upper bounds determine when to stop.
+
+| Setting | Extensive-form objective / time | L-shaped feasible cost / time | Difference |
+|---|---|---|---|
+| Entry cost in objective; no city-count budget | 17,304,198 / 1.5 s | 17,378,353 / 54.5 s; 38 iterations | +0.43% |
+| City-count limit $B=3$; entry cost removed from objective | 16,036,515 / 0.4 s | 16,140,861 / 29.5 s; 38 iterations | +0.65% |
+
+**Interpretation.** L-shaped stops when the bound gap is within **1% of the upper bound**. Its reported feasible cost can therefore exceed the extensive-form result, and the chosen cities need not be identical. Compare methods within each row: the budget variant changes the objective, so the two rows are not a like-for-like policy-cost comparison.
+
+The extensive form is faster in these toy instances: the surplus/shortage recourse is piecewise linear and can be represented compactly in one MILP. The budget variant reduces decomposition time in the reported run, but does not reduce its 38 iterations. **Subsequent numerical experiments use the extensive form.** This does not establish that it will remain faster for larger or decision-dependent models. Set `RUN_COMPARE=True` in the notebook to reproduce the optional comparison; times are those reported in [ER-DRO(revised).pdf](ER-DRO%28revised%29.pdf), not a new runtime benchmark.
+
 ## Main result: expected cost versus tail protection
 
 | $N=200,c^+=1,c^-=5$ | $\zeta=0$ | $\zeta=0.5$ | $\zeta=0.9$ |
