@@ -156,18 +156,6 @@ Outputs include `table2_main_results.csv`, `table3_budget.csv`, `table4_sensitiv
 
 Read **revised** for the two-stage formulation and logit residuals. **Draft** retains a separate $K_cq_c$ term and earlier residual notation. The revised version omits separate vehicle cost; its coefficient-absorption identity is exact for expectation under the stated adjustment but only approximate for general CVaR ($\zeta>0$), as its derivation notes. Do not treat the revised cost scale as identical to the baseline.
 
-## Documents and their contents
-
-- **[ER-DRO(draft1).pdf](ER-DRO%28draft1%29.pdf)** — Earlier CVaR formulation retaining separate vehicle cost and pre-revision residual notation; compare with revised before using equations.
-- **[ER-DRO(revised).pdf](ER-DRO%28revised%29.pdf)** — Two-stage CVaR MILP, logit residual scenarios, toy-data training/OOS design, solution comparison, and risk/sensitivity results.
-
-
-## Code and Colab launch
-
-- **[ER-DRO(non decision-dependent).ipynb](ER-DRO%28non%20decision-dependent%29.ipynb)** · [Colab](https://colab.research.google.com/drive/1dz5QtiAnYBBmKfDLi95xfjFirqg2fcAT) — Logit learning → residual scenarios → ER-SAA/ER-DRO/no-context decisions → independent OOS scoring; diagnostics, optional decomposition, and CSV exports.
-
-Colab opens the permission-controlled Drive original. The GitHub notebook is a saved snapshot; changes are not automatically synchronized.
-
 ---
 
 [Parent guide](../README.md) · [Project overview](../../README.md)
