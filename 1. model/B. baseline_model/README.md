@@ -1,10 +1,23 @@
 # Baseline model
 
-| Folder | What it contains |
+## Folder and file guide
+
+| Folder / key file | What to read or run |
 |---|---|
-| [1) baseline](1%29%20baseline/README.md) | Mathematical formulation, demand/cost definitions, and the meaning of entry, fleet, surplus, and shortage variables |
-| [2) numerical_experiments](2%29%20numerical_experiments/README.md) | Small and annual synthetic experiments: independent implementation checks, boundary tests, sensitivity, and uncertainty comparisons, with reports and executable notebooks |
-| [3) revision_history](3%29%20revision_history/README.md) | Retained earlier formulations and a change log explaining what changed, the supported reasons, and editorial cleanup |
+| [1) baseline](1%29%20baseline/README.md) · [baseline(main).pdf](1%29%20baseline/baseline%28main%29.pdf) | Mathematical formulation: demand and cost definitions, entry/fleet constraints, and surplus/shortage outcomes |
+| [2) numerical_experiments](2%29%20numerical_experiments/README.md) | Purpose, settings, and model checks shared by the small and annual synthetic experiments |
+| [Small-case report and code](2%29%20numerical_experiments/small_case/README.md) | Exhaustive implementation verification, boundary cases, interpretable switching points, and uncertainty comparisons |
+| [Annual large-case report and code](2%29%20numerical_experiments/large_case/README.md) | Literature-informed scale assumptions, independent dynamic-programming checks, sensitivity, tied optima, and sampling stability |
+| [3) revision_history](3%29%20revision_history/README.md) | Earlier PDFs and a change log: what changed, the supported rationale, and editorial cleanup |
+
+### Run the experiments
+
+| Code | Main tasks | Colab |
+|---|---|---|
+| [baseline_smallcase.ipynb](2%29%20numerical_experiments/small_case/baseline_smallcase.ipynb) | MILP versus all 60 feasible entry/fleet pairs; edge cases, sensitivity, and mean-demand comparisons | [Open in Colab](https://colab.research.google.com/drive/1xJvXZokBwrCa2vabDtKB1izIU3fAevtx) |
+| [baseline_largecase.ipynb](2%29%20numerical_experiments/large_case/baseline_largecase.ipynb) | Annual MILP versus exact DP; common/city sensitivity, ties, scenario sampling, and CSV outputs | [Open in Colab](https://colab.research.google.com/drive/1eLKtC6O0tr65SM1JkziHM24RaPbEDo3_) |
+
+Colab opens the Drive originals; GitHub notebooks are saved snapshots and do not automatically synchronize.
 
 ## What the baseline models
 

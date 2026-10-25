@@ -1,5 +1,16 @@
 # ER-DRO model and experiments
 
+## File and folder guide
+
+| File / folder | What it contains |
+|---|---|
+| [ER-DRO(revised).pdf](ER-DRO%28revised%29.pdf) | Current reference: two-stage ER-DRO equations, logit residual scenarios, synthetic experiment design/results, and planned real-data application |
+| [ER-DRO(draft1).pdf](ER-DRO%28draft1%29.pdf) | Earlier formulation retaining separate vehicle cost and earlier residual notation; use revised for the current model |
+| [ER-DRO(non decision-dependent).ipynb](ER-DRO%28non%20decision-dependent%29.ipynb) | Executable learning → scenarios → ER-SAA/ER-DRO/no-context comparison → independent evaluation; optional solution-method comparison and sensitivity exports |
+| [figures/](figures/) | Regression/residual diagnostics, OOS mean-versus-tail cost comparisons, and sensitivity plots used below |
+
+**[Open the ER-DRO notebook in Colab](https://colab.research.google.com/drive/1dz5QtiAnYBBmKfDLi95xfjFirqg2fcAT)** — run cells top to bottom; set `RUN_COMPARE=True` for the optional extensive-form/L-shaped comparison. Colab opens the Drive original; the GitHub notebook is a saved snapshot and does not automatically synchronize.
+
 ## Two-stage ER-DRO model
 
 Following [ER-DRO(revised).pdf](ER-DRO%28revised%29.pdf), the model chooses city entry and fleet allocation before demand is known. It minimizes entry cost plus CVaR of the scenario-dependent surplus/shortage cost. Demand is exogenous to these decisions in this version.
