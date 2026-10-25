@@ -1,27 +1,61 @@
 # ER-DRO model and experiments
 
+## Two-stage ER-DRO model
+
+Following [ER-DRO(revised).pdf](ER-DRO%28revised%29.pdf), the model chooses city entry and fleet allocation before demand is known. It minimizes entry cost plus CVaR of the scenario-dependent surplus/shortage cost. Demand is exogenous to these decisions in this version.
+
+### Stage 1: city entry and fleet allocation
+
+```math
+\begin{aligned}
+\min_{y,q}\quad &\sum_{c\in C}F_cy_c+\mathcal R_\zeta(q)\\
+\text{s.t.}\quad &0\le q_c\le\bar q_cy_c &&\forall c\in C,\\
+&\sum_{c\in C}q_c\le Q,\\
+&y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0} &&\forall c\in C.
+\end{aligned}
+```
+
+$y_c$ selects a city and $q_c$ allocates vehicles; both are shared across scenarios. $F_c$ is entry cost, $\bar q_c$ is the city fleet cap, and $Q$ is total available fleet. The risk term is
+
+```math
+\mathcal R_\zeta(q)=\min_{\tau\in\mathbb R}
+\left\{\tau+\frac1{N(1-\zeta)}\sum_{s=1}^N[H(q,D^s)-\tau]_+\right\},
+\qquad 0\le\zeta<1.
+```
+
+### Stage 2: surplus capacity and unmet demand
+
+For fixed fleet $q$ and scenario demand $D^s$, the recourse problem is
+
+```math
+\begin{aligned}
+H(q,D^s)=\min_{O^s,U^s}\quad
+&\sum_{c\in C}(c_c^+O_c^s+c_c^-U_c^s)\\
+\text{s.t.}\quad
+&\kappa_cq_c-D_c^s=O_c^s-U_c^s &&\forall c\in C,\\
+&O_c^s,U_c^s\ge0 &&\forall c\in C.
+\end{aligned}
+```
+
+$\kappa_c$ is service capacity per vehicle, while $c_c^+$ and $c_c^-$ price unused capacity and unmet demand. Recourse separates by scenario and city: $O_c^s=(\kappa_cq_c-D_c^s)_+$ and $U_c^s=(D_c^s-\kappa_cq_c)_+$. Vehicles are not reallocated across cities after observing demand. The extensive-form MILP linearizes the risk term using $w^s\ge H(q,D^s)-\tau$, $w^s\ge0$, and embeds each scenario's recourse constraints.
+
+### Contextual demand scenarios
+
+```math
+\hat\varepsilon^k=\ln\left(\frac{p^k}{1-p^k}\right)-\hat\beta_0-\hat\beta_1x^k,
+\qquad
+p_c^s=\sigma(\hat\beta_0+\hat\beta_1x_c+\hat\varepsilon^s),
+\qquad D_c^s=M_cp_c^s,
+\qquad \sigma(z)=\frac1{1+e^{-z}}.
+```
+
+Fit the logit-scale regression from observations $(x^k,p^k)$, then attach each empirical residual to the candidate city's context $x_c$. Market size $M_c$ is fixed, and one residual defines one joint scenario, so the training sample size equals the scenario count $N$. All demand scenarios are computed before optimization.
+
+The revised model omits a separate vehicle-cost term $K_cq_c$; its cost-coefficient interpretation is discussed in the revised document and the version notes below.
+
 ## What this model adds
 
-City characteristics generate demand scenarios through a learned logit model. The optimizer chooses entry and fleet before observing demand and minimizes entry cost plus a CVaR penalty. Context is exogenous: demand does **not** change with the chosen fleet in this version.
-
-```math
-p_c^s=\sigma(\hat\beta_0+\hat\beta_1x_c+\hat\varepsilon_s),\quad
-D_c^s=M_cp_c^s,\quad \sigma(z)=(1+e^{-z})^{-1}
-```
-
-```math
-\min_{y,q,\tau,w,O,U}\sum_c F_cy_c+\tau+
-\frac{1}{N(1-\zeta)}\sum_{s=1}^Nw_s
-```
-
-```math
-w_s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau,\quad w_s\ge0,
-\qquad\kappa_cq_c-D_c^s=O_c^s-U_c^s.
-```
-
-The baseline city/fleet constraints still apply: $0\le q_c\le\bar q_cy_c$, $\sum_cq_c\le Q$, binary $y$, integer $q$, and nonnegative $O,U$. Residuals are $\hat\varepsilon_k=\ln\!\left(\frac{p^k}{1-p^k}\right)-\hat\beta_0-\hat\beta_1x^k$; one residual generates one joint scenario, so $|S|=N$.
-
-At $\zeta=0$ the cost is the sample average (ER-SAA). Larger $\zeta$ focuses on the worst scenario costs, equivalently allowing weights $0\le\pi_s\le1/[N(1-\zeta)]$ summing to one. This changes scenario weights, not scenario locations.
+Compared with the baseline's specified choice scenarios, ER-DRO **learns context-dependent demand through logit regression and empirical residuals**, then **reweights the fixed scenarios through a CVaR-type ambiguity set**. At $\zeta=0$ it reduces to ER-SAA; larger $\zeta$ emphasizes high-cost outcomes. It supports studying the value of context and the expected-cost/tail-risk trade-off, while retaining decision-independent demand.
 
 ## Experiment design
 
