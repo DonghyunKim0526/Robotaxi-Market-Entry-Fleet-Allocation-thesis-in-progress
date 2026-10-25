@@ -7,7 +7,7 @@
 This research develops that question in stages: first establish a transparent entry/fleet model; then learn demand from observable city characteristics and examine protection against distributional uncertainty; finally extend the model so that operating decisions can themselves affect choice and demand. The numerical experiments test those modeling and learning mechanisms, rather than seeking a definitive real-city fleet recommendation.
 
 > [!NOTE]
-> **Current research progress.** Baseline implementation checks and synthetic experiments for the revised, contextual two-stage ER-DRO model are available. Real-data demand validation and decision-dependent service/demand learning remain planned extensions. Findings below concern the documented synthetic settings.
+> **Current main model: contextual two-stage ER-DRO.** The revised ER-DRO formulation and its synthetic learning/optimization experiments are the current focus of this thesis. The baseline provides the earlier formulation and independent implementation checks. Real-data validation and decision-dependent service/demand learning are planned extensions; reported findings concern the documented synthetic settings.
 
 ## Repository map
 
@@ -16,7 +16,6 @@ This research develops that question in stages: first establish a transparent en
 | [1. model](1.%20model/README.md) | Earlier ideas, baseline formulation/verification, current ER-DRO model, and Korean companions |
 | [2. driving factors](2.%20driving%20factors/README.md) | Demand evidence → candidate M/p factors → selection criteria and proposed input construction |
 | [3. References](3.%20References/README.md) | Cost-component rationale, parameter evidence/assumptions, model-structure guideline, and supporting literature |
-| [C. Model Structure Guidelines.pdf](3.%20References/%E2%80%BB%20translation/C.%20Model%20Structure%20Guidelines.pdf) | Compares baseline, contextual ER-SAA, ER-DRO, and decision-dependent extensions; the document's content remains Korean |
 
 ## How the model develops
 
@@ -75,7 +74,7 @@ One residual produces one joint scenario, so the training sample size equals the
 
 **Where the demand evidence comes from:** Loa, Lee & Circella's observed SF robotaxi study supports considering zero-vehicle share; its reported relationship informs the synthetic coefficient but is not a calibrated cross-city logit estimate. Conventional ride-hailing papers inform other city candidates, while stated-choice studies motivate fare/wait/features. The [paper-to-use map](2.%20driving%20factors/A.%20Background_Research/1%29%20Research/README.md) and [demand-evidence review](2.%20driving%20factors/A.%20Background_Research/1%29%20Research/02_demand_variables.pdf) distinguish those evidence types. The [residual SAA](3.%20References/%E2%80%BB%20papers/C.%20contextual_stochastic_optimization/C3_Kannan_Data-Driven%20Sample%20Average%20Approximation%20with%20Covariate%20Info.pdf) and [residual DRO](3.%20References/%E2%80%BB%20papers/C.%20contextual_stochastic_optimization/C4_Kannan_Residuals-based%20distributionally%20robust%20optimization.pdf) papers explain the learning/scenario methodology; [the concept-classified literature guide](3.%20References/%E2%80%BB%20papers/README.md) separates these methods from decision-dependent learning.
 
-## Latest implemented model: two-stage contextual ER-DRO
+## Current main model: two-stage contextual ER-DRO
 
 The authoritative specification is [ER-DRO(revised).pdf](1.%20model/C.%20ER-DRO_model/ER-DRO%28revised%29.pdf). Demand scenarios are computed before solving and do not yet depend on the deployment decision.
 
