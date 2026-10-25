@@ -4,7 +4,7 @@ These experiments test the baseline's implementation and explain its behavior be
 
 ## Why two cases?
 
-| Design question | Small case | Annual large case |
+| Design question | Small case | Large case |
 |---|---|---|
 | Main purpose | Make the formulation independently inspectable and isolate entry/capacity economics | Check the same formulation at annual scale and examine demand-sensitive allocation, tied optima, and sampling stability |
 | Input basis | Deliberately simple synthetic values; not calibrated data | Literature-informed scale proxies plus explicit synthetic assumptions; not calibrated actual cities |
