@@ -4,6 +4,20 @@ The current model is **empirical-residuals-based distributionally robust optimiz
 
 This overview follows [ER-DRO(revised).pdf](C.%20ER-DRO_model/ER-DRO%28revised%29.pdf), particularly its two-stage formulation, synthetic numerical experiments, and proposed real-data application. Earlier models and baseline implementation checks remain in their own folders.
 
+## Model development and baseline experiments
+
+The research progressed from alternative deployment formulations to an independently checked baseline, then to contextual ER-DRO. The baseline experiments establish implementation correctness and explain entry/capacity economics; the current ER-DRO experiments examine learning, the value of context, and risk protection.
+
+| Stage | Core idea and what was learned | Documents and code |
+|---|---|---|
+| Earlier model ideas | Compared newsvendor, cost-minimization, profit-maximization, and multiple-penalty formulations; clarified served demand, surplus/shortage, and possible cost double counting | [Former models](A.%20former_model%20ideas/former_models.pdf) |
+| Baseline model | Fixed market size and externally specified choice scenarios; minimizes entry + annual vehicle cost + expected surplus/shortage loss, subject to city/total fleet limits | [Formulation](B.%20baseline_model/1%29%20baseline/baseline%28main%29.pdf) |
+| Small-case baseline experiment | Three cities and ten joint scenarios; independent enumeration of all 60 feasible entry/fleet pairs verifies the MILP. Edge tests and sensitivity isolate when extra service justifies another city's entry cost | [Report](B.%20baseline_model/2%29%20numerical_experiments/small_case/small_case.pdf) · [Notebook](B.%20baseline_model/2%29%20numerical_experiments/small_case/baseline_smallcase.ipynb) · [Colab](https://colab.research.google.com/drive/1xJvXZokBwrCa2vabDtKB1izIU3fAevtx) |
+| Annual baseline experiment | Literature-informed synthetic annual inputs; exact dynamic programming verifies the MILP. Sensitivity and repeated scenario samples explain tied allocations, capacity bottlenecks, and the cost of mean-demand decisions | [Report](B.%20baseline_model/2%29%20numerical_experiments/large_case/large_case.pdf) · [Notebook](B.%20baseline_model/2%29%20numerical_experiments/large_case/baseline_largecase.ipynb) · [Colab](https://colab.research.google.com/drive/1eLKtC6O0tr65SM1JkziHM24RaPbEDo3_) |
+| Current ER-DRO | Learns choice probabilities and residual scenarios from city context; compares expected and tail costs under independent evaluation, then tests sensitivity to signal, noise, resources, and sample size | [Revised model and experiments](C.%20ER-DRO_model/ER-DRO%28revised%29.pdf) · [Notebook](C.%20ER-DRO_model/ER-DRO%28non%20decision-dependent%29.ipynb) · [Colab](https://colab.research.google.com/drive/1dz5QtiAnYBBmKfDLi95xfjFirqg2fcAT) |
+
+Colab links open the Drive originals; the GitHub notebooks are saved snapshots. The following sections focus on the latest ER-DRO formulation and its experimental questions.
+
 ## Current model: contextual, two-stage ER-DRO
 
 ### Demand learning and residual scenarios
@@ -11,8 +25,8 @@ This overview follows [ER-DRO(revised).pdf](C.%20ER-DRO_model/ER-DRO%28revised%2
 Market size $M_c$ is fixed. Uncertainty is in the robotaxi choice probability $p_c$, explained by exogenous context $x_c$ (currently the zero-vehicle household share). Given training observations $(x^k,p^k)$, estimate a linear regression on the logit scale:
 
 ```math
-\operatorname{logit}(p^k)=\beta_0+\beta_1x^k+\varepsilon^k,
-\qquad \hat\varepsilon^k=\operatorname{logit}(p^k)-\hat\beta_0-\hat\beta_1x^k.
+\ln\!\left(\frac{p^k}{1-p^k}\right)=\beta_0+\beta_1x^k+\varepsilon^k,
+\qquad \hat\varepsilon^k=\ln\!\left(\frac{p^k}{1-p^k}\right)-\hat\beta_0-\hat\beta_1x^k.
 ```
 
 Attach each fitted residual to a candidate city's context and transform it back into a probability:

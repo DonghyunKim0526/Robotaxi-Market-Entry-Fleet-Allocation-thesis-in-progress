@@ -19,7 +19,7 @@ w_s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau,\quad w_s\ge0,
 \qquad\kappa_cq_c-D_c^s=O_c^s-U_c^s.
 ```
 
-The baseline city/fleet constraints still apply: $0\le q_c\le\bar q_cy_c$, $\sum_cq_c\le Q$, binary $y$, integer $q$, and nonnegative $O,U$. Residuals are $\hat\varepsilon_k=\operatorname{logit}(p^k)-\hat\beta_0-\hat\beta_1x^k$; one residual generates one joint scenario, so $|S|=N$.
+The baseline city/fleet constraints still apply: $0\le q_c\le\bar q_cy_c$, $\sum_cq_c\le Q$, binary $y$, integer $q$, and nonnegative $O,U$. Residuals are $\hat\varepsilon_k=\ln\!\left(\frac{p^k}{1-p^k}\right)-\hat\beta_0-\hat\beta_1x^k$; one residual generates one joint scenario, so $|S|=N$.
 
 At $\zeta=0$ the cost is the sample average (ER-SAA). Larger $\zeta$ focuses on the worst scenario costs, equivalently allowing weights $0\le\pi_s\le1/[N(1-\zeta)]$ summing to one. This changes scenario weights, not scenario locations.
 
