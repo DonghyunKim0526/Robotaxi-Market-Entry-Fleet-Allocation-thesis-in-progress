@@ -6,7 +6,7 @@
 |---|---|
 | [A. cost_selection_rationale.pdf](A.%20cost_selection_rationale.pdf) | Why entry cost, vehicle cost, and surplus/shortage losses belong in the baseline objective; distinguishes literature structure from additional assumptions |
 | [B. parameter_rationale_baseline.pdf](B.%20parameter_rationale_baseline.pdf) | How baseline parameter values and sensitivity levels are derived from reported observations, estimates, proxies, and synthetic assumptions |
-| [※ translation](%E2%80%BB%20translation/README.md) | Korean A/B companions and [C. 모델 구조 가이드라인.pdf](%E2%80%BB%20translation/C.%20%EB%AA%A8%EB%8D%B8%20%EA%B5%AC%EC%A1%B0%20%EA%B0%80%EC%9D%B4%EB%93%9C%EB%9D%BC%EC%9D%B8.pdf), comparing baseline, contextual, robust, and decision-dependent model structures |
+| [※ translation](%E2%80%BB%20translation/README.md) | Korean A/B companions and [C. Model Structure Guidelines.pdf](%E2%80%BB%20translation/C.%20Model%20Structure%20Guidelines.pdf), comparing baseline, contextual, robust, and decision-dependent model structures |
 | [※ papers](%E2%80%BB%20papers/README.md) | Concept-classified methodological papers on residual learning, contextual optimization, DRO, source reliability, and related location/allocation applications |
 
 ## A. Why these cost components were selected
@@ -46,6 +46,6 @@ The implemented annual experiment uses choice levels 0.002/0.005/0.01/0.02 to pl
 
 Use **A to justify what the model charges**, and **B to trace how an experimental coefficient was obtained**. Then check units, time period, source scope, double counting, and whether the value is observed, derived, or assumed. Together they support transparent synthetic validation; they do not complete real-city calibration.
 
-The [model-structure guideline](%E2%80%BB%20translation/C.%20%EB%AA%A8%EB%8D%B8%20%EA%B5%AC%EC%A1%B0%20%EA%B0%80%EC%9D%B4%EB%93%9C%EB%9D%BC%EC%9D%B8.pdf) compares model families, while [papers](%E2%80%BB%20papers/README.md) explains their methodological foundations. The current revised ER-DRO model uses a different cost specification from the baseline; do not carry the baseline dollar objective over without checking that formulation.
+The [model-structure guideline](%E2%80%BB%20translation/C.%20Model%20Structure%20Guidelines.pdf) compares model families, while [papers](%E2%80%BB%20papers/README.md) explains their methodological foundations. The current revised ER-DRO model uses a different cost specification from the baseline; do not carry the baseline dollar objective over without checking that formulation.
 
 [Project overview](../README.md)
