@@ -38,45 +38,68 @@ D_c^s=M_cp_c^s,\qquad \sigma(z)=\frac{1}{1+e^{-z}}.
 
 One residual defines one joint scenario across candidate cities, so the scenario count equals the training sample size, $|S|=N$. The sigmoid keeps probabilities in $(0,1)$. Demand scenarios are computed **before** optimization: context is exogenous, and demand does not yet respond to fleet or entry decisions.
 
-### First-stage decisions and second-stage cost
+### Stage 1: entry and fleet allocation before demand is observed
 
-The first stage selects cities $y_c$ and allocates integer fleets $q_c$. After demand is realized, surplus capacity $O_c^s$ and unmet demand $U_c^s$ determine the second-stage cost:
-
-```math
-\begin{aligned}
-\min_{y,q}\quad &\sum_cF_cy_c+\mathcal R_\zeta(q)\\
-\text{s.t.}\quad &0\le q_c\le\bar q_cy_c,\quad \sum_cq_c\le Q,\\
-&y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0}.
-\end{aligned}
-```
+The first-stage decisions are city entry $y_c$ and integer fleet $q_c$. They are chosen once and apply to every demand scenario. The first-stage problem in the revised document is
 
 ```math
 \begin{aligned}
-H(q,D^s)=\min_{O^s,U^s\ge0}\quad &\sum_c(c_c^+O_c^s+c_c^-U_c^s)\\
-\text{s.t.}\quad &\kappa_cq_c-D_c^s=O_c^s-U_c^s\quad\forall c.
+\min_{y,q}\quad &\sum_{c\in C}F_cy_c+\mathcal R_\zeta(q)\\
+\text{s.t.}\quad &0\le q_c\le\bar q_cy_c &&\forall c\in C,\\
+&\sum_{c\in C}q_c\le Q,\\
+&y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0} &&\forall c\in C.
 \end{aligned}
 ```
 
-Here $F_c$ is entry cost, $\bar q_c$ is the city fleet cap, $Q$ is total available fleet, and $\kappa_c$ is trips served per vehicle over the evaluation period. The coefficients $c_c^+$ and $c_c^-$ price surplus capacity and unmet demand. Recourse separates by scenario and city, with outcomes $(\kappa_cq_c-D_c^s)_+$ and $(D_c^s-\kappa_cq_c)_+$; there is no post-demand transfer of vehicles across cities.
-
-### How distributional robustness enters
-
-The objective uses CVaR of the scenario recourse costs:
+$F_c$ is entry cost, $\bar q_c$ is the city fleet cap, and $Q$ is total available fleet. The scenario costs are aggregated by the document's CVaR term:
 
 ```math
 \mathcal R_\zeta(q)=\min_{\tau\in\mathbb R}
-\left\{\tau+\frac{1}{N(1-\zeta)}\sum_{s=1}^N[H(q,D^s)-\tau]_+\right\},
-\qquad 0\le\zeta<1.
+\left\{\tau+\frac{1}{|S|(1-\zeta)}\sum_{s\in S}
+\big(H(q,D^s)-\tau\big)^+\right\},\qquad 0\le\zeta<1.
 ```
 
-At $\zeta=0$ this is the empirical mean, giving **ER-SAA**. Increasing $\zeta$ puts more emphasis on high-cost scenarios. Equivalently, the adversary reweights the fixed residual scenarios within
+At $\zeta=0$ this reduces to the empirical average (ER-SAA); larger $\zeta$ emphasizes high-cost scenarios. The first-stage objective uses the second-stage cost function defined below, rather than choosing a separate fleet for each scenario.
+
+### Stage 2: scenario-specific surplus and unmet demand
+
+With the first-stage fleet $q$ fixed and scenario demand $D^s$ given, solve the recourse problem:
 
 ```math
-\mathcal U_\zeta=\left\{\pi\ge0:\sum_s\pi_s=1,\quad
-\pi_s\le\frac{1}{N(1-\zeta)}\right\}.
+\begin{aligned}
+H(q,D^s)=\min_{O^s,U^s}\quad
+&\sum_{c\in C}(c_c^+O_c^s+c_c^-U_c^s)\\
+\text{s.t.}\quad
+&\kappa_cq_c-D_c^s=O_c^s-U_c^s &&\forall c\in C,\\
+&O_c^s,U_c^s\ge0 &&\forall c\in C.
+\end{aligned}
 ```
 
-The implemented extensive-form MILP replaces each positive part by $w^s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau$, with $w^s\ge0$. It changes the weights of existing scenarios rather than moving demand outcomes. A variant replaces entry cost in the objective with an entry-budget or city-count constraint.
+$\kappa_c$ is service capacity per vehicle, while $c_c^+$ and $c_c^-$ price unused capacity and unmet demand. Recourse separates by scenario and city; there is no post-demand transfer of vehicles across cities. The outcome formulas use the revised document's positive-part notation:
+
+```math
+O_c^s=\big(\kappa_cq_c-D_c^s\big)^+,\qquad
+U_c^s=\big(D_c^s-\kappa_cq_c\big)^+.
+```
+
+The superscript plus means the positive part, i.e. the larger of the expression and zero.
+
+### Extensive form: solving the two stages together
+
+The implemented MILP embeds the stage-1 constraints and each scenario's stage-2 constraints in a single problem. It replaces the positive part in the CVaR expression with the revised document's auxiliary variables:
+
+```math
+\min_{y,q,O,U,\tau,w}\quad
+\sum_{c\in C}F_cy_c+\tau+
+\frac{1}{|S|(1-\zeta)}\sum_{s\in S}w^s,
+```
+
+```math
+w^s\ge\sum_{c\in C}(c_c^+O_c^s+c_c^-U_c^s)-\tau,\qquad
+w^s\ge0,\quad\tau\in\mathbb R.
+```
+
+Here $y,q$ are the common first-stage decisions; $O^s,U^s$ are scenario-specific second-stage variables; $\tau,w^s$ represent CVaR in the extensive form. The stages describe when decisions/outcomes arise, not a requirement to solve two independent problems sequentially. A variant replaces entry cost in the objective with an entry-budget or city-count constraint.
 
 The revised formulation omits a separate vehicle-cost term $K_cq_c$. Section 1.6 explains the coefficient adjustment: its identity is exact for the expectation formulation, while the analogous absorption inside general CVaR is an approximation. Thus the revised cost specification should not be treated as automatically equivalent to the earlier baseline for every risk level.
 
@@ -163,6 +186,6 @@ Trip counts and potential opportunities must use matching geography and periods.
 - **[English ER-DRO notebook](C.%20ER-DRO_model/ER-DRO%28non%20decision-dependent%29.ipynb) · [Run in Colab](https://colab.research.google.com/drive/1dz5QtiAnYBBmKfDLi95xfjFirqg2fcAT):** run top to bottom for regression diagnostics, residual scenarios, benchmark/OOS comparisons, and sensitivity plots/tables. Optional `RUN_COMPARE=True` enables the decomposition comparison. Colab opens the Drive original; the GitHub file is a saved snapshot.
 - **[Baseline model and verification experiments](B.%20baseline_model/README.md):** earlier expected-cost model and independent small/annual implementation checks.
 - **[Earlier model ideas](A.%20former_model%20ideas/README.md):** development of alternative cost/profit and penalty formulations.
-- **[Korean companion materials](translation/README.md):** translated model explanations and notebooks.
+- **[Korean companion materials](%E2%80%BB%20translation/README.md):** translated model explanations and notebooks.
 
 [Project overview](../README.md)
