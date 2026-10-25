@@ -1,50 +1,154 @@
-# Models and experiments
+# Models and numerical experiments
 
-## Decision structure
+The current model is **empirical-residuals-based distributionally robust optimization (ER-DRO)** for robotaxi city entry and fleet allocation. It learns choice probabilities from city context, converts fitted residuals into joint demand scenarios, and evaluates deployment decisions against costly demand outcomes.
 
-All models choose cities and integer fleets before demand is realized. Scenario recourse records surplus service capacity and unmet robotaxi demand; vehicles are not transferred between cities after observing a scenario.
+This overview follows [ER-DRO(revised).pdf](C.%20ER-DRO_model/ER-DRO%28revised%29.pdf), particularly its two-stage formulation, synthetic numerical experiments, and proposed real-data application. Earlier models and baseline implementation checks remain in their own folders.
 
-| Model family | Demand construction | Objective and contribution |
+## Current model: contextual, two-stage ER-DRO
+
+### Demand learning and residual scenarios
+
+Market size $M_c$ is fixed. Uncertainty is in the robotaxi choice probability $p_c$, explained by exogenous context $x_c$ (currently the zero-vehicle household share). Given training observations $(x^k,p^k)$, estimate a linear regression on the logit scale:
+
+```math
+\operatorname{logit}(p^k)=\beta_0+\beta_1x^k+\varepsilon^k,
+\qquad \hat\varepsilon^k=\operatorname{logit}(p^k)-\hat\beta_0-\hat\beta_1x^k.
+```
+
+Attach each fitted residual to a candidate city's context and transform it back into a probability:
+
+```math
+p_c^s=\sigma(\hat\beta_0+\hat\beta_1x_c+\hat\varepsilon^s),\qquad
+D_c^s=M_cp_c^s,\qquad \sigma(z)=\frac{1}{1+e^{-z}}.
+```
+
+One residual defines one joint scenario across candidate cities, so the scenario count equals the training sample size, $|S|=N$. The sigmoid keeps probabilities in $(0,1)$. Demand scenarios are computed **before** optimization: context is exogenous, and demand does not yet respond to fleet or entry decisions.
+
+### First-stage decisions and second-stage cost
+
+The first stage selects cities $y_c$ and allocates integer fleets $q_c$. After demand is realized, surplus capacity $O_c^s$ and unmet demand $U_c^s$ determine the second-stage cost:
+
+```math
+\begin{aligned}
+\min_{y,q}\quad &\sum_cF_cy_c+\mathcal R_\zeta(q)\\
+\text{s.t.}\quad &0\le q_c\le\bar q_cy_c,\quad \sum_cq_c\le Q,\\
+&y_c\in\{0,1\},\quad q_c\in\mathbb Z_{\ge0}.
+\end{aligned}
+```
+
+```math
+\begin{aligned}
+H(q,D^s)=\min_{O^s,U^s\ge0}\quad &\sum_c(c_c^+O_c^s+c_c^-U_c^s)\\
+\text{s.t.}\quad &\kappa_cq_c-D_c^s=O_c^s-U_c^s\quad\forall c.
+\end{aligned}
+```
+
+Here $F_c$ is entry cost, $\bar q_c$ is the city fleet cap, $Q$ is total available fleet, and $\kappa_c$ is trips served per vehicle over the evaluation period. The coefficients $c_c^+$ and $c_c^-$ price surplus capacity and unmet demand. Recourse separates by scenario and city, with outcomes $(\kappa_cq_c-D_c^s)_+$ and $(D_c^s-\kappa_cq_c)_+$; there is no post-demand transfer of vehicles across cities.
+
+### How distributional robustness enters
+
+The objective uses CVaR of the scenario recourse costs:
+
+```math
+\mathcal R_\zeta(q)=\min_{\tau\in\mathbb R}
+\left\{\tau+\frac{1}{N(1-\zeta)}\sum_{s=1}^N[H(q,D^s)-\tau]_+\right\},
+\qquad 0\le\zeta<1.
+```
+
+At $\zeta=0$ this is the empirical mean, giving **ER-SAA**. Increasing $\zeta$ puts more emphasis on high-cost scenarios. Equivalently, the adversary reweights the fixed residual scenarios within
+
+```math
+\mathcal U_\zeta=\left\{\pi\ge0:\sum_s\pi_s=1,\quad
+\pi_s\le\frac{1}{N(1-\zeta)}\right\}.
+```
+
+The implemented extensive-form MILP replaces each positive part by $w^s\ge\sum_c(c_c^+O_c^s+c_c^-U_c^s)-\tau$, with $w^s\ge0$. It changes the weights of existing scenarios rather than moving demand outcomes. A variant replaces entry cost in the objective with an entry-budget or city-count constraint.
+
+The revised formulation omits a separate vehicle-cost term $K_cq_c$. Section 1.6 explains the coefficient adjustment: its identity is exact for the expectation formulation, while the analogous absorption inside general CVaR is an approximation. Thus the revised cost specification should not be treated as automatically equivalent to the earlier baseline for every risk level.
+
+## Numerical experiment: what is being tested?
+
+The synthetic experiment tests whether the **estimation–scenario-generation–optimization pipeline works**, what context adds to decisions, how DRO changes the mean/tail trade-off, and how these findings depend on data availability and parameter assumptions. Knowing the true generating model makes these questions measurable through independent evaluation.
+
+### Settings and comparison design
+
+| Component | Setting and purpose |
+|---|---|
+| Candidate context | 18 candidate-city county proxies; actual ACS 2019–2023 B08201 zero-vehicle household shares, about 0.054–0.777 |
+| Market scale | Actual household totals ×10; the multiplier is a synthetic assumption |
+| True choice model | $p=\sigma(-3.5+0.8x+\varepsilon)$, with normal error of standard deviation 0.3 |
+| Training | Synthetic $(x,p)$ observations, $N=15$ or 200; estimate coefficients and residuals without supplying the true coefficients to the optimizer |
+| Capacity and fleet | $\kappa=8,760$ trips/vehicle-year; city cap 150; $Q$ set to about 60% of expected demand divided by productivity (267 vehicles in the reported case) |
+| Costs | $c^+=1$, $c^-\in\{1,5,10\}$, $F_c=F_0c^-$ with $F_0=100,000$; scaling entry cost preserves its ratio to unmet-demand loss |
+| Risk levels | $\zeta\in\{0,0.5,0.9\}$; 0 is ER-SAA |
+| Benchmarks | Contextual ER-SAA; contextual ER-DRO; no-context model under the same comparison settings |
+| Independent evaluation | 1,000 separate scenarios from the true demand model, held common across compared decisions |
+| Performance measures | OOS expected total cost and OOS tail cost (mean of the worst 10%); regression diagnostics on a separate 1,000-observation test set |
+
+The full sequence is: generate training data → fit logit regression → reuse empirical residuals at candidate contexts → solve the MILP → score the fixed decision on independent true-model scenarios. In-sample optimized costs are not the main evidence of decision quality. The evaluation tail level stays at 0.9 even when the optimization risk parameter $\zeta$ changes.
+
+### 1. Does demand learning recover the intended signal?
+
+![Logit fit, residual distribution, residual-versus-context plots, and prediction diagnostics for N=15 and N=200.](C.%20ER-DRO_model/figures/fig1_f_diagnostics.png)
+
+**Finding.** With $N=200$, the estimated context slope is 0.665 versus the true 0.8, and residual standard deviation is 0.298 versus 0.3. Test $R^2$ is about 0.143, compared with −0.013 for the no-context predictor. The generating model deliberately has a weak contextual signal, so low predictive $R^2$ does not by itself mean context has no decision value.
+
+**Interpretation.** The residual plots check whether reuse across contexts is plausible in this synthetic setting. They do not prove residual independence or cross-city transfer for real observations. Those assumptions need separate validation before applying the model to actual demand.
+
+### 2. What does context add, and what does DRO change?
+
+![Out-of-sample mean cost and worst-10% cost versus the optimization risk parameter; contextual and no-context models with N=15 and N=200, c+=1 and c-=5.](C.%20ER-DRO_model/figures/toy_oos_vs_zeta.png)
+
+| Contextual model, $N=200,c^-=5$ | $\zeta=0$ | $\zeta=0.5$ | $\zeta=0.9$ |
+|---|---:|---:|---:|
+| OOS expected cost (million normalized cost units) | 12.46 | 12.67 | 14.22 |
+| OOS worst-10% cost (same units) | 22.79 | 22.29 | 21.62 |
+
+**Effect of DRO.** From $\zeta=0$ to 0.9, expected cost rises by about 14%, while tail cost falls by about 5.1%. The result illustrates the cost of tail protection; lower expected cost is not the criterion ER-DRO is designed to improve unconditionally.
+
+**Effect of context.** Across the reported $N$ and cost-ratio settings, the contextual model's expected-cost reduction relative to its no-context counterpart is about 1–3% at $\zeta=0$, 3–15% at 0.5, and 4–19% at 0.9. This is a matched-risk comparison, distinct from comparing ER-SAA with ER-DRO.
+
+**Limited-data qualification.** For $N=15$, the no-context model's tail cost can increase as risk aversion grows (22.79M →23.20M at $c^-=5$). Robustifying a poorly informed small residual sample does not guarantee better OOS tail performance. At $\zeta=0.9$, contextual decisions trained with 15 versus 200 observations differ in OOS expected cost by approximately 0.8–3.1% across the tested cost ratios; this is evidence for these synthetic runs, not a general small-sample guarantee.
+
+### 3. Sensitivity: when do the comparisons matter most?
+
+![One-parameter sensitivity analysis: entry cost, fleet availability, city cap, productivity, unmet-demand loss, context strength, noise, training sample size, and risk level.](C.%20ER-DRO_model/figures/fig2_sensitivity.png)
+
+Each panel changes one parameter from $N=200,c^+=1,c^-=5,\zeta=0.9$, holding the other settings fixed. The three lines compare contextual ER-DRO, contextual ER-SAA, and no-context ER-DRO; the figure reports **OOS expected cost**, so the ER-SAA line can be lower while ER-DRO provides tail protection in the preceding comparison.
+
+| Parameter / question | Reported behavior | What can be learned |
 |---|---|---|
-| Earlier formulations | Exogenous demand scenarios | Compares basic overage/underage, cost, profit, and multiple-penalty formulations |
-| Baseline | $D_c^s=M_cp_c^s$ with fixed $M$ and specified $p$ | Entry + annual fleet cost + expected surplus/shortage costs; independently verified experiments |
-| Revised ER-DRO | Logit regression + empirical residuals at each city's context | Entry + CVaR of recourse costs; evaluates value of context and tail protection |
+| Entry cost $F_0$ | ER-DRO expected cost rises about 12.04M →18.73M across tested levels | Entry-cost assumptions materially affect the evaluated policy cost |
+| Fleet $Q$ and productivity $\kappa$ | Increasing either reduces expected cost; changing the fleet ratio 0.2→1.0 lowers ER-DRO cost about 16.79M →11.45M | Resource scarcity can dominate learning: at the 0.2 fleet ratio, model costs nearly coincide because capacity is used wherever allocated |
+| City cap $\bar q$ | Results plateau above about 100 for ER-SAA and 150 for ER-DRO in the tested instance | Relaxing a nonbinding cap brings no further improvement |
+| Context strength $\beta_1$ | The compared costs coincide at zero signal; reported context gains reach about 25% and 41% at slopes 3 and 5 | Context has more decision value when it actually explains demand; the baseline slope 0.8 yields smaller gains |
+| Demand noise $\sigma_\varepsilon$ | Higher dispersion raises evaluated expected cost | Demand uncertainty changes the cost scale and the value of checking tail performance |
+| Training size $N$ | Over tested $N=10$–200, contextual ER-SAA costs vary within about 1.4%; contextual ER-DRO fluctuates about 13.19M–14.24M | More observations need not produce a monotone improvement in one synthetic realization |
+| Unmet-demand loss $c^-$ and risk $\zeta$ | Cost levels and risk preferences change; the reported context comparisons persist across ratios 1:1, 1:5, and 1:10 | The main finding is not tied to a single assumed surplus/shortage ratio; this does not empirically calibrate that ratio |
 
-## Core baseline formulation
+Changing $\beta_1$ changes the true demand model, so training and estimation are repeated in that sweep. The displayed curves summarize tested parameter settings, not universal monotonicity or statistical confidence bounds.
+
+### Computational check
+
+The revised document also compares the extensive form with L-shaped decomposition at a 1% stopping tolerance. The decomposition's feasible costs are about 0.43–0.65% above the extensive-form results, and it takes longer in these small instances. Subsequent experiments therefore use the extensive form. This comparison checks the solution approach; it does not establish that decomposition is faster or that both methods returned identical exact optima.
+
+## What remains for real-data application
+
+The revised document proposes learning from **operating-city tracts** and aggregating demand over candidate-city tracts:
 
 ```math
-\min_{y,q,O,U}\;\sum_c F_cy_c+\sum_c K_cq_c+
-\frac{1}{|S|}\sum_{s,c}(c_c^+O_c^s+c_c^-U_c^s)
+p_{cj}^s=\sigma(\hat\beta_0+\hat\beta_1x_{cj}+\hat\varepsilon^s),\qquad
+D_c^s=\sum_{j\in J_c}M_{cj}p_{cj}^s.
 ```
 
-```math
-D_c^s=M_cp_c^s,\qquad
-\kappa_cq_c-D_c^s=O_c^s-U_c^s
-```
+Trip counts and potential opportunities must use matching geography and periods. ACS/NHTS would construct tract-level $M$ and context, while operator trip records would provide observed choice shares. The proposed SF→LA validation checks predictive error and residual transfer before applying the relationship to new cities. Data access, supply-censoring effects, residual pooling, and training-range overlap remain to be checked. This is a **planned application**, separate from the completed synthetic experiment.
 
-```math
-0\le q_c\le\bar q_cy_c,\quad \sum_cq_c\le Q,\quad
-y_c\in\{0,1\},\ q_c\in\mathbb Z_{\ge0},\ O_c^s,U_c^s\ge0.
-```
+## Documents and code
 
-$y_c$ is entry, $q_c$ is vehicles, $\kappa_cq_c$ is capacity, and $O,U$ are surplus and shortage in trip units. The fleet limit $Q$ is an upper bound, not a requirement to deploy every vehicle.
+- **[ER-DRO revised formulation and experiments](C.%20ER-DRO_model/ER-DRO%28revised%29.pdf):** source for this overview's equations, experiment settings, results, and real-data plan.
+- **[English ER-DRO notebook](C.%20ER-DRO_model/ER-DRO%28non%20decision-dependent%29.ipynb) · [Run in Colab](https://colab.research.google.com/drive/1dz5QtiAnYBBmKfDLi95xfjFirqg2fcAT):** run top to bottom for regression diagnostics, residual scenarios, benchmark/OOS comparisons, and sensitivity plots/tables. Optional `RUN_COMPARE=True` enables the decomposition comparison. Colab opens the Drive original; the GitHub file is a saved snapshot.
+- **[Baseline model and verification experiments](B.%20baseline_model/README.md):** earlier expected-cost model and independent small/annual implementation checks.
+- **[Earlier model ideas](A.%20former_model%20ideas/README.md):** development of alternative cost/profit and penalty formulations.
+- **[Korean companion materials](translation/README.md):** translated model explanations and notebooks.
 
-## Numerical evidence
-
-- **Small case:** $(0,2,2)$, objective 858, service rate 30%; the extra service from a third city does not pay its entry cost.
-- **Annual case:** $(132,368,500)$ is representative of 72 optima; identical marginal values in B and C explain the ties.
-- **ER-DRO:** with $N=200,c^-=5$, increasing $\zeta$ from 0 to 0.9 raises OOS mean cost from 12.46M to 14.22M while reducing tail cost from 22.79M to 21.62M in the reported toy experiment.
-
-These are synthetic results. The revised ER-DRO cost normalization differs from the baseline, and Korean companions include some earlier notation; read the current English formulation alongside them.
-
-## Related folders
-
-- [A. former_model ideas](A.%20former_model%20ideas/README.md)
-- [B. baseline_model](B.%20baseline_model/README.md)
-- [C. ER-DRO_model](C.%20ER-DRO_model/README.md)
-- [translation](translation/README.md)
-
-
----
-
-[Parent guide](../README.md) · [Project overview](../README.md)
+[Project overview](../README.md)
