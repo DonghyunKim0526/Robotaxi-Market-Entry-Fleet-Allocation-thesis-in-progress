@@ -1,5 +1,8 @@
 # Models and numerical experiments
 
+> [!NOTE]
+> **Current research progress.** This README summarizes the research completed so far, from baseline formulation and verification to the revised two-stage ER-DRO model and synthetic experiments. Real-data validation and decision-dependent demand remain planned extensions.
+
 The current model is **empirical-residuals-based distributionally robust optimization (ER-DRO)** for robotaxi city entry and fleet allocation. It learns choice probabilities from city context, converts fitted residuals into joint demand scenarios, and evaluates deployment decisions against costly demand outcomes.
 
 This overview follows [ER-DRO(revised).pdf](C.%20ER-DRO_model/ER-DRO%28revised%29.pdf), particularly its two-stage formulation, synthetic numerical experiments, and proposed real-data application. Earlier models and baseline implementation checks remain in their own folders.
