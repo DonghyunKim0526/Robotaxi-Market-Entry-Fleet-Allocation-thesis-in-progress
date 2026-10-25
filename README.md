@@ -7,7 +7,7 @@
 This research develops that question in stages: first establish a transparent entry/fleet model; then learn demand from observable city characteristics and examine protection against distributional uncertainty; finally extend the model so that operating decisions can themselves affect choice and demand. The numerical experiments test those modeling and learning mechanisms, rather than seeking a definitive real-city fleet recommendation.
 
 > [!NOTE]
-> **Current main model: contextual two-stage ER-DRO.** The revised ER-DRO formulation and its synthetic learning/optimization experiments are the current focus of this thesis. The baseline provides the earlier formulation and independent implementation checks. Real-data validation and decision-dependent service/demand learning are planned extensions; reported findings concern the documented synthetic settings.
+> **Current research progress.** The current main model is **contextual two-stage ER-DRO**, with a revised formulation and synthetic numerical experiments. Baseline verification provides its foundation; real-data validation and decision-dependent demand remain planned extensions.
 
 ## Repository map
 
