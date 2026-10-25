@@ -1,5 +1,19 @@
 # Demand inputs and driving factors
 
+## Folder and document guide
+
+Read in order: **background evidence → candidate factors → selection and input construction**.
+
+| Folder / key documents | What they cover |
+|---|---|
+| [A. Background_Research](A.%20Background_Research/README.md) | Operating-market background, demand literature, and entry-feasibility conditions; summarizes the main papers and how they inform this research |
+| [1) Research](A.%20Background_Research/1%29%20Research/README.md) | [Companies and markets](A.%20Background_Research/1%29%20Research/01_robotaxi_companies_markets.pdf), [demand-variable evidence](A.%20Background_Research/1%29%20Research/02_demand_variables.pdf), and [city-entry conditions](A.%20Background_Research/1%29%20Research/03_city_entry_conditions_variables.pdf); separates observed demand, choice evidence, and operating prerequisites |
+| [B. Candidates](B.%20Candidates/) · [candidates_(M,p).pdf](B.%20Candidates/candidates_%28M%2Cp%29.pdf) | Literature-backed candidate factors for market scale M and robotaxi choice p, with evidence scope and required measurements; a screening pool rather than final predictors |
+| [C. Selection](C.%20Selection/README.md) | Screening criteria, choices and deferrals; [Factors_of_M.pdf](C.%20Selection/Factors_of_M.pdf) explains fixed market-scale construction, while [Factors_of_p.pdf](C.%20Selection/Factors_of_p.pdf) explains exogenous and decision-dependent choice-variable roles |
+| [※ translation](%E2%80%BB%20translation/README.md) | Korean companion documents for the candidate list and M/p selection rationale |
+
+Earlier PDFs are retained in the relevant `revision_history` subfolders for comparison.
+
 ## Demand is scale × choice
 
 ```math
