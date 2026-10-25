@@ -40,10 +40,6 @@ T_c^s=\min(D_c^s,\kappa_cq_c).
 - $c^-$ is lost contribution per trip, not gross fare. A positive $c^+$ is an extra preference penalty and needs justification beyond costs already in $K$.
 - Entry cost is paid once; vehicle cost, demand, and capacity cover the same operating year. The objective includes opportunity losses and is not simply cash expenditure.
 
-## Verification result
-
-The companion small experiment produces $(0,2,2)$ at cost 858, matching independent enumeration. The annual experiment uses the same mathematical structure with scaled inputs and an exact dynamic-programming reference. This folder contains the formulation, not an executable notebook.
-
 ## Documents and their contents
 
 - **[baseline(main).pdf](baseline%28main%29.pdf)** — Defines demand and cost terms, entry/fleet decisions, capacity balance, and the interpretation of unmet demand; use the current English version to match the implementation.
