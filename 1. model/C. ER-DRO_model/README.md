@@ -48,7 +48,18 @@ H(q,D^s)=\min_{O^s,U^s}\quad
 \end{aligned}
 ```
 
-$\kappa_c$ is service capacity per vehicle, while $c_c^+$ and $c_c^-$ price unused capacity and unmet demand. Recourse separates by scenario and city: $O_c^s=(\kappa_cq_c-D_c^s)_+$ and $U_c^s=(D_c^s-\kappa_cq_c)_+$. Vehicles are not reallocated across cities after observing demand. The extensive-form MILP linearizes the risk term using $w^s\ge H(q,D^s)-\tau$, $w^s\ge0$, and embeds each scenario's recourse constraints.
+$\kappa_c$ is service capacity per vehicle, while $c_c^+$ and $c_c^-$ price unused capacity and unmet demand. Recourse separates by scenario and city. The optimal surplus and shortage are:
+
+```math
+\begin{aligned}
+O_c^s &= \left(\kappa_c q_c-D_c^s\right)^{+},\\
+U_c^s &= \left(D_c^s-\kappa_c q_c\right)^{+}.
+\end{aligned}
+```
+
+The superscript plus denotes the positive part (the larger of the expression and zero).
+
+Vehicles are not reallocated across cities after observing demand. The extensive-form MILP linearizes the risk term using $w^s\ge H(q,D^s)-\tau$, $w^s\ge0$, and embeds each scenario's recourse constraints.
 
 ### Contextual demand scenarios
 
