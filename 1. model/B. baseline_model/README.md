@@ -8,7 +8,7 @@
 | [2) numerical_experiments](2%29%20numerical_experiments/README.md) | Purpose, settings, and model checks shared by the small and annual synthetic experiments |
 | [Small-case report and code](2%29%20numerical_experiments/small_case/README.md) | Exhaustive implementation verification, boundary cases, interpretable switching points, and uncertainty comparisons |
 | [Annual large-case report and code](2%29%20numerical_experiments/large_case/README.md) | Literature-informed scale assumptions, independent dynamic-programming checks, sensitivity, tied optima, and sampling stability |
-| [3) revision_history](3%29%20revision_history/README.md) | Earlier PDFs and a change log: what changed, the supported rationale, and editorial cleanup |
+| [3) revision_history](3%29%20revision_history/) | Archived earlier formulation PDFs for comparing previous model definitions |
 
 ### Run the experiments
 

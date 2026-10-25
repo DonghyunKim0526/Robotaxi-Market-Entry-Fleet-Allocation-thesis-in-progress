@@ -26,7 +26,7 @@ Completed robotaxi trips divided by $M$ measure realized usage and may be censor
 ## Related folders
 
 - [A. Background_Research](A.%20Background_Research/README.md)
-- [B. Candidates](B.%20Candidates/README.md)
+- [B. Candidates](B.%20Candidates/candidates_%28M%2Cp%29.pdf)
 - [C. Selection](C.%20Selection/README.md)
 - [※ translation](%E2%80%BB%20translation/README.md)
 

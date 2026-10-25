@@ -22,7 +22,7 @@ The [demand-variable review](02_demand_variables.pdf) records the findings and s
 
 **Additional background:** papers 8–12 in the review cover SAV adoption with pilot experience (Etminani-Ghasrodashti et al.), SAV preferences (Krueger et al.), AV preferences (Haboucha et al.), a stated-choice review (Gkartzonikas & Gkritza), and SAV pilot-user/ridership evaluation (Khan et al.). They broaden the evidence for demographic, attitudinal, service, and experience candidates, with SAV/AV and individual-to-city transfer limitations; they are not all implemented regressors.
 
-**How this connects to the current work:** [Candidates](../../B.%20Candidates/README.md) assembles the literature-backed pool; [Selection](../../C.%20Selection/README.md) defines the roles of fixed M and uncertain p and prioritizes measurable variables; the [current ER-DRO model](../../../1.%20model/C.%20ER-DRO_model/README.md) presently uses only zero-vehicle household share as context in its synthetic experiment. Age and service variables remain screening/extension directions, not completed real-data estimation.
+**How this connects to the current work:** [Candidates](../../B.%20Candidates/candidates_%28M%2Cp%29.pdf) assembles the literature-backed pool; [Selection](../../C.%20Selection/README.md) defines the roles of fixed M and uncertain p and prioritizes measurable variables; the [current ER-DRO model](../../../1.%20model/C.%20ER-DRO_model/README.md) presently uses only zero-vehicle household share as context in its synthetic experiment. Age and service variables remain screening/extension directions, not completed real-data estimation.
 
 ## Evidence-to-input rules
 

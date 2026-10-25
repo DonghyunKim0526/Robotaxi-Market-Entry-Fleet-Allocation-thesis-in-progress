@@ -24,7 +24,7 @@ The [Research guide](1%29%20Research/README.md) maps individual papers to their 
 
 Five additional SAV/AV references in the review cover pilot-based adoption, SAV/AV preferences, a stated-choice review, and pilot-user/ridership evaluation. They broaden the demographic, attitudinal, service, and experience evidence but do not all supply implemented regressors or direct robotaxi-demand estimates.
 
-**Connection to the current work:** [Candidates](../B.%20Candidates/README.md) collects the evidence-backed pool; [Selection](../C.%20Selection/README.md) defines fixed M and uncertain p and screens measurable variables; [ER-DRO](../../1.%20model/C.%20ER-DRO_model/README.md) currently uses zero-vehicle household share as its sole context in the synthetic experiment. Age and service variables remain selection/extension directions, not completed real-data estimates.
+**Connection to the current work:** [Candidates](../B.%20Candidates/candidates_%28M%2Cp%29.pdf) collects the evidence-backed pool; [Selection](../C.%20Selection/README.md) defines fixed M and uncertain p and screens measurable variables; [ER-DRO](../../1.%20model/C.%20ER-DRO_model/README.md) currently uses zero-vehicle household share as its sole context in the synthetic experiment. Age and service variables remain selection/extension directions, not completed real-data estimates.
 
 ## Implication for $D=Mp$
 
@@ -40,7 +40,3 @@ The current working review is in `1) Research`; the dated demand-review snapshot
 ---
 
 [Parent guide](../README.md) · [Project overview](../../README.md)
-
-## Revision history
-
-See the [change log](2%29%20revision_history/README.md) for what changed between retained versions, the reasons supported by the documents, and editorial-only cleanup.
