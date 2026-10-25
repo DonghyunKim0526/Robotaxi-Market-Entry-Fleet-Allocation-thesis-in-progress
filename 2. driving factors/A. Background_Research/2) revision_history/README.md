@@ -24,6 +24,6 @@ The distinction between observed robotaxi demand, conventional ride-hailing evid
 ## Versions to compare
 
 - [2026-10-01 marked-up review](10_01_2026_02_demand_variables.pdf): dated addition markers and retained evidence cautions.
-- [Current demand-variable review](../1%29%20Research/%28%E2%98%85%29%2002_demand_variables.pdf): integrated presentation of the review.
+- [Current demand-variable review](../1%29%20Research/02_demand_variables.pdf): integrated presentation of the review.
 
 [Background-research guide](../README.md)

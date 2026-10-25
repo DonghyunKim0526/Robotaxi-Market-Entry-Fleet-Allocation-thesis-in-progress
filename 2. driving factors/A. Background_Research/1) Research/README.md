@@ -23,7 +23,7 @@ The market image illustrates the inventory described in the accompanying documen
 
 ## Documents and their contents
 
-- **[(★) 02_demand_variables.pdf](%28%E2%98%85%29%2002_demand_variables.pdf)** — Separates observed robotaxi, conventional ride-hailing, and stated-choice evidence; maps candidate variables to comparable measurement data.
+- **[02_demand_variables.pdf](02_demand_variables.pdf)** — Separates observed robotaxi, conventional ride-hailing, and stated-choice evidence; maps candidate variables to comparable measurement data.
 - **[01_robotaxi_companies_markets.pdf](01_robotaxi_companies_markets.pdf)** — Operator-specific market inventory with public-service versus announced/testing/rollout distinctions; document snapshot rather than live coverage.
 - **[03_city_entry_conditions_variables.pdf](03_city_entry_conditions_variables.pdf)** — Distinguishes operating prerequisites, demonstrated operational risks, and constructed public-data proxies for entry feasibility.
 
